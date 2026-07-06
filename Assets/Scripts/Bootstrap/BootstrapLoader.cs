@@ -11,13 +11,17 @@ public class BootstrapLoader : MonoBehaviour
 
         if (currentScene.name.StartsWith("Level_"))
         {
-            SceneManager.LoadScene("Bootstrap", LoadSceneMode.Additive);
-
-            SceneManager.LoadScene("UI", LoadSceneMode.Additive);
+            if (!SceneManager.GetSceneByName("Bootstrap").isLoaded)
+            {
+                SceneManager.LoadScene("Bootstrap", LoadSceneMode.Additive);
+            }
         }
-        else if (currentScene.name == "UI")
+        else if (currentScene.name == "UI" || currentScene.name == "MainMenu")
         {
-            SceneManager.LoadScene("Bootstrap", LoadSceneMode.Additive);
+            if (!SceneManager.GetSceneByName("Bootstrap").isLoaded)
+            {
+                SceneManager.LoadScene("Bootstrap", LoadSceneMode.Additive);
+            }
         }
     }
 }

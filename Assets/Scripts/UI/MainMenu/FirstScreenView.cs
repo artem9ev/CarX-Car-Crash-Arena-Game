@@ -20,7 +20,16 @@ public class FirstScreenView : MonoBehaviour, IFirstScreenView
 
     private void OnEnable()
     {
+        _buttonCreateLobby.onClick.AddListener(CreateLobby);
+        _buttonConnectLobby.onClick.AddListener(ConnectToLobby);
+
         _nicknameField.onValueChanged.AddListener(OnNicknameChange);
+    }
+
+    private void OnDisable()
+    {
+        _buttonCreateLobby.onClick.RemoveListener(CreateLobby);
+        _buttonConnectLobby.onClick.RemoveListener(ConnectToLobby);
     }
 
     private void OnNicknameChange(string value)
@@ -44,5 +53,15 @@ public class FirstScreenView : MonoBehaviour, IFirstScreenView
     {
         _buttonCreateLobby.interactable = value;
         _buttonConnectLobby.interactable = value;
+    }
+
+    public void CreateLobby()
+    {
+        ConnectionManager.Instance.CreateLobby();
+    }
+
+    public void ConnectToLobby()
+    {
+        ConnectionManager.Instance.ConnectLobby();
     }
 }

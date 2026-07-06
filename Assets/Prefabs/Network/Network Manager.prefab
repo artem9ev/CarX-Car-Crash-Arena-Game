@@ -111,7 +111,7 @@ MonoBehaviour:
   m_MaxConnectAttempts: 60
   m_DisconnectTimeoutMS: 30000
   ConnectionData:
-    Address: 127.0.0.1
+    Address: 127.0.0.2
     Port: 7778
     WebSocketPath: /
     ServerListenAddress: 127.0.0.1

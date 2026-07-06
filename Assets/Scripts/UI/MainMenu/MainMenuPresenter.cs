@@ -2,15 +2,18 @@ using UnityEngine;
 
 public class MainMenuPresenter : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    private void Start()
     {
-        
+        ConnectionManager.Instance.OnClientConnectionNotification += OnClientConnectionNotification;
     }
 
-    // Update is called once per frame
-    void Update()
+    private void OnDestroy()
     {
-        
+        ConnectionManager.Instance.OnClientConnectionNotification -= OnClientConnectionNotification;
+    }
+
+    private void OnClientConnectionNotification(ulong clientID, ConnectionManager.ConnectionState connectionState)
+    {
+        Debug.Log($"[Client Notification] id: {clientID, 16} | status: {connectionState}");
     }
 }
