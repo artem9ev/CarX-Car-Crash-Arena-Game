@@ -45,16 +45,6 @@ public class SceneLoader : MonoBehaviour
         SceneManager.LoadScene(_uiName, LoadSceneMode.Additive);
     }
 
-    private void LoadMainMenu()
-    {
-        if (SceneManager.GetSceneByName(_uiName).isLoaded)
-        {
-            return;
-        }
-
-        _loadRoutine = StartCoroutine(LoadSceneAsync(_mainName));
-    }
-
     private IEnumerator LoadSceneAsync(string name)
     {
         float sceneProgress = 0f;
@@ -108,6 +98,16 @@ public class SceneLoader : MonoBehaviour
             SceneManager.UnloadSceneAsync(_uiName);
         }
 
-        _loadRoutine = StartCoroutine(LoadSceneAsync(_lobbyName));
+        //_loadRoutine = StartCoroutine(LoadSceneAsync(_lobbyName));
+    }
+
+    public void LoadMainMenu()
+    {
+        if (SceneManager.GetSceneByName(_mainName).isLoaded)
+        {
+            return;
+        }
+
+        _loadRoutine = StartCoroutine(LoadSceneAsync(_mainName));
     }
 }
