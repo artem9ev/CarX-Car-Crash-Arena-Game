@@ -51,6 +51,9 @@ public class MovingCar : MonoBehaviour
     private bool isBraking;
     private bool isDead = false;
 
+
+    public Vector3 position => rb.position;
+    public Vector3 linearVelocity => rb.linearVelocity;
     private void OnDrawGizmosSelected()
     {
         var tempRb = GetComponent<Rigidbody>();
@@ -61,9 +64,13 @@ public class MovingCar : MonoBehaviour
         }
     }
 
-    private void Start()
+    private void Awake()
     {
         rb = GetComponent<Rigidbody>();
+    }
+
+    private void Start()
+    {
         currentHealth = maxHealth;
     }
 
