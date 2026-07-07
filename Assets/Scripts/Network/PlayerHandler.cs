@@ -2,5 +2,41 @@ using UnityEngine;
 
 public class PlayerHandler : MonoBehaviour
 {
-    [SerializeField] private float t;
+    private string _nickname;
+
+    private static PlayerHandler _instance;
+
+    public static PlayerHandler Instance => _instance;
+
+    public string nickname => _nickname;
+
+    private void Awake()
+    {
+        if (Instance != null) 
+        {
+            Destroy(gameObject);
+            return;
+        }
+        _instance = this;
+
+        DontDestroyOnLoad(gameObject);
+    }
+
+    private void Start()
+    {
+        
+    }
+
+    public void SavePlayerNick(string nick)
+    {
+        PlayerPrefs.SetString("PlayerNickname", nick);
+        PlayerPrefs.Save();
+        Debug.Log("Nickname saved");
+    }
+
+    public string LoadPlayerNick()
+    {
+        _nickname = PlayerPrefs.GetString("PlayerNickname", "Anonimusss");
+        return _nickname;
+    }
 }

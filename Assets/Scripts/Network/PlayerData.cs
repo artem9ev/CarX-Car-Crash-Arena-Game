@@ -28,7 +28,7 @@ public class PlayerData : NetworkBehaviour
     }
 
     [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Owner)] // Только владелец может вызвать
-    public void SetPlayerNameServerRpc(FixedString64Bytes newName, ServerRpcParams rpcParams = default)
+    public void SetPlayerNameServerRpc(FixedString64Bytes newName, RpcParams rpcParams = default)
     {
         if (rpcParams.Receive.SenderClientId != OwnerClientId) return;
 

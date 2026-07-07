@@ -1,4 +1,3 @@
-using Unity.Collections;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -25,15 +24,21 @@ public class LobbyHandler : NetworkBehaviour
 
     private void Start()
     {
-        // Подписываемся на события подключения/отключения
-        NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnected;
-        NetworkManager.Singleton.OnClientDisconnectCallback += OnClientDisconnected;
+        
     }
 
     public override void OnNetworkSpawn()
     {
-        if (IsServer)
+        Debug.Log("Network spawn!");
+
+        if (IsServer || IsHost)
         {
+            // Подписываемся на события подключения/отключения
+            NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnected;
+            NetworkManager.Singleton.OnClientDisconnectCallback += OnClientDisconnected;
+
+            Debug.Log("I'm a server!!!");
+
             // Если это хост или сервер, инициализируем список
             // Можно добавить всех уже подключенных игроков
             foreach (var client in NetworkManager.Singleton.ConnectedClients)
@@ -44,9 +49,18 @@ public class LobbyHandler : NetworkBehaviour
         }
     }
 
+    public override void OnNetworkDespawn()
+    {
+        if (IsServer || IsHost)
+        {
+            NetworkManager.Singleton.OnClientConnectedCallback -= OnClientConnected;
+            NetworkManager.Singleton.OnClientDisconnectCallback -= OnClientDisconnected;
+        }
+    }
+
     private void OnClientConnected(ulong clientId)
     {
-        if (!IsServer) return;
+        if (IsClient) return;
 
         // Здесь нужно получить ник нового игрока, например, запросив его через RPC или из PlayerData.
         // Пока добавим заглушку.
@@ -66,7 +80,7 @@ public class LobbyHandler : NetworkBehaviour
 
     private void OnClientDisconnected(ulong clientId)
     {
-        if (!IsServer) return;
+        if (IsClient) return;
 
         // Удаляем игрока из списка
         for (int i = LobbyPlayers.Count - 1; i >= 0; i--)

@@ -11,14 +11,7 @@ using UnityEngine;
 [RequireComponent(typeof(NetworkManager))]
 public class ConnectionManager : MonoBehaviour
 {
-    private string _profileName;
-    private string _sessionName;
-    private int _maxPlayers = 10;
-    private ConnectionState _state = ConnectionState.Disconnected;
-    private ISession _session;
-
     private NetworkManager _networkManager;
-
 
     public event Action<ulong, ConnectionState> OnClientConnectionNotification;
 
