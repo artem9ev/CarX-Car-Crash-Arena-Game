@@ -30,6 +30,8 @@ public class MovingCar : MonoBehaviour
 
     [Header("Здоровье")]
     [SerializeField] private float maxHealth = 100f;
+    [SerializeField] private LayerMask HitMask;
+
     private float currentHealth;
     public float MaxHealth => maxHealth;
     [Header("Настройки урона от столкновений")]
@@ -62,9 +64,6 @@ public class MovingCar : MonoBehaviour
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
-        rb.centerOfMass = new Vector3(0, -1.5f, 0);
-        rb.angularDamping = 5f; // Исправлено: angularDamping → angularDrag
-
         currentHealth = maxHealth;
     }
 
@@ -78,7 +77,8 @@ public class MovingCar : MonoBehaviour
     // ===== НОВАЯ МЕХАНИКА: УРОН ОТ СТОЛКНОВЕНИЙ =====
     private void OnCollisionEnter(Collision collision)
     {
-        if (isDead) return;
+        //Debug.Log($"hit: {(collision.gameObject.layer & HitMask)}"); по надобности - раскоментить
+        if (isDead || (collision.gameObject.layer & HitMask) == 0) return;
 
         // Сила удара = относительная скорость * масса
         float impactForce = collision.relativeVelocity.magnitude * rb.mass;
@@ -157,13 +157,15 @@ public class MovingCar : MonoBehaviour
         {
             brake = brakeForce;
         }
-        // Твоя инвертированная логика сохранена!
+        // Инвертированная логика из-за минусов в motorTorque
         else if (Mathf.Abs(localVelocity) > 1f)
         {
+            // Машина едет ВПЕРЁД (localVelocity > 0), но мы хотим НАЗАД (verticalInput > 0)
             if (localVelocity > 0 && verticalInput > 0)
             {
                 brake = brakeForce * 0.2f;
             }
+            // Машина едет НАЗАД (localVelocity < 0), но мы хотим ВПЕРЁД (verticalInput < 0)
             else if (localVelocity < 0 && verticalInput < 0)
             {
                 brake = brakeForce * 0.2f;
@@ -191,10 +193,10 @@ public class MovingCar : MonoBehaviour
     // ===== НЕ ТРОГАТЬ ЭТУ ЧАСТЬ КОДА! =====
     private void UpdateWheelVisuals()
     {
-        UpdateSingleWheelVisual(frontLeftWheel, frontLeftTransform, 90);
-        UpdateSingleWheelVisual(frontRightWheel, frontRightTransform, -90);
-        UpdateSingleWheelVisual(rearLeftWheel, rearLeftTransform, 90);
-        UpdateSingleWheelVisual(rearRightWheel, rearRightTransform, -90);
+        UpdateSingleWheelVisual(frontLeftWheel, frontLeftTransform, 0);
+        UpdateSingleWheelVisual(frontRightWheel, frontRightTransform, -0);
+        UpdateSingleWheelVisual(rearLeftWheel, rearLeftTransform, 0);
+        UpdateSingleWheelVisual(rearRightWheel, rearRightTransform, -0);
     }
 
     private void UpdateSingleWheelVisual(WheelCollider collider, Transform wheelVisual, float rot)
@@ -203,7 +205,7 @@ public class MovingCar : MonoBehaviour
         Quaternion rotation;
         collider.GetWorldPose(out position, out rotation);
         wheelVisual.position = position;
-        wheelVisual.rotation = rotation * Quaternion.Euler(0, rot, 0);
+        wheelVisual.rotation = rotation;
     }
     // ===== КОНЕЦ НЕТРОГАЕМОЙ ЧАСТИ =====
 }
