@@ -1097,7 +1097,7 @@ MonoBehaviour:
   m_ChildAlignment: 0
   m_Spacing: 0
   m_ChildForceExpandWidth: 1
-  m_ChildForceExpandHeight: 1
+  m_ChildForceExpandHeight: 0
   m_ChildControlWidth: 0
   m_ChildControlHeight: 0
   m_ChildScaleWidth: 0
@@ -1389,7 +1389,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MainMenuPresenter
   _firstScreenView: {fileID: 878348421}
-  _lobbyView: {fileID: 0}
+  _lobbyView: {fileID: 689903881}
 --- !u!1 &1149735246
 GameObject:
   m_ObjectHideFlags: 0

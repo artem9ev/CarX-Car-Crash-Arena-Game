@@ -31,6 +31,7 @@ public class MainMenuPresenter : MonoBehaviour
     private void OnDestroy()
     {
         ConnectionManager.Instance.OnClientConnectionNotification -= OnClientConnectionNotification;
+        LobbyHandler.Instance.LobbyPlayers.OnListChanged -= OnLobbyListChanged;
     }
 
     private void OnClientConnectionNotification(ulong clientID, ConnectionManager.ConnectionState connectionState)
@@ -41,10 +42,12 @@ public class MainMenuPresenter : MonoBehaviour
 
     private void OnLobbyListChanged(NetworkListEvent<LobbyPlayerInfo> changeEvent)
     {
+        Debug.Log("LOBBY LIST CHANGED");
         switch (changeEvent.Type)
         {
             case NetworkListEvent<LobbyPlayerInfo>.EventType.Add:
-                _lobbyView.Add(changeEvent.Value.ClientId, changeEvent.Value.PlayerName.ToString());
+                Debug.Log($"Name: {changeEvent.Value.Nickname.ToString()}");
+                _lobbyView.Add(changeEvent.Value.ClientId, changeEvent.Value.Nickname.ToString());
                 break;
             case NetworkListEvent<LobbyPlayerInfo>.EventType.Insert:
                 break;

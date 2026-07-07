@@ -31,7 +31,7 @@ public class PlayerHandler : MonoBehaviour
     {
         PlayerPrefs.SetString("PlayerNickname", nick);
         PlayerPrefs.Save();
-        Debug.Log("Nickname saved");
+        _nickname = nick;
     }
 
     public string LoadPlayerNick()

@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 8578613225843040324}
   - component: {fileID: 878497499915027965}
   m_Layer: 5
-  m_Name: text_number
+  m_Name: text_id
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -325,7 +325,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b45a0f5b2e6908945b022de896f477ea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ConnectedPlayerGUI
-  _textNumber: {fileID: 878497499915027965}
+  _textID: {fileID: 878497499915027965}
   _textNickname: {fileID: 3125634810935011007}
 --- !u!114 &1200908322521063534
 MonoBehaviour:

@@ -5,12 +5,12 @@ using Unity.Collections;
 public struct LobbyPlayerInfo : INetworkSerializable, System.IEquatable<LobbyPlayerInfo>
 {
     public ulong ClientId;
-    public FixedString64Bytes PlayerName;
+    public FixedString64Bytes Nickname;
 
     // Реализация IEquatable<LobbyPlayerInfo>
     public bool Equals(LobbyPlayerInfo other)
     {
-        return ClientId == other.ClientId && PlayerName.Equals(other.PlayerName);
+        return ClientId == other.ClientId && Nickname.Equals(other.Nickname);
     }
 
     // Переопределение Equals и GetHashCode для корректной работы
@@ -21,14 +21,14 @@ public struct LobbyPlayerInfo : INetworkSerializable, System.IEquatable<LobbyPla
 
     public override int GetHashCode()
     {
-        return ClientId.GetHashCode() ^ PlayerName.GetHashCode();
+        return ClientId.GetHashCode() ^ Nickname.GetHashCode();
     }
 
     // Реализация INetworkSerializable
     public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
     {
         serializer.SerializeValue(ref ClientId);
-        serializer.SerializeValue(ref PlayerName);
+        serializer.SerializeValue(ref Nickname);
     }
 
     // Для удобства создания
@@ -37,7 +37,7 @@ public struct LobbyPlayerInfo : INetworkSerializable, System.IEquatable<LobbyPla
         return new LobbyPlayerInfo
         {
             ClientId = clientId,
-            PlayerName = new FixedString64Bytes(playerName)
+            Nickname = new FixedString64Bytes(playerName)
         };
     }
 }

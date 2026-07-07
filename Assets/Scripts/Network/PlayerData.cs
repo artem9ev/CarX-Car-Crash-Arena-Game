@@ -15,7 +15,7 @@ public class PlayerData : NetworkBehaviour
         if (IsOwner)
         {
             // Получаем ник из PlayerPrefs или генерируем
-            localPlayerName = PlayerPrefs.GetString("Username", $"Player_{OwnerClientId}");
+            localPlayerName = PlayerPrefs.GetString("Username", PlayerHandler.Instance.nickname);
 
             SetPlayerNameServerRpc(new FixedString64Bytes(localPlayerName));
 

@@ -18,13 +18,11 @@ public class LobbyHandler : NetworkBehaviour
             return;
         }
         _instance = this;
-
-        DontDestroyOnLoad(gameObject);
     }
 
     private void Start()
     {
-        
+        DontDestroyOnLoad(gameObject);
     }
 
     public override void OnNetworkSpawn()
@@ -60,7 +58,7 @@ public class LobbyHandler : NetworkBehaviour
 
     private void OnClientConnected(ulong clientId)
     {
-        if (IsClient) return;
+        if (!IsHost || !IsServer) return;
 
         // Здесь нужно получить ник нового игрока, например, запросив его через RPC или из PlayerData.
         // Пока добавим заглушку.
@@ -70,17 +68,17 @@ public class LobbyHandler : NetworkBehaviour
         {
             string nickname = client.PlayerObject.GetComponent<PlayerData>().PlayerName.Value.ToString();
 
-            LobbyPlayers.Add(new LobbyPlayerInfo { ClientId = clientId, PlayerName = nickname});
+            LobbyPlayers.Add(new LobbyPlayerInfo { ClientId = clientId, Nickname = nickname});
         }
         else 
         {
-            LobbyPlayers.Add(new LobbyPlayerInfo { ClientId = clientId, PlayerName = "Loading..." });
+            LobbyPlayers.Add(new LobbyPlayerInfo { ClientId = clientId, Nickname = "Loading..." });
         }
     }
 
     private void OnClientDisconnected(ulong clientId)
     {
-        if (IsClient) return;
+        if (!IsHost || !IsServer) return;
 
         // Удаляем игрока из списка
         for (int i = LobbyPlayers.Count - 1; i >= 0; i--)
