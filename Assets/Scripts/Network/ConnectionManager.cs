@@ -11,14 +11,7 @@ using UnityEngine;
 [RequireComponent(typeof(NetworkManager))]
 public class ConnectionManager : MonoBehaviour
 {
-    private string _profileName;
-    private string _sessionName;
-    private int _maxPlayers = 10;
-    private ConnectionState _state = ConnectionState.Disconnected;
-    private ISession _session;
-
     private NetworkManager _networkManager;
-
 
     public event Action<ulong, ConnectionState> OnClientConnectionNotification;
 
@@ -28,7 +21,6 @@ public class ConnectionManager : MonoBehaviour
         Connecting,
         Connected,
     }
-
 
     private static ConnectionManager _instance;
     public static ConnectionManager Instance => _instance;
@@ -41,13 +33,20 @@ public class ConnectionManager : MonoBehaviour
             return;
         }
         _instance = this;
-        _networkManager = GetComponent<NetworkManager>();
+
+        DontDestroyOnLoad(gameObject);
+    }
+
+    private void Start()
+    {
+        _networkManager = NetworkManager.Singleton;
 
         _networkManager.OnServerStarted += OnServerStart;
         _networkManager.OnClientConnectedCallback += OnClientConnectedCallback;
         _networkManager.OnClientDisconnectCallback += OnClientDisconnectCallback;
-        //_networkManager.OnSessionOwnerPromoted += OnSessionOwnerPromoted;
-        //await UnityServices.InitializeAsync();
+
+        var utp = _networkManager.GetComponent<UnityTransport>();
+        utp.SetConnectionData("127.0.0.1", 7778 );
     }
 
     private void OnDestroy()
@@ -55,15 +54,6 @@ public class ConnectionManager : MonoBehaviour
         _networkManager.OnServerStarted -= OnServerStart;
         _networkManager.OnClientConnectedCallback -= OnClientConnectedCallback;
         _networkManager.OnClientDisconnectCallback -= OnClientDisconnectCallback;
-    }
-
-    private void Start()
-    {
-        var utp = _networkManager.GetComponent<UnityTransport>();
-        utp.SetConnectionData(
-            "127.0.0.1",
-            (ushort)7778
-        );
     }
 
     private void OnServerStart()
@@ -96,8 +86,8 @@ public class ConnectionManager : MonoBehaviour
     public void Disconnect()
     {
         _networkManager.Shutdown();
-        // At this point we must use the UnityEngine's SceneManager to switch back to the MainMenu
-        UnityEngine.SceneManagement.SceneManager.LoadScene("MainMenu");
+
+        SceneLoader.Instance.LoadMainMenu();
     }
 
     public void DisconnectPlayer(NetworkObject player)

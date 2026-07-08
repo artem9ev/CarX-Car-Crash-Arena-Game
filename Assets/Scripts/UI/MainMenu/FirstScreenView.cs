@@ -13,8 +13,10 @@ public class FirstScreenView : MonoBehaviour, IFirstScreenView
     [Header("Nickname Warnings")]
     [SerializeField] private string _warningNicknameSize = "Nick name lenghth should be > 3 and < 21";
 
+    public UnityAction<string> onNicknameChange;
     public UnityAction onConnectLobby;
     public UnityAction onCreateLobby;
+    public UnityAction onSaveNickname;
 
     public string NickName => _nicknameField.text;
 
@@ -45,6 +47,7 @@ public class FirstScreenView : MonoBehaviour, IFirstScreenView
         }
         else 
         {
+            onNicknameChange?.Invoke(_nicknameField.text);
             SetNetworkButtonsInteractable(true);
         }
     }
@@ -55,13 +58,30 @@ public class FirstScreenView : MonoBehaviour, IFirstScreenView
         _buttonConnectLobby.interactable = value;
     }
 
+    private void SaveNickName()
+    {
+        onSaveNickname?.Invoke();
+    }
+
+    public void SetNickName(string value)
+    {
+        if (string.IsNullOrEmpty(value))
+            return;
+
+        _nicknameField.text = value;
+    }
+
     public void CreateLobby()
     {
+        SaveNickName();
         ConnectionManager.Instance.CreateLobby();
     }
 
     public void ConnectToLobby()
     {
+        SaveNickName();
         ConnectionManager.Instance.ConnectLobby();
     }
+
+    
 }
