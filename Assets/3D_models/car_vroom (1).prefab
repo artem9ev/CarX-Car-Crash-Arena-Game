@@ -11949,6 +11949,14 @@ MonoBehaviour:
   - {fileID: 2534414697994365447}
   minSpeedForDust: 2
   dustIntensity: 1
+  impactEffectPrefab: {fileID: 4749980201479958301, guid: a4cbca814b838a5458720cd2f8d6a501, type: 3}
+  minImpactForce: 5
+  impactIntensityMultiplier: 0.5
+  rotateByNormal: 1
+  smokeEffect: {fileID: 0}
+  smokeThreshold: 0.5
+  smokeIntensity: 1
+  explosionEffectPrefab: {fileID: 0}
 --- !u!1 &953214912917260551
 GameObject:
   m_ObjectHideFlags: 0
