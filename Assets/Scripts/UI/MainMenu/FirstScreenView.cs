@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 
-public class FirstScreenView : MonoBehaviour, IFirstScreenView
+public class FirstScreenView : BaseViewUI, IFirstScreenView
 {
     [Header("UI Elements")]
     [SerializeField] private TMP_InputField _nicknameField;
@@ -74,14 +74,20 @@ public class FirstScreenView : MonoBehaviour, IFirstScreenView
     public void CreateLobby()
     {
         SaveNickName();
-        ConnectionManager.Instance.CreateLobby();
+        ActivateConnectionButtons(false);
+        onCreateLobby?.Invoke();
     }
 
     public void ConnectToLobby()
     {
         SaveNickName();
-        ConnectionManager.Instance.ConnectLobby();
+        ActivateConnectionButtons(false);
+        onConnectLobby?.Invoke();
     }
 
-    
+    public void ActivateConnectionButtons(bool value)
+    {
+        _buttonCreateLobby.interactable = value;
+        _buttonConnectLobby.interactable = value;
+    }
 }

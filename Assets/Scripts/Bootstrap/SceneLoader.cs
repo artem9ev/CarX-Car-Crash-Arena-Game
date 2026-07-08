@@ -91,11 +91,11 @@ public class SceneLoader : MonoBehaviour
 
         if (SceneManager.GetSceneByName("Bootstrap").isLoaded)
         {
-            SceneManager.UnloadSceneAsync("Bootstrap");
+            //SceneManager.UnloadSceneAsync("Bootstrap");
         }
         if (SceneManager.GetSceneByName(_uiName).isLoaded)
         {
-            SceneManager.UnloadSceneAsync(_uiName);
+            //SceneManager.UnloadSceneAsync(_uiName);
         }
 
         //_loadRoutine = StartCoroutine(LoadSceneAsync(_lobbyName));

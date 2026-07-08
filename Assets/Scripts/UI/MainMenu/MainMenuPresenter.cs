@@ -21,11 +21,15 @@ public class MainMenuPresenter : MonoBehaviour
     private void OnEnable()
     {
         _firstScreenView.onSaveNickname += SaveNickName;
+        _firstScreenView.onCreateLobby += ButtonCreateLobbyClick;
+        _firstScreenView.onConnectLobby += ButtonConnectLobbyClick;
     }
 
     private void OnDisable()
     {
         _firstScreenView.onSaveNickname -= SaveNickName;
+        _firstScreenView.onCreateLobby -= ButtonCreateLobbyClick;
+        _firstScreenView.onConnectLobby -= ButtonConnectLobbyClick;
     }
 
     private void OnDestroy()
@@ -33,9 +37,34 @@ public class MainMenuPresenter : MonoBehaviour
         ConnectionManager.Instance.OnClientConnectionNotification -= OnClientConnectionNotification;
     }
 
+    private void ActivateFirstScreen()
+    {
+        _firstScreenView.Activate();
+        _lobbyView.Deactivate();
+    }
+
+    private void ActivateLobbyScreen()
+    {
+        _firstScreenView.Deactivate();
+        _lobbyView.Activate();
+    }
+
     private void OnClientConnectionNotification(ulong clientID, ConnectionManager.ConnectionState connectionState)
     {
         Debug.Log($"[Client Notification] id: {clientID, 16} | status: {connectionState}");
+
+        switch (connectionState)
+        {
+            case ConnectionManager.ConnectionState.Disconnected:
+                _firstScreenView.ActivateConnectionButtons(true);
+                break;
+            case ConnectionManager.ConnectionState.Connecting:
+                
+                break;
+            case ConnectionManager.ConnectionState.Connected:
+                ActivateLobbyScreen();
+                break;
+        }
 
         StartCoroutine(UpdatePlayersList());
     }    
@@ -46,7 +75,7 @@ public class MainMenuPresenter : MonoBehaviour
 
         _lobbyView.Clear();
 
-        Debug.Log("[CONNECTES CLIENTS]");
+        Debug.Log("[CONNECTED CLIENTS: ]");
 
         foreach (var client in NetworkManager.Singleton.ConnectedClients)
         {
@@ -62,14 +91,25 @@ public class MainMenuPresenter : MonoBehaviour
         }
     }
 
-
-    public void SetNickname(string value)
+    private void ButtonConnectLobbyClick()
     {
-        _firstScreenView.SetNickName(value);
+        ConnectionManager.Instance.ConnectLobby();
+    }
+
+    private void ButtonCreateLobbyClick()
+    {
+        ConnectionManager.Instance.CreateLobby();
     }
 
     private void SaveNickName()
     {
         PlayerHandler.Instance.SavePlayerNick(_firstScreenView.NickName);
     }
+
+    public void SetNickname(string value)
+    {
+        _firstScreenView.SetNickName(value);
+    }
+
+
 }

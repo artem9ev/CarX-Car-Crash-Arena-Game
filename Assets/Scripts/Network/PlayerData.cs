@@ -5,6 +5,8 @@ using System.Collections;
 
 public class PlayerData : NetworkBehaviour
 {
+    [SerializeField] private MovingCar _defaultCar;
+
     public NetworkVariable<FixedString64Bytes> PlayerName = new NetworkVariable<FixedString64Bytes>("", NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
 
     private string localPlayerName;
@@ -16,6 +18,13 @@ public class PlayerData : NetworkBehaviour
             localPlayerName = PlayerPrefs.GetString("Username", PlayerHandler.Instance.nickname);
 
             SetPlayerNameServerRpc(new FixedString64Bytes(localPlayerName));;
+        }
+
+        if (IsServer) 
+        {
+            NetworkObject car = Instantiate(_defaultCar).GetComponent<NetworkObject>();
+
+            car.SpawnWithOwnership(OwnerClientId);
         }
     }
 
