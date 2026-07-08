@@ -10,6 +10,17 @@ public class LobbyView : MonoBehaviour
 
     private List<ConnectedPlayerGUI> _playersGUIs = new List<ConnectedPlayerGUI>();
 
+    public void UpdatePlayerNickname(ulong clientID, string nickname)
+    {
+        foreach (var player in _playersGUIs) 
+        {
+            if (player.ClientID == clientID)
+            {
+                player.SetNickname(nickname);
+            }
+        }
+    }
+
     public void Add(ulong clientID, string nickname)
     {
         ConnectedPlayerGUI playerGUI = Instantiate(_playerPrefabGUI, _root.transform);

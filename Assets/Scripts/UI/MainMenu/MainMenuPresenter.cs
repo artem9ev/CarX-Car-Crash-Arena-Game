@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -14,12 +15,11 @@ public class MainMenuPresenter : MonoBehaviour
         SetNickname(nickname);
 
         ConnectionManager.Instance.OnClientConnectionNotification += OnClientConnectionNotification;
-        LobbyHandler.Instance.LobbyPlayers.OnListChanged += OnLobbyListChanged;
     }
+
 
     private void OnEnable()
     {
-
         _firstScreenView.onSaveNickname += SaveNickName;
     }
 
@@ -31,42 +31,37 @@ public class MainMenuPresenter : MonoBehaviour
     private void OnDestroy()
     {
         ConnectionManager.Instance.OnClientConnectionNotification -= OnClientConnectionNotification;
-        LobbyHandler.Instance.LobbyPlayers.OnListChanged -= OnLobbyListChanged;
     }
 
     private void OnClientConnectionNotification(ulong clientID, ConnectionManager.ConnectionState connectionState)
     {
         Debug.Log($"[Client Notification] id: {clientID, 16} | status: {connectionState}");
-    }
 
-
-    private void OnLobbyListChanged(NetworkListEvent<LobbyPlayerInfo> changeEvent)
+        StartCoroutine(UpdatePlayersList());
+    }    
+    
+    private IEnumerator UpdatePlayersList()
     {
-        Debug.Log("LOBBY LIST CHANGED");
-        switch (changeEvent.Type)
+        yield return new WaitForSeconds(0.2f);
+
+        _lobbyView.Clear();
+
+        Debug.Log("[CONNECTES CLIENTS]");
+
+        foreach (var client in NetworkManager.Singleton.ConnectedClients)
         {
-            case NetworkListEvent<LobbyPlayerInfo>.EventType.Add:
-                Debug.Log($"Name: {changeEvent.Value.Nickname.ToString()}");
-                _lobbyView.Add(changeEvent.Value.ClientId, changeEvent.Value.Nickname.ToString());
-                break;
-            case NetworkListEvent<LobbyPlayerInfo>.EventType.Insert:
-                break;
-            case NetworkListEvent<LobbyPlayerInfo>.EventType.Remove:
-                _lobbyView.Remove(changeEvent.Value.ClientId);
-                break;
-            case NetworkListEvent<LobbyPlayerInfo>.EventType.RemoveAt:
-                break;
-            case NetworkListEvent<LobbyPlayerInfo>.EventType.Value:
-                break;
-            case NetworkListEvent<LobbyPlayerInfo>.EventType.Clear:
-                _lobbyView.Clear();
-                break;
-            case NetworkListEvent<LobbyPlayerInfo>.EventType.Full:
-                break;
-            default:
-                break;
+            Debug.Log($"Connected client: {client.Key}");
+            if (!client.Value.PlayerObject.TryGetComponent(out PlayerData data))
+            {
+                continue;
+            }
+
+            string nickname = data.PlayerName.Value.ToString();
+
+            _lobbyView.Add(client.Key, nickname);
         }
     }
+
 
     public void SetNickname(string value)
     {
