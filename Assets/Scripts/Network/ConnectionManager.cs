@@ -1,0 +1,108 @@
+using System;
+using System.Data;
+using System.Threading.Tasks;
+using Unity.Netcode;
+using Unity.Netcode.Transports.UTP;
+using Unity.Services.Authentication;
+using Unity.Services.Core;
+using Unity.Services.Multiplayer;
+using UnityEngine;
+
+[RequireComponent(typeof(NetworkManager))]
+public class ConnectionManager : MonoBehaviour
+{
+    private string _profileName;
+    private string _sessionName;
+    private int _maxPlayers = 10;
+    private ConnectionState _state = ConnectionState.Disconnected;
+    private ISession _session;
+
+    private NetworkManager _networkManager;
+
+
+    public event Action<ulong, ConnectionState> OnClientConnectionNotification;
+
+    public enum ConnectionState
+    {
+        Disconnected,
+        Connecting,
+        Connected,
+    }
+
+
+    private static ConnectionManager _instance;
+    public static ConnectionManager Instance => _instance;
+
+    private void Awake()
+    {
+        if (_instance != null)
+        {
+            Destroy(gameObject);
+            return;
+        }
+        _instance = this;
+        _networkManager = GetComponent<NetworkManager>();
+
+        _networkManager.OnServerStarted += OnServerStart;
+        _networkManager.OnClientConnectedCallback += OnClientConnectedCallback;
+        _networkManager.OnClientDisconnectCallback += OnClientDisconnectCallback;
+        //_networkManager.OnSessionOwnerPromoted += OnSessionOwnerPromoted;
+        //await UnityServices.InitializeAsync();
+    }
+
+    private void OnDestroy()
+    {
+        _networkManager.OnServerStarted -= OnServerStart;
+        _networkManager.OnClientConnectedCallback -= OnClientConnectedCallback;
+        _networkManager.OnClientDisconnectCallback -= OnClientDisconnectCallback;
+    }
+
+    private void Start()
+    {
+        var utp = _networkManager.GetComponent<UnityTransport>();
+        utp.SetConnectionData(
+            "127.0.0.1",
+            (ushort)7778
+        );
+    }
+
+    private void OnServerStart()
+    {
+        Debug.Log("Server Start");
+    }
+
+    private void OnClientConnectedCallback(ulong clientId)
+    {
+        OnClientConnectionNotification?.Invoke(clientId, ConnectionState.Connected);
+    }
+
+    private void OnClientDisconnectCallback(ulong clientId)
+    {
+        OnClientConnectionNotification?.Invoke(clientId, ConnectionState.Disconnected);
+    }
+
+    public void CreateLobby()
+    {
+        _networkManager.StartHost();
+
+        SceneLoader.Instance.LoadLobby();
+    }
+
+    public void ConnectLobby()
+    {
+        _networkManager.StartClient();
+    }
+
+    public void Disconnect()
+    {
+        _networkManager.Shutdown();
+        // At this point we must use the UnityEngine's SceneManager to switch back to the MainMenu
+        UnityEngine.SceneManagement.SceneManager.LoadScene("MainMenu");
+    }
+
+    public void DisconnectPlayer(NetworkObject player)
+    {
+        // Note: If a client invokes this method, it will throw an exception.
+        _networkManager.DisconnectClient(player.OwnerClientId);
+    }
+}
