@@ -14,9 +14,9 @@ public class CarSpawner : MonoBehaviour
     [SerializeField] private Vector3 spawnAreaSize = new Vector3(50, 0, 50);
 
     [Header("Настройки камеры игрока")]
-    [SerializeField] private Vector3 playerCameraOffset = new Vector3(0, 2, -5);
+    [SerializeField] private Vector3 playerCameraOffset = new Vector3(0, 1, -1);
     [SerializeField] private float playerCameraAngle = 15f;
-    [SerializeField] private float cameraRange = 5f;
+    [SerializeField] private float cameraRange = 2f;
     [SerializeField] private float cameraAcceleration = 3f;
     [SerializeField] private LayerMask cameraHitMask;
 

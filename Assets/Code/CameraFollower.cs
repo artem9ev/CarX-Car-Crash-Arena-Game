@@ -7,9 +7,9 @@ public class CameraFollower : MonoBehaviour
     [Header("Parameters")]
     [SerializeField] private float m_acceleration = 3f;
     [SerializeField] private float m_angle = 15f;
-    [SerializeField] private float m_range = 5f;
+    [SerializeField] private float m_range = 3f;
     [Space]
-    [SerializeField] private Vector3 m_targetOffset = Vector3.zero;
+    [SerializeField] private Vector3 m_targetOffset = new Vector3(0, 1, -1);
     [Space]
     [SerializeField] private LayerMask m_cameraHitMask;
 
