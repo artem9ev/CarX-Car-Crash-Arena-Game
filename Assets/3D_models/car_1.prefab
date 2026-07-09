@@ -17017,6 +17017,7 @@ GameObject:
   - component: {fileID: 7943798203987155602}
   - component: {fileID: 7433010135714416950}
   - component: {fileID: 5084873408733236367}
+  - component: {fileID: 9009768526499060327}
   m_Layer: 3
   m_Name: car_1
   m_TagString: Untagged
@@ -17097,8 +17098,6 @@ MonoBehaviour:
   frontRightTransform: {fileID: -324938149649591883}
   rearLeftTransform: {fileID: 2261459007979518510}
   rearRightTransform: {fileID: -5816889912940413735}
-  accelerationSensitivity: 1
-  steeringSensitivity: 1
 --- !u!114 &2280500443456318668
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -17264,6 +17263,20 @@ MonoBehaviour:
   collisionDamageMultiplier: 0.0005
   minCollisionDamage: 1
   destroyDelay: 3
+--- !u!114 &9009768526499060327
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 919132149155446097}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8f464e96514d27f4f9f817c044746f7b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerInput
+  steeringSensitivity: 1
+  accelerationSensitivity: 1
 --- !u!1 &1005787171171632615
 GameObject:
   m_ObjectHideFlags: 0

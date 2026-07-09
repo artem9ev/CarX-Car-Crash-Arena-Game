@@ -1,125 +1,112 @@
 using UnityEngine;
 
-public class SmartBotAI : MonoBehaviour
+[RequireComponent(typeof(MovingCar))]
+public class BotAI : MonoBehaviour
 {
-    [Header("Настройки")]
-    [SerializeField] private float speed = 20f;
-    [SerializeField] private float turnSpeed = 100f;
+    [Header("Настройки AI")]
+    [SerializeField] private Transform target;
     [SerializeField] private float detectionRange = 15f;
-    [SerializeField] private float obstacleAvoidanceRange = 5f;
+    [SerializeField] private float stopDistance = 4f;
+    [SerializeField] private float reactionTime = 1f;
+    [SerializeField] private float updateTargetInterval = 1f;
+
+    [Header("Настройки движения")]
+    [SerializeField] private float turnSpeed = 50f;
 
     [Header("Raycasting")]
     [SerializeField] private LayerMask obstacleLayer;
     [SerializeField] private float rayLength = 5f;
+    [SerializeField] private float avoidanceForce = 2f;
 
-    [Header("Ссылки")]
-    [SerializeField] private Rigidbody rb;
-    [SerializeField] private Transform target;
-
+    private MovingCar movingCar;
+    private float timer;
+    private float targetUpdateTimer;
+    private bool hasTarget = false;
     private Vector3 currentDirection;
-    private bool isAvoidingObstacle = false;
 
     private void Start()
     {
-        if (rb == null)
-            rb = GetComponent<Rigidbody>();
-
+        movingCar = GetComponent<MovingCar>();
+        timer = reactionTime;
+        targetUpdateTimer = updateTargetInterval;
         currentDirection = transform.forward;
+        FindPlayer();
     }
 
     private void Update()
     {
-        FindPlayer();
+        targetUpdateTimer -= Time.deltaTime;
+        if (targetUpdateTimer <= 0)
+        {
+            FindPlayer();
+            targetUpdateTimer = updateTargetInterval;
+        }
+        timer -= Time.deltaTime;
     }
 
     private void FixedUpdate()
     {
-        if (target != null)
+        if (target != null && hasTarget)
         {
-            ChasePlayer();
+            ChaseTarget();
         }
         else
         {
             Patrol();
         }
-
-        AvoidObstacles();
     }
 
-    // ===== ПОИСК ИГРОКА =====
     private void FindPlayer()
     {
-        if (target == null)
+        GameObject player = GameObject.FindGameObjectWithTag("Player");
+        if (player != null)
         {
-            GameObject player = GameObject.FindGameObjectWithTag("Player");
-            if (player != null)
+            float distance = Vector3.Distance(transform.position, player.transform.position);
+            if (distance <= detectionRange)
             {
-                float distance = Vector3.Distance(transform.position, player.transform.position);
-                if (distance <= detectionRange)
-                {
-                    target = player.transform;
-                }
+                target = player.transform;
+                hasTarget = true;
             }
         }
     }
 
-    // ===== ПРЕСЛЕДОВАНИЕ =====
-    private void ChasePlayer()
+    private void ChaseTarget()
     {
         if (target == null) return;
 
         Vector3 directionToTarget = (target.position - transform.position).normalized;
-        float distance = Vector3.Distance(transform.position, target.position);
+        float distanceToTarget = Vector3.Distance(transform.position, target.position);
 
-        // Поворот к игроку
+        // Поворот к цели
         Quaternion targetRotation = Quaternion.LookRotation(directionToTarget);
         transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, turnSpeed * Time.fixedDeltaTime * 0.01f);
 
-        // Движение
-        if (distance > 3f)
+        // Управление через MovingCar
+        if (distanceToTarget > stopDistance)
         {
-            rb.linearVelocity = transform.forward * speed;
+            movingCar.SetInputs(-0.8f, 0f);  // Газ вперёд
         }
         else
         {
-            rb.linearVelocity = Vector3.zero;
+            movingCar.SetInputs(0.3f, 0f);  // Сдать назад
         }
+
+        currentDirection = directionToTarget;
     }
 
-    // ===== ПАТРУЛИРОВАНИЕ =====
     private void Patrol()
     {
-        rb.linearVelocity = currentDirection * speed * 0.5f;
-    }
-
-    // ===== УКЛОНЕНИЕ ОТ ПРЕПЯТСТВИЙ =====
-    private void AvoidObstacles()
-    {
-        Vector3[] rayDirections = new Vector3[]
+        if (timer <= 0)
         {
-            transform.forward,
-            transform.forward * 0.7f + transform.right * 0.7f,
-            transform.forward * 0.7f - transform.right * 0.7f
-        };
-
-        foreach (var dir in rayDirections)
-        {
-            if (Physics.Raycast(transform.position, dir.normalized, out RaycastHit hit, rayLength, obstacleLayer))
-            {
-                Debug.DrawRay(transform.position, dir.normalized * rayLength, Color.red);
-
-                // Уворачиваемся
-                currentDirection = Vector3.Reflect(dir, hit.normal).normalized;
-                isAvoidingObstacle = true;
-                return;
-            }
-            else
-            {
-                Debug.DrawRay(transform.position, dir.normalized * rayLength, Color.green);
-            }
+            float randomAngle = Random.Range(-90f, 90f);
+            currentDirection = Quaternion.Euler(0, randomAngle, 0) * transform.forward;
+            timer = reactionTime + Random.Range(0f, 1f);
         }
 
-        isAvoidingObstacle = false;
+        Quaternion targetRotation = Quaternion.LookRotation(currentDirection);
+        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, turnSpeed * Time.fixedDeltaTime * 0.01f);
+
+        movingCar.SetInputs(0.5f, 0f);  // Медленное движение
     }
 
     private void OnDrawGizmosSelected()

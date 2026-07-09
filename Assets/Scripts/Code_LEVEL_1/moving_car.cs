@@ -24,14 +24,11 @@ public class MovingCar : MonoBehaviour
     [SerializeField] private Transform rearLeftTransform;
     [SerializeField] private Transform rearRightTransform;
 
-    [Header("Настройки управления")]
-    [SerializeField] private float accelerationSensitivity = 1f;
-    [SerializeField] private float steeringSensitivity = 1f;
-
     private float currentSteerAngle;
     private float currentMotorForce;
     private Rigidbody rb;
 
+    // ← Внутренние переменные для ввода (заполняются извне)
     private float horizontalInput;
     private float verticalInput;
     private bool isBraking;
@@ -55,11 +52,12 @@ public class MovingCar : MonoBehaviour
         rb.angularDamping = 5f;
     }
 
-    private void Update()
+    // ===== ПУБЛИЧНЫЙ МЕТОД ДЛЯ УПРАВЛЕНИЯ (из PlayerInput или BotAI) =====
+    public void SetInputs(float vertical, float horizontal, bool brake = false)
     {
-        horizontalInput = Input.GetAxis("Horizontal") * steeringSensitivity;
-        verticalInput = Input.GetAxis("Vertical") * accelerationSensitivity;
-        isBraking = Input.GetKey(KeyCode.Space);
+        verticalInput = vertical;
+        horizontalInput = horizontal;
+        isBraking = brake;
     }
 
     private void FixedUpdate()
