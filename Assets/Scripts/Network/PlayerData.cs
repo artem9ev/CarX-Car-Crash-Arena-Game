@@ -15,7 +15,7 @@ public class PlayerData : NetworkBehaviour
     {
         if (IsOwner)
         {
-            localPlayerName = PlayerPrefs.GetString("Username", PlayerHandler.Instance.nickname);
+            localPlayerName = PlayerPrefs.GetString("Username", PlayerLocalSavesHandler.Instance.nickname);
 
             SetPlayerNameServerRpc(new FixedString64Bytes(localPlayerName));;
         }

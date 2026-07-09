@@ -10,7 +10,7 @@ public class MainMenuPresenter : MonoBehaviour
 
     private void Start()
     {
-        string nickname = PlayerHandler.Instance.LoadPlayerNick();
+        string nickname = PlayerLocalSavesHandler.Instance.LoadPlayerNick();
 
         SetNickname(nickname);
 
@@ -103,7 +103,7 @@ public class MainMenuPresenter : MonoBehaviour
 
     private void SaveNickName()
     {
-        PlayerHandler.Instance.SavePlayerNick(_firstScreenView.NickName);
+        PlayerLocalSavesHandler.Instance.SavePlayerNick(_firstScreenView.NickName);
     }
 
     public void SetNickname(string value)

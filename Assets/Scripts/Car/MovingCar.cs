@@ -97,6 +97,9 @@ public class MovingCar : NetworkBehaviour
     // ===== УРОН ОТ СТОЛКНОВЕНИЙ =====
     private void OnCollisionEnter(Collision collision)
     {
+
+
+
         if (!IsServer) return;
 
         double scheduledTime = AudioSettings.dspTime - 0.2f;
