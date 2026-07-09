@@ -10782,7 +10782,7 @@ Transform:
   m_GameObject: {fileID: 1050820689388365119}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.75, y: 0.46072757, z: -1.162601}
+  m_LocalPosition: {x: 0.397, y: 0.616, z: -1.414}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -10853,7 +10853,7 @@ Transform:
   m_GameObject: {fileID: 1181554445189273109}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.75, y: 0.46072757, z: 0.85861325}
+  m_LocalPosition: {x: 0.3970003, y: 0.616, z: 0.6072142}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -22249,7 +22249,7 @@ GameObject:
   - component: {fileID: 3910737832342774556}
   - component: {fileID: 979406004585213735}
   - component: {fileID: 7614238139777178389}
-  - component: {fileID: 3847397959175861011}
+  - component: {fileID: 2525437386304621639}
   m_Layer: 7
   m_Name: Canvas
   m_TagString: Untagged
@@ -22342,7 +22342,7 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
---- !u!114 &3847397959175861011
+--- !u!114 &2525437386304621639
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -22351,19 +22351,19 @@ MonoBehaviour:
   m_GameObject: {fileID: 2887039234820675453}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 943ea49b3a5940b449f6fa291a53c29f, type: 3}
+  m_Script: {fileID: 11500000, guid: 1be5b1bc414eb214bb49e848efdc38ef, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::HealthBar
+  m_EditorClassIdentifier: Assembly-CSharp::HealthBar_bot
   fill: {fileID: 8333524997883100221}
   mainCamera: {fileID: 0}
   hpText: {fileID: 1082737690047275180}
-  vehicleHealth: {fileID: 0}
+  Bot_hp: {fileID: 7266550095433849588}
   smoothSpeed: 5
   colorGradient:
     serializedVersion: 2
-    key0: {r: 1, g: 0.03137255, b: 0, a: 1}
-    key1: {r: 1, g: 0.92473805, b: 0.0047169924, a: 1}
-    key2: {r: 0, g: 1, b: 0.00427413, a: 0}
+    key0: {r: 1, g: 0, b: 0, a: 1}
+    key1: {r: 1, g: 0.57236767, b: 0, a: 1}
+    key2: {r: 0.08220887, g: 1, b: 0, a: 0}
     key3: {r: 0, g: 0, b: 0, a: 0}
     key4: {r: 0, g: 0, b: 0, a: 0}
     key5: {r: 0, g: 0, b: 0, a: 0}
@@ -28101,7 +28101,7 @@ Transform:
   m_GameObject: {fileID: 3583914451649850637}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.75, y: 0.46072757, z: 0.85861325}
+  m_LocalPosition: {x: -1.1029997, y: 0.616, z: 0.6072142}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -29019,7 +29019,7 @@ Transform:
   m_GameObject: {fileID: 4643883706161177428}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.75, y: 0.46072757, z: -1.162601}
+  m_LocalPosition: {x: -1.1029997, y: 0.616, z: -1.414}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -36243,6 +36243,7 @@ GameObject:
   - component: {fileID: 3114620177830293250}
   - component: {fileID: 4706904773536486484}
   - component: {fileID: 7761745760895458926}
+  - component: {fileID: 7266550095433849588}
   m_Layer: 7
   m_Name: car_bot
   m_TagString: Untagged
@@ -36596,6 +36597,22 @@ MonoBehaviour:
   wheelDustEffects: []
   minSpeedForDust: 2
   dustIntensityMultiplier: 0.5
+--- !u!114 &7266550095433849588
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7643300659757338606}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5ab43d89732839345b30ce92be572155, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Bot_hp
+  maxHealth: 100
+  collisionDamageMultiplier: 0.0005
+  minCollisionDamage: 1
+  destroyDelay: 3
 --- !u!1 &7740938753866343900
 GameObject:
   m_ObjectHideFlags: 0

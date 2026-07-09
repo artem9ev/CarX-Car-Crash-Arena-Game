@@ -35704,7 +35704,7 @@ MonoBehaviour:
   fill: {fileID: 3694597212375230079}
   mainCamera: {fileID: 0}
   hpText: {fileID: 667431482795083794}
-  vehicleHealth: {fileID: 0}
+  vehicleHealth: {fileID: 1675215704071172687}
   smoothSpeed: 5
   colorGradient:
     serializedVersion: 2
@@ -35752,6 +35752,7 @@ GameObject:
   - component: {fileID: 686277926517070426}
   - component: {fileID: 8395875272797007045}
   - component: {fileID: 3080615326168750693}
+  - component: {fileID: 1675215704071172687}
   m_Layer: 3
   m_Name: car_1
   m_TagString: Untagged
@@ -35819,7 +35820,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 990975425
+  GlobalObjectIdHash: 2612427593
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -35966,6 +35967,22 @@ MonoBehaviour:
   UseRigidBodyForMotion: 0
   AutoUpdateKinematicState: 1
   AutoSetKinematicOnDespawn: 1
+--- !u!114 &1675215704071172687
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 919132149155446097}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6bafe84bccb4f6143bd58e9a47b06847, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::VehicleHealth
+  maxHealth: 100
+  collisionDamageMultiplier: 0.0005
+  minCollisionDamage: 1
+  destroyDelay: 3
 --- !u!1 &1005787171171632615
 GameObject:
   m_ObjectHideFlags: 0

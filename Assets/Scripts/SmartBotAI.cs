@@ -54,15 +54,13 @@ public class BotAI : NetworkBehaviour
     private void FixedUpdate()
     {
         if (!IsServer) return;
-
-        Debug.Log($"target {targetPlayer != null}");
         if (targetPlayer != null)
         {
             ChaseTarget();
         }
         else
         {
-            //Patrol();
+            Patrol();
             FindPlayer();
         }
     }
@@ -103,7 +101,6 @@ public class BotAI : NetworkBehaviour
         if (distanceToTarget > stopDistance)
         {
             movingCar.OnGas(-0.8f);
-            Debug.Log("gas");
         }
         else
         {

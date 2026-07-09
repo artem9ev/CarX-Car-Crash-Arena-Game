@@ -91,31 +91,6 @@ public class MovingCar : NetworkBehaviour
         currentHealth = maxHealth;
     }
 
-    // ===== УРОН ОТ СТОЛКНОВЕНИЙ =====
-    private void OnCollisionEnter(Collision collision)
-    {
-        if (!IsServer) return;
-
-        double scheduledTime = AudioSettings.dspTime - 0.2f;
-        if (collision.impulse.magnitude > m_hardHitImpulse && m_hardHitAudio != null)
-        {
-            m_hardHitAudio.PlayScheduled(scheduledTime);
-        }
-        else if (collision.impulse.magnitude > m_softHitImpulse && m_softHitAudio != null)
-        {
-            m_softHitAudio.PlayScheduled(scheduledTime);
-        }
-
-        if (isDead) return;
-
-        float impactForce = collision.relativeVelocity.magnitude * _rb.mass;
-
-        if (impactForce < minCollisionDamage) return;
-
-        float damage = impactForce * collisionDamageMultiplier;
-        TakeDamage(damage);
-    }
-
     private void Update()
     {
         if (!IsServer) return;
@@ -164,36 +139,6 @@ public class MovingCar : NetworkBehaviour
 
         ApplyDownforce();
         ApplyLinearDamping();
-    }
-
-    private void TakeDamage(float damage)
-    {
-        currentHealth -= damage;
-        currentHealth = Mathf.Max(0, currentHealth);
-
-        Debug.Log($"💥 Урон: {damage:F1} | HP: {currentHealth:F1}/{maxHealth}");
-
-        OnHealthChanged?.Invoke(currentHealth);
-
-        if (currentHealth <= 0 && !isDead)
-        {
-            Die();
-        }
-    }
-
-    private void Die()
-    {
-        isDead = true;
-        Debug.Log("☠️ Машина уничтожена!");
-        OnDeath?.Invoke();
-
-        // Отключаем мотор и тормоза
-        WheelBL.motorTorque = 0;
-        WheelBR.motorTorque = 0;
-        WheelBL.brakeTorque = brakeTorque;
-        WheelBR.brakeTorque = brakeTorque;
-        WheelFL.brakeTorque = brakeTorque;
-        WheelFR.brakeTorque = brakeTorque;
     }
 
     private void RotateInAir()
