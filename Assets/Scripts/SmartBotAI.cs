@@ -1,10 +1,10 @@
+using Unity.Netcode;
 using UnityEngine;
 
 [RequireComponent(typeof(MovingCar))]
-public class BotAI : MonoBehaviour
+public class BotAI : NetworkBehaviour
 {
     [Header("Настройки AI")]
-    [SerializeField] private Transform target;
     [SerializeField] private float detectionRange = 15f;
     [SerializeField] private float stopDistance = 4f;
     [SerializeField] private float reactionTime = 1f;
@@ -15,8 +15,11 @@ public class BotAI : MonoBehaviour
 
     [Header("Raycasting")]
     [SerializeField] private LayerMask obstacleLayer;
+    [SerializeField] private LayerMask PlayerLayer;
     [SerializeField] private float rayLength = 5f;
     [SerializeField] private float avoidanceForce = 2f;
+
+    private MovingCar targetPlayer;
 
     private MovingCar movingCar;
     private float timer;
@@ -26,6 +29,8 @@ public class BotAI : MonoBehaviour
 
     private void Start()
     {
+        if (!IsServer) return;
+
         movingCar = GetComponent<MovingCar>();
         timer = reactionTime;
         targetUpdateTimer = updateTargetInterval;
@@ -35,6 +40,8 @@ public class BotAI : MonoBehaviour
 
     private void Update()
     {
+        if (!IsServer) return;
+
         targetUpdateTimer -= Time.deltaTime;
         if (targetUpdateTimer <= 0)
         {
@@ -46,36 +53,47 @@ public class BotAI : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (target != null && hasTarget)
+        if (!IsServer) return;
+
+        Debug.Log($"target {targetPlayer != null}");
+        if (targetPlayer != null)
         {
             ChaseTarget();
         }
         else
         {
-            Patrol();
+            //Patrol();
+            FindPlayer();
         }
     }
 
     private void FindPlayer()
     {
-        GameObject player = GameObject.FindGameObjectWithTag("Player");
-        if (player != null)
+        Collider[] players = Physics.OverlapSphere(transform.position, detectionRange, PlayerLayer);
+
+        if (players.Length > 0)
         {
-            float distance = Vector3.Distance(transform.position, player.transform.position);
-            if (distance <= detectionRange)
+            float distance = float.MaxValue;
+
+            foreach (var player in players)
             {
-                target = player.transform;
-                hasTarget = true;
+                float d = Vector3.Distance(transform.position, player.transform.position);
+
+                if (d < distance)
+                {
+                    distance = d;
+                    targetPlayer = player.GetComponentInParent<MovingCar>();
+                }
             }
         }
     }
 
     private void ChaseTarget()
     {
-        if (target == null) return;
+        if (targetPlayer == null) return;
 
-        Vector3 directionToTarget = (target.position - transform.position).normalized;
-        float distanceToTarget = Vector3.Distance(transform.position, target.position);
+        Vector3 directionToTarget = (targetPlayer.position - transform.position).normalized;
+        float distanceToTarget = Vector3.Distance(transform.position, targetPlayer.position);
 
         // Поворот к цели
         Quaternion targetRotation = Quaternion.LookRotation(directionToTarget);
@@ -84,11 +102,12 @@ public class BotAI : MonoBehaviour
         // Управление через MovingCar
         if (distanceToTarget > stopDistance)
         {
-            movingCar.SetInputs(-0.8f, 0f);  // Газ вперёд
+            movingCar.OnGas(-0.8f);
+            Debug.Log("gas");
         }
         else
         {
-            movingCar.SetInputs(0.3f, 0f);  // Сдать назад
+            movingCar.OnBrake(1);
         }
 
         currentDirection = directionToTarget;
@@ -106,7 +125,7 @@ public class BotAI : MonoBehaviour
         Quaternion targetRotation = Quaternion.LookRotation(currentDirection);
         transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, turnSpeed * Time.fixedDeltaTime * 0.01f);
 
-        movingCar.SetInputs(0.5f, 0f);  // Медленное движение
+        movingCar.OnGas(-0.5f); ;  // Медленное движение
     }
 
     private void OnDrawGizmosSelected()

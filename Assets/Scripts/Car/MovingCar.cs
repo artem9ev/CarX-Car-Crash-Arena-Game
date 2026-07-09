@@ -3,7 +3,6 @@ using UnityEngine;
 using UnityEngine.Events;
 
 [RequireComponent(typeof(Rigidbody))]
-[RequireComponent(typeof(CarController))]
 [RequireComponent(typeof(CarEffector))]
 public class MovingCar : NetworkBehaviour
 {
@@ -71,7 +70,7 @@ public class MovingCar : NetworkBehaviour
     public float MaxHealth => maxHealth;
 
     public bool isGrounded => WheelFL.isGrounded || WheelFR.isGrounded || WheelBL.isGrounded || WheelBR.isGrounded;
-
+    public Vector3 position => _rb.position;
 
     private void OnDrawGizmosSelected()
     {
