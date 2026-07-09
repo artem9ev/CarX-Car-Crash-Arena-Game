@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &826054386303477462
+--- !u!1 &4926317815593355102
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,40 +8,60 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 6596460221120265375}
-  - component: {fileID: 2339238881655538832}
-  - component: {fileID: 8681464094981562573}
-  - component: {fileID: 172873134163429163}
-  - component: {fileID: 2343022855304646014}
+  - component: {fileID: 2658395143933791423}
+  - component: {fileID: 6369307337272810275}
+  - component: {fileID: 8622536653205021912}
+  - component: {fileID: 2240159694556320733}
+  - component: {fileID: 3315639613573517653}
   m_Layer: 0
-  m_Name: PlayerCamera
+  m_Name: Camera Follower
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &6596460221120265375
+--- !u!4 &2658395143933791423
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 826054386303477462}
+  m_GameObject: {fileID: 4926317815593355102}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: -0.064452864, y: -0.92275137, z: 0.17679842, w: -0.33633047}
+  m_LocalPosition: {x: -67.90329, y: 31.416988, z: 33.78486}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!20 &2339238881655538832
+--- !u!114 &6369307337272810275
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4926317815593355102}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f3aeed94d2d9d2e4c8f768d3ee06f5a4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CameraFollower
+  m_target: {fileID: 0}
+  m_acceleration: 3
+  m_angle: 15
+  m_range: 3
+  m_targetOffset: {x: 0, y: 1, z: -1}
+  m_cameraHitMask:
+    serializedVersion: 2
+    m_Bits: 0
+--- !u!20 &8622536653205021912
 Camera:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 826054386303477462}
+  m_GameObject: {fileID: 4926317815593355102}
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 1
@@ -86,21 +106,21 @@ Camera:
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
---- !u!81 &8681464094981562573
+--- !u!81 &2240159694556320733
 AudioListener:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 826054386303477462}
+  m_GameObject: {fileID: 4926317815593355102}
   m_Enabled: 1
---- !u!114 &172873134163429163
+--- !u!114 &3315639613573517653
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 826054386303477462}
+  m_GameObject: {fileID: 4926317815593355102}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a79441f348de89743a2939f4d699eac1, type: 3}
@@ -138,23 +158,3 @@ MonoBehaviour:
     m_VarianceClampScale: 0.9
     m_ContrastAdaptiveSharpening: 0
   m_Version: 2
---- !u!114 &2343022855304646014
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 826054386303477462}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bb87f81d6b5b6db45ae0f4450adbf173, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::CameraFollower
-  m_target: {fileID: -8679921383154817045, guid: a0b293e7b1bc706418627629921142f0, type: 3}
-  m_acceleration: 3
-  m_angle: 15
-  m_range: 3
-  m_targetOffset: {x: 0, y: 1, z: -1}
-  m_cameraHitMask:
-    serializedVersion: 2
-    m_Bits: 0

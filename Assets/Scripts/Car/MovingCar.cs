@@ -91,7 +91,14 @@ public class MovingCar : NetworkBehaviour
         currentHealth = maxHealth;
     }
 
-    // ===== УРОН ОТ СТОЛКНОВЕНИЙ =====
+    public override void OnNetworkSpawn()
+    {
+        if (IsOwner)
+        {
+            ClientEventBus.Instance.InvokeCarOwn(this);
+        }
+    }
+
     private void OnCollisionEnter(Collision collision)
     {
         if (!IsServer) return;

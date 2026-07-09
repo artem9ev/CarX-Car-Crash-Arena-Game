@@ -52,10 +52,10 @@ public class SpawnManager : MonoBehaviour
 
         if (!NetworkManager.Singleton.IsServer) return;
 
-        var car = Instantiate(defaultCarPrefab).GetComponent<NetworkObject>();
-        car.SpawnWithOwnership(сlientID);
-        var bot = Instantiate(defaultBotPrefab).GetComponent<NetworkObject>();
-        bot.Spawn();
+        var car = Instantiate(defaultCarPrefab);
+        car.GetComponent<NetworkObject>().SpawnWithOwnership(сlientID);
+        var bot = Instantiate(defaultBotPrefab);
+        bot.GetComponent<NetworkObject>().Spawn();
     }
 
 }

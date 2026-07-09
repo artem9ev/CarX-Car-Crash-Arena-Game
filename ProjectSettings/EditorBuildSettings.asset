@@ -15,11 +15,11 @@ EditorBuildSettings:
     path: Assets/_Scenes/MainMenu.unity
     guid: c991219e1c46cdd448fc8d63f0f226e0
   - enabled: 1
-    path: Assets/_Scenes/Lobby.unity
-    guid: b5edbedc882aed64ead88179da49877b
-  - enabled: 1
     path: Assets/_Scenes/Level_1.unity
     guid: 99c9720ab356a0642a771bea13969a05
+  - enabled: 1
+    path: Assets/_Scenes/Level_Network_Test.unity
+    guid: 3eb7eeed02cd61a4280e6039f3f70391
   m_configObjects:
     com.unity.adaptivePerformance.basic.provider_settings: {fileID: 11400000, guid: d68a5c88d7f6a1d43a20dfa65ba19754, type: 2}
     com.unity.adaptiveperformance.loader_settings: {fileID: 11400000, guid: 174f52dd3f6745a4fb7cdf23a83c19b7, type: 2}
