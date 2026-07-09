@@ -11875,6 +11875,7 @@ GameObject:
   - component: {fileID: -8679921383154817045}
   - component: {fileID: 7812654258761391557}
   - component: {fileID: 8140052466194950457}
+  - component: {fileID: -2946710675971141126}
   m_Layer: 3
   m_Name: car_vroom (1)
   m_TagString: Untagged
@@ -11953,10 +11954,22 @@ MonoBehaviour:
   minImpactForce: 5
   impactIntensityMultiplier: 0.5
   rotateByNormal: 1
-  smokeEffect: {fileID: 0}
-  smokeThreshold: 0.5
-  smokeIntensity: 1
-  explosionEffectPrefab: {fileID: 0}
+--- !u!114 &-2946710675971141126
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 919132149155446097}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6bafe84bccb4f6143bd58e9a47b06847, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::VehicleHealth
+  maxHealth: 100
+  collisionDamageMultiplier: 0.5
+  minCollisionDamage: 5
+  destroyDelay: 3
 --- !u!1 &953214912917260551
 GameObject:
   m_ObjectHideFlags: 0
@@ -22296,9 +22309,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HealthBar
   fill: {fileID: 1160705444082078952}
-  car: {fileID: 0}
   mainCamera: {fileID: 0}
   hpText: {fileID: 3814294149688343994}
+  vehicleHealth: {fileID: 0}
   smoothSpeed: 5
   colorGradient:
     serializedVersion: 2

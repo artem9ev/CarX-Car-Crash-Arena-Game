@@ -5,27 +5,43 @@ using UnityEngine.UI;
 public class DeathUI : MonoBehaviour
 {
     [Header("UI элементы")]
-    [SerializeField] private GameObject deathPanel;           // Панель смерти (изначально выключена)
-    [SerializeField] private Button respawnButton;            // Кнопка респавна
-    [SerializeField] private Button mainMenuButton;           // Кнопка выхода в меню (опционально)
+    [SerializeField] private GameObject deathPanel;
+    [SerializeField] private Button respawnButton;
+    [SerializeField] private Button mainMenuButton;
     [SerializeField] private TextMeshProUGUI deathText;
     [SerializeField] private TextMeshProUGUI respawnText;
 
     [Header("Настройки")]
-    [SerializeField] private float delayBeforeShow = 1f;      // Задержка перед показом UI
-    [SerializeField] private string respawnSceneName;         // Имя сцены для респавна (если нужно)
+    [SerializeField] private float delayBeforeShow = 1f;
+    [SerializeField] private string respawnSceneName;
 
-    private MovingCar car;
+    [Header("Ссылки на системы")]
+    [SerializeField] private VehicleHealth playerHealth;  // ← НОВОЕ
+
     private bool isDead = false;
 
     private void Start()
     {
-        // Ищем машину на сцене
-        car = FindObjectOfType<MovingCar>();
-
-        if (car == null)
+        // Ищем VehicleHealth игрока (машина с тегом "Player" или первая найденная)
+        if (playerHealth == null)
         {
-            Debug.LogError("❌ DeathUI: MovingCar не найден на сцене!");
+            // Сначала ищем машину с тегом "Player"
+            GameObject playerCar = GameObject.FindGameObjectWithTag("Player");
+            if (playerCar != null)
+            {
+                playerHealth = playerCar.GetComponent<VehicleHealth>();
+            }
+
+            // Если не нашли по тегу - ищем первую VehicleHealth
+            if (playerHealth == null)
+            {
+                playerHealth = FindObjectOfType<VehicleHealth>();
+            }
+        }
+
+        if (playerHealth == null)
+        {
+            Debug.LogError("❌ DeathUI: VehicleHealth игрока не найден!");
             return;
         }
 
@@ -36,7 +52,7 @@ public class DeathUI : MonoBehaviour
         }
 
         // Подписываемся на события
-        car.OnDeath += HandleDeath;
+        playerHealth.OnDeath += HandleDeath;
 
         // Настраиваем кнопки
         if (respawnButton != null)
@@ -54,9 +70,9 @@ public class DeathUI : MonoBehaviour
 
     private void OnDestroy()
     {
-        if (car != null)
+        if (playerHealth != null)
         {
-            car.OnDeath -= HandleDeath;
+            playerHealth.OnDeath -= HandleDeath;
         }
     }
 
@@ -66,7 +82,7 @@ public class DeathUI : MonoBehaviour
         if (isDead) return;
         isDead = true;
 
-        Debug.Log(" Игрок умер, показываем UI...");
+        Debug.Log("💀 Игрок умер, показываем UI...");
 
         // Показываем UI с задержкой
         Invoke(nameof(ShowDeathUI), delayBeforeShow);
@@ -84,7 +100,7 @@ public class DeathUI : MonoBehaviour
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
 
-        // Ставим игру на паузу (опционально)
+        // Ставим игру на паузу
         Time.timeScale = 0f;
 
         Debug.Log("🎯 UI смерти показан");
@@ -111,7 +127,7 @@ public class DeathUI : MonoBehaviour
     // ===== ОБРАБОТКА НАЖАТИЯ КНОПКИ МЕНЮ =====
     private void OnMainMenuClicked()
     {
-        Debug.Log(" Кнопка меню нажата");
+        Debug.Log("🚪 Кнопка меню нажата");
 
         Time.timeScale = 1f;
 
@@ -122,7 +138,7 @@ public class DeathUI : MonoBehaviour
         }
         else
         {
-            Debug.LogWarning("⚠️ Имя сцены для респавна не указано!");
+            Debug.LogWarning("⚠️ Имя сцены для респавна не указана!");
         }
     }
 
@@ -140,6 +156,9 @@ public class DeathUI : MonoBehaviour
             // Спавним новую машину
             spawner.ForceSpawnCar();
 
+            // Ищем новую машину игрока и подписываемся на её события
+            Invoke(nameof(SubscribeToNewPlayer), 0.1f);
+
             Debug.Log("✅ Игрок зареспавнен!");
         }
         else
@@ -149,5 +168,36 @@ public class DeathUI : MonoBehaviour
 
         // Сбрасываем флаг смерти
         isDead = false;
+    }
+
+    // ===== ПОДПИСКА НА НОВУЮ МАШИНУ ПОСЛЕ РЕСПАВНА =====
+    private void SubscribeToNewPlayer()
+    {
+        // Отписываемся от старой машины (если она ещё существует)
+        if (playerHealth != null)
+        {
+            playerHealth.OnDeath -= HandleDeath;
+        }
+
+        // Ищем новую машину игрока
+        GameObject playerCar = GameObject.FindGameObjectWithTag("Player");
+        if (playerCar != null)
+        {
+            playerHealth = playerCar.GetComponent<VehicleHealth>();
+        }
+        else
+        {
+            playerHealth = FindObjectOfType<VehicleHealth>();
+        }
+
+        if (playerHealth != null)
+        {
+            playerHealth.OnDeath += HandleDeath;
+            Debug.Log("✅ Подписка на новую машину игрока");
+        }
+        else
+        {
+            Debug.LogError("❌ Не удалось найти новую машину игрока!");
+        }
     }
 }

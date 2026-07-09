@@ -28,18 +28,6 @@ public class MovingCar : MonoBehaviour
     [SerializeField] private float accelerationSensitivity = 1f;
     [SerializeField] private float steeringSensitivity = 1f;
 
-    [Header("Здоровье")]
-    [SerializeField] private float maxHealth = 100f;
-    private float currentHealth;
-
-    [Header("Настройки урона от столкновений")]
-    [SerializeField] private float collisionDamageMultiplier = 0.5f;
-    [SerializeField] private float minCollisionDamage = 5f;
-
-    // События (для подписки из CarEffects)
-    public event System.Action<float> OnHealthChanged;
-    public event System.Action OnDeath;
-
     private float currentSteerAngle;
     private float currentMotorForce;
     private Rigidbody rb;
@@ -47,11 +35,8 @@ public class MovingCar : MonoBehaviour
     private float horizontalInput;
     private float verticalInput;
     private bool isBraking;
-    private bool isDead = false;
 
-    public float MaxHealth => maxHealth;
-    public float CurrentHealth => currentHealth;
-    public bool IsDead => isDead;
+    public Rigidbody Rigidbody => rb;
 
     private void OnDrawGizmosSelected()
     {
@@ -66,9 +51,8 @@ public class MovingCar : MonoBehaviour
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
-        rb.centerOfMass = new Vector3(0, -1.5f, 0);
+        rb.centerOfMass = new Vector3(0, -0.5f, 0);
         rb.angularDamping = 5f;
-        currentHealth = maxHealth;
     }
 
     private void Update()
@@ -78,70 +62,19 @@ public class MovingCar : MonoBehaviour
         isBraking = Input.GetKey(KeyCode.Space);
     }
 
-    // ===== УРОН ОТ СТОЛКНОВЕНИЙ =====
-    private void OnCollisionEnter(Collision collision)
-    {
-        if (isDead || LayerMask.LayerToName(collision.thisCollider.gameObject.layer) == "Default") return;
-
-        float impactForce = collision.relativeVelocity.magnitude * rb.mass;
-
-        Debug.Log($"this: {collision.thisCollider.name} | other: {collision.collider.name}");
-
-        if (impactForce < minCollisionDamage) return;
-
-        float damage = impactForce * collisionDamageMultiplier;
-        TakeDamage(damage);
-    }
-
-    private void TakeDamage(float damage)
-    {
-        currentHealth -= damage;
-        currentHealth = Mathf.Max(0, currentHealth);
-
-        //Debug.Log($"💥 Урон: {damage:F1} | HP: {currentHealth:F1}/{maxHealth}");
-
-        // Уведомляем подписчиков об изменении HP
-        OnHealthChanged?.Invoke(currentHealth);
-
-        if (currentHealth <= 0 && !isDead)
-        {
-            Die();
-        }
-    }
-
-    private void Die()
-    {
-        isDead = true;
-        Debug.Log("☠️ Машина уничтожена!");
-
-        // Уведомляем подписчиков о смерти
-        OnDeath?.Invoke();
-
-        // Отключаем мотор и тормоза
-        rearLeftWheel.motorTorque = 0;
-        rearRightWheel.motorTorque = 0;
-        rearLeftWheel.brakeTorque = brakeForce;
-        rearRightWheel.brakeTorque = brakeForce;
-        frontLeftWheel.brakeTorque = brakeForce;
-        frontRightWheel.brakeTorque = brakeForce;
-    }
-    // ================================================
-
     private void FixedUpdate()
     {
-        if (isDead) return;
-
         float localVelocity = Vector3.Dot(transform.forward, rb.linearVelocity);
         float currentSpeedKmh = Mathf.Abs(localVelocity) * 3.6f;
 
-        // ===== УПРАВЛЕНИЕ РУЛЁМ =====
+        // УПРАВЛЕНИЕ РУЛЁМ
         float targetSteerAngle = steerAngle * horizontalInput;
         currentSteerAngle = Mathf.Lerp(currentSteerAngle, targetSteerAngle, Time.fixedDeltaTime * steerSpeed);
 
         frontLeftWheel.steerAngle = currentSteerAngle;
         frontRightWheel.steerAngle = currentSteerAngle;
 
-        // ===== УПРАВЛЕНИЕ ДВИГАТЕЛЕМ =====
+        // УПРАВЛЕНИЕ ДВИГАТЕЛЕМ
         if (currentSpeedKmh < maxSpeed || verticalInput < 0)
         {
             float reverseMultiplier = verticalInput < 0 ? 0.7f : 1f;
@@ -155,7 +88,7 @@ public class MovingCar : MonoBehaviour
         rearLeftWheel.motorTorque = -currentMotorForce;
         rearRightWheel.motorTorque = -currentMotorForce;
 
-        // ===== ТОРМОЖЕНИЕ =====
+        // ТОРМОЖЕНИЕ
         float brake = 0;
 
         if (isBraking)
@@ -187,14 +120,14 @@ public class MovingCar : MonoBehaviour
     {
         if (rb.linearVelocity.magnitude > 1f)
         {
-            float downforceForce = 10f * rb.linearVelocity.magnitude;
+            float downforceForce = 3f * rb.linearVelocity.magnitude;
             rb.AddForce(-transform.up * downforceForce, ForceMode.Force);
         }
     }
 
     private void UpdateWheelVisuals()
     {
-        UpdateSingleWheelVisual(frontLeftWheel, frontLeftTransform, 0);// не менять значение 0
+        UpdateSingleWheelVisual(frontLeftWheel, frontLeftTransform, 0);
         UpdateSingleWheelVisual(frontRightWheel, frontRightTransform, -0);
         UpdateSingleWheelVisual(rearLeftWheel, rearLeftTransform, 0);
         UpdateSingleWheelVisual(rearRightWheel, rearRightTransform, -0);

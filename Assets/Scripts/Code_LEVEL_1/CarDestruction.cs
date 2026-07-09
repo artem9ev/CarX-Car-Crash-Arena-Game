@@ -3,66 +3,73 @@
 public class CarDestruction : MonoBehaviour
 {
     [Header("Части машины")]
-    [SerializeField] private Rigidbody[] carParts;  // Все части машины (кузов, колёса)
-    [SerializeField] private float explosionForce = 500f;  // Сила разлёта частей
-    [SerializeField] private float explosionRadius = 5f;   // Радиус взрыва
+    [SerializeField] private Rigidbody[] carParts;
+    [SerializeField] private float explosionForce = 500f;
+    [SerializeField] private float explosionRadius = 5f;
 
     [Header("Водитель")]
-    [SerializeField] private GameObject driver;  // Объект водителя
-    [SerializeField] private float driverEjectForce = 1000f;  // Сила вылета водителя
-    [SerializeField] private float driverEjectHeight = 5f;    // Высота вылета
-    [SerializeField] private Transform ejectDirection;  // Направление вылета (обычно вперёд машины)
+    [SerializeField] private GameObject driver;
+    [SerializeField] private float driverEjectForce = 1000f;
+    [SerializeField] private float driverEjectHeight = 5f;
+    [SerializeField] private Transform ejectDirection;
 
     [Header("Настройки ragdoll")]
-    [SerializeField] private float ragdollActivationDelay = 0.1f;  // Задержка перед включением ragdoll
+    [SerializeField] private float ragdollActivationDelay = 0.1f;
 
-    private MovingCar car;
+    [Header("Ссылки на системы")]
+    [SerializeField] private VehicleHealth vehicleHealth;  // ← НОВОЕ ПОЛЕ
+    [SerializeField] private DriverRagdoll driverRagdoll;  // ← НОВОЕ ПОЛЕ (опционально)
+
     private Rigidbody carRootRb;
     private bool isDestroyed = false;
 
     private void Start()
     {
-        car = GetComponent<MovingCar>();
         carRootRb = GetComponent<Rigidbody>();
 
-        if (car == null)
+        // Ищем VehicleHealth (вместо MovingCar)
+        if (vehicleHealth == null)
         {
-            Debug.LogError("❌ CarDestruction: MovingCar не найден!");
+            vehicleHealth = GetComponent<VehicleHealth>();
+        }
+
+        if (vehicleHealth == null)
+        {
+            Debug.LogError("❌ CarDestruction: VehicleHealth не найден!");
             return;
         }
 
         // Подписываемся на событие смерти
-        car.OnDeath += HandleDeath;
+        vehicleHealth.OnDeath += HandleDeath;
 
-        // Если части не назначены - пытаемся найти автоматически
+        // Если части не назначены - находим автоматически
         if (carParts == null || carParts.Length == 0)
         {
             FindCarParts();
         }
 
-        // Выключаем физику частей при старте (они должны быть кинематичными или привязанными)
+        // Выключаем физику частей при старте
         DisablePartsPhysics();
     }
 
     private void OnDestroy()
     {
-        if (car != null)
+        if (vehicleHealth != null)
         {
-            car.OnDeath -= HandleDeath;
+            vehicleHealth.OnDeath -= HandleDeath;
         }
     }
 
     // ===== АВТОМАТИЧЕСКИЙ ПОИСК ЧАСТЕЙ =====
     private void FindCarParts()
     {
-        // Ищем все Rigidbody в дочерних объектах
         Rigidbody[] allRigidbodies = GetComponentsInChildren<Rigidbody>();
-        carParts = new Rigidbody[allRigidbodies.Length - 1]; // -1 потому что корневой Rigidbody не считаем
+        carParts = new Rigidbody[allRigidbodies.Length - 1];
 
         int index = 0;
         foreach (var rb in allRigidbodies)
         {
-            if (rb != carRootRb) // Пропускаем корневой Rigidbody
+            if (rb != carRootRb)
             {
                 carParts[index] = rb;
                 index++;
@@ -81,12 +88,11 @@ public class CarDestruction : MonoBehaviour
         {
             if (part != null)
             {
-                part.isKinematic = true;  // Делаем кинематичными (не подвержены физике)
+                part.isKinematic = true;
                 part.useGravity = false;
             }
         }
 
-        // Водитель тоже кинематичен при старте
         if (driver != null)
         {
             Rigidbody[] driverRbs = driver.GetComponentsInChildren<Rigidbody>();
@@ -112,9 +118,14 @@ public class CarDestruction : MonoBehaviour
         // Применяем силу взрыва к частям
         ApplyExplosionForce();
 
-        // Вылетаем водителя
-        if (driver != null)
+        // Активируем ragdoll водителя (если есть скрипт)
+        if (driverRagdoll != null)
         {
+            driverRagdoll.ForceActivateRagdoll();
+        }
+        else if (driver != null)
+        {
+            // Если скрипта нет - старый способ вылета
             Invoke(nameof(EjectDriver), ragdollActivationDelay);
         }
 
@@ -131,7 +142,7 @@ public class CarDestruction : MonoBehaviour
         {
             if (part != null)
             {
-                part.isKinematic = false;  // Включаем физику
+                part.isKinematic = false;
                 part.useGravity = true;
                 part.AddExplosionForce(explosionForce * 0.5f, transform.position, explosionRadius);
             }
@@ -149,21 +160,16 @@ public class CarDestruction : MonoBehaviour
         {
             if (part != null)
             {
-                // Направление от центра взрыва к части
                 Vector3 direction = part.position - explosionCenter;
-
-                // Сила уменьшается с расстоянием
                 float distance = direction.magnitude;
                 float forceMultiplier = Mathf.Clamp01(1f - distance / explosionRadius);
 
-                // Применяем силу
                 part.AddExplosionForce(
                     explosionForce * forceMultiplier,
                     explosionCenter,
                     explosionRadius
                 );
 
-                // Добавляем случайное вращение
                 part.AddTorque(
                     Random.insideUnitSphere * 100f * forceMultiplier
                 );
@@ -171,14 +177,13 @@ public class CarDestruction : MonoBehaviour
         }
     }
 
-    // ===== ВЫЛЕТ ВОДИТЕЛЯ =====
+    // ===== ВЫЛЕТ ВОДИТЕЛЯ (старый способ, если нет DriverRagdoll) =====
     private void EjectDriver()
     {
         if (driver == null) return;
 
-        Debug.Log(" Водитель вылетает!");
+        Debug.Log("👤 Водитель вылетает!");
 
-        // Включаем физику водителя (ragdoll)
         Rigidbody[] driverRbs = driver.GetComponentsInChildren<Rigidbody>();
         foreach (var rb in driverRbs)
         {
@@ -186,54 +191,52 @@ public class CarDestruction : MonoBehaviour
             rb.useGravity = true;
         }
 
-        // Определяем направление вылета
-        Vector3 ejectDirection = Vector3.forward;
+        Vector3 ejectDir = Vector3.forward;
         if (this.ejectDirection != null)
         {
-            ejectDirection = this.ejectDirection.forward;
+            ejectDir = this.ejectDirection.forward;
         }
         else if (carRootRb != null)
         {
-            // Если направление не назначено - используем направление движения машины
-            ejectDirection = carRootRb.linearVelocity.normalized;
-            if (ejectDirection.magnitude < 0.1f)
+            ejectDir = carRootRb.linearVelocity.normalized;
+            if (ejectDir.magnitude < 0.1f)
             {
-                ejectDirection = transform.forward;
+                ejectDir = transform.forward;
             }
         }
 
-        // Применяем силу к каждой части водителя
         foreach (var rb in driverRbs)
         {
-            // Основная сила в направлении вылета
-            rb.AddForce(ejectDirection * driverEjectForce);
-
-            // Дополнительная сила вверх
+            rb.AddForce(ejectDir * driverEjectForce);
             rb.AddForce(Vector3.up * driverEjectHeight * rb.mass);
-
-            // Случайное вращение
             rb.AddTorque(Random.insideUnitSphere * 50f);
         }
 
-        // Отсоединяем водителя от машины
         driver.transform.SetParent(null);
     }
 
     // ===== ОТКЛЮЧЕНИЕ УПРАВЛЕНИЯ =====
     private void DisableCarControls()
     {
-        // Отключаем все коллайдеры корневого объекта (если есть)
+        // Отключаем все коллайдеры корневого объекта
         Collider[] colliders = GetComponents<Collider>();
         foreach (var col in colliders)
         {
             col.enabled = false;
         }
 
-        // Отключаем скрипт управления (если нужно)
+        // Отключаем MovingCar (если есть)
         MovingCar movingCar = GetComponent<MovingCar>();
         if (movingCar != null)
         {
             movingCar.enabled = false;
         }
+
+        // Отключаем BotAI (если есть)
+        /*MonoBehaviour botAI = GetComponent("BotAI");
+        if (botAI != null)
+        {
+            botAI.enabled = false;
+        }*/
     }
 }

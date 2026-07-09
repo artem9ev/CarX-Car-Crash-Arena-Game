@@ -2,227 +2,107 @@
 
 public class CarSpawner : MonoBehaviour
 {
-    [Header("Настройки спавна")]
+    [Header("Префабы")]
     [SerializeField] private GameObject carPrefab;
+    [SerializeField] private GameObject cameraFollowerPrefab;
+
+    [Header("Точки спавна")]
     [SerializeField] private Transform[] spawnPoints;
+
+    [Header("Настройки")]
     [SerializeField] private int maxCars = 5;
-    [SerializeField] private float spawnInterval = 5f;
-    [SerializeField] private float minDistance = 10f;
-
-    [Header("Случайный спавн")]
-    [SerializeField] private bool useRandomSpawning = true;
-    [SerializeField] private Vector3 spawnAreaSize = new Vector3(50, 0, 50);
-
-    [Header("Настройки камеры игрока")]
-    [SerializeField] private Vector3 playerCameraOffset = new Vector3(0, 1, -1);
-    [SerializeField] private float playerCameraAngle = 15f;
-    [SerializeField] private float cameraRange = 2f;
-    [SerializeField] private float cameraAcceleration = 3f;
-    [SerializeField] private LayerMask cameraHitMask;
+    [SerializeField] private float spawnInterval = 2f;
 
     private GameObject[] spawnedCars;
     private CameraFollower[] spawnedCameraFollowers;
-    private float lastSpawnTime;
-    private int currentCarCount;
+    private bool[] carActive;
+    private int currentCarCount = 0;
     private bool playerSpawned = false;
+    private float lastSpawnTime = 0f;
 
     private void Start()
     {
         spawnedCars = new GameObject[maxCars];
         spawnedCameraFollowers = new CameraFollower[maxCars];
-        lastSpawnTime = Time.time;
+        carActive = new bool[maxCars];
 
-        if (carPrefab != null)
-        {
-            SpawnCar();
-        }
+        SpawnCar();
+        playerSpawned = true;
     }
 
     private void Update()
     {
-        UpdateCarCount();
-
-        if (Time.time - lastSpawnTime >= spawnInterval)
+        if (currentCarCount < maxCars && Time.time - lastSpawnTime > spawnInterval)
         {
-            if (currentCarCount < maxCars)
-            {
-                SpawnCar();
-                lastSpawnTime = Time.time;
-            }
-        }
-    }
-
-    private void UpdateCarCount()
-    {
-        currentCarCount = 0;
-        for (int i = 0; i < spawnedCars.Length; i++)
-        {
-            if (spawnedCars[i] != null)
-            {
-                currentCarCount++;
-            }
-            else
-            {
-                spawnedCars[i] = null;
-                spawnedCameraFollowers[i] = null;
-            }
+            SpawnCar();
+            lastSpawnTime = Time.time;
         }
     }
 
     private void SpawnCar()
     {
-        Vector3 spawnPosition = GetSpawnPosition();
+        if (currentCarCount >= maxCars) return;
 
-        if (IsValidSpawnPosition(spawnPosition))
+        int spawnIndex = currentCarCount;
+        Transform spawnPoint = spawnPoints[spawnIndex % spawnPoints.Length];
+
+        GameObject newCar = Instantiate(carPrefab, spawnPoint.position, spawnPoint.rotation);
+        spawnedCars[spawnIndex] = newCar;
+
+        if (!playerSpawned)
         {
-            GameObject newCar = Instantiate(carPrefab, spawnPosition, Quaternion.identity);
-
-            if (useRandomSpawning)
-            {
-                float randomY = Random.Range(0f, 360f);
-                newCar.transform.rotation = Quaternion.Euler(0, randomY, 0);
-            }
-
-            int carIndex = AddToSpawnedCars(newCar);
-            CreateCameraForCar(newCar, carIndex);
-
-            Debug.Log($"🚗 Машина #{carIndex + 1} заспавнена! Всего машин: {currentCarCount + 1}");
-        }
-    }
-
-    private void CreateCameraForCar(GameObject car, int carIndex)
-    {
-        bool isPlayer = !playerSpawned;
-
-        if (isPlayer)
-        {
-            // ===== КАМЕРА ТОЛЬКО ДЛЯ ИГРОКА =====
-            MovingCar carScript = car.GetComponent<MovingCar>();
-            if (carScript == null)
-            {
-                carScript = car.GetComponentInChildren<MovingCar>();
-            }
-
-            if (carScript == null)
-            {
-                Debug.LogError("❌ MovingCar не найден на машине игрока!");
-                return;
-            }
-
-            GameObject cameraObj = new GameObject("PlayerCamera");
-            cameraObj.transform.SetParent(car.transform);
-            cameraObj.transform.localPosition = Vector3.zero;
-            cameraObj.transform.localRotation = Quaternion.identity;
-
-            Camera carCamera = cameraObj.AddComponent<Camera>();
-            CameraFollower cameraFollower = cameraObj.AddComponent<CameraFollower>();
-
-            carCamera.tag = "MainCamera";
-            carCamera.name = "PlayerCamera";
-            carCamera.fieldOfView = 75f;
-            carCamera.depth = 0;
-            carCamera.enabled = true;
-
-            cameraFollower.Initialize(
-                carScript,
-                playerCameraOffset,
-                playerCameraAngle,
-                cameraRange,
-                cameraAcceleration,
-                cameraHitMask
-            );
-
-            spawnedCameraFollowers[carIndex] = cameraFollower;
-
+            newCar.tag = "Player";
             playerSpawned = true;
-            Debug.Log("🎮 Создана Main Camera для игрока!");
+            CreateCameraForCar(newCar);  // ← Передал только машину
         }
         else
         {
-            // ===== БОТЫ БЕЗ КАМЕР =====
-            spawnedCameraFollowers[carIndex] = null;
-            Debug.Log($"🤖 Бот #{carIndex + 1} заспавнен (без камеры)");
+            newCar.tag = "Bot";
         }
+
+        carActive[spawnIndex] = true;
+        currentCarCount++;
+
+        Debug.Log($"🚗 Машина #{spawnIndex + 1} заспавнена", gameObject);
     }
 
-    private Vector3 GetSpawnPosition()
+    // ← ИСПРАВЛЕНО: убрал carIndex
+    private void CreateCameraForCar(GameObject car)
     {
-        if (useRandomSpawning)
+        if (cameraFollowerPrefab == null)
         {
-            Vector3 randomPos = transform.position + new Vector3(
-                Random.Range(-spawnAreaSize.x / 2, spawnAreaSize.x / 2),
-                0,
-                Random.Range(-spawnAreaSize.z / 2, spawnAreaSize.z / 2)
-            );
-            return randomPos;
-        }
-        else
-        {
-            int randomIndex = Random.Range(0, spawnPoints.Length);
-            return spawnPoints[randomIndex].position;
-        }
-    }
-
-    private bool IsValidSpawnPosition(Vector3 position)
-    {
-        for (int i = 0; i < spawnedCars.Length; i++)
-        {
-            if (spawnedCars[i] != null)
-            {
-                float distance = Vector3.Distance(position, spawnedCars[i].transform.position);
-                if (distance < minDistance)
-                {
-                    return false;
-                }
-            }
+            Debug.LogWarning("⚠️ CameraFollower префаб не назначен!");
+            return;
         }
 
-        if (Physics.Raycast(position + Vector3.up * 5, Vector3.down, out RaycastHit hit, 10f))
+        // Удаляем ВСЕ существующие камеры (не по индексу, а все!)
+        CameraFollower[] allCameras = FindObjectsOfType<CameraFollower>();
+        foreach (var cam in allCameras)
         {
-            return true;
+            Debug.Log($"🗑️ Удаление старой камеры: {cam.gameObject.name}");
+            Destroy(cam.gameObject);
         }
 
-        return false;
-    }
+        // Создаём новую камеру
+        GameObject cameraObj = Instantiate(cameraFollowerPrefab, car.transform.position, Quaternion.identity);
+        CameraFollower cameraFollower = cameraObj.GetComponent<CameraFollower>();
 
-    private int AddToSpawnedCars(GameObject car)
-    {
-        for (int i = 0; i < spawnedCars.Length; i++)
+        if (cameraFollower != null)
         {
-            if (spawnedCars[i] == null)
-            {
-                spawnedCars[i] = car;
-                return i;
-            }
-        }
-        return -1;
-    }
+            cameraFollower.Target = car.transform;
 
-    public void ForceSpawnCar()
-    {
-        if (currentCarCount < maxCars)
-        {
-            SpawnCar();
+            // Сохраняем в массив (индекс 0 = игрок)
+            spawnedCameraFollowers[0] = cameraFollower;
         }
-        else
-        {
-            // Если лимит достигнут, удаляем первую машину и спавним новую
-            if (spawnedCars[0] != null)
-            {
-                Destroy(spawnedCars[0]);
-                spawnedCars[0] = null;
-            }
-            if (spawnedCameraFollowers[0] != null)
-            {
-                Destroy(spawnedCameraFollowers[0].gameObject);
-                spawnedCameraFollowers[0] = null;
-            }
-            SpawnCar();
-        }
+
+        Debug.Log($"📹 Камера создана для {car.name}");
     }
 
     public void DespawnAllCars()
     {
+        Debug.Log("🗑️ Удаление всех машин...");
+
+        // Удаляем все машины
         for (int i = 0; i < spawnedCars.Length; i++)
         {
             if (spawnedCars[i] != null)
@@ -230,31 +110,50 @@ public class CarSpawner : MonoBehaviour
                 Destroy(spawnedCars[i]);
                 spawnedCars[i] = null;
             }
-            if (spawnedCameraFollowers[i] != null)
-            {
-                Destroy(spawnedCameraFollowers[i].gameObject);
-                spawnedCameraFollowers[i] = null;
-            }
+            carActive[i] = false;
         }
+
+        // Удаляем ВСЕ камеры на сцене (надёжнее)
+        CameraFollower[] allCameras = FindObjectsOfType<CameraFollower>();
+        foreach (var cam in allCameras)
+        {
+            Debug.Log($"🗑️ Удаление камеры: {cam.gameObject.name}");
+            Destroy(cam.gameObject);
+        }
+
+        // Очищаем массив
+        for (int i = 0; i < spawnedCameraFollowers.Length; i++)
+        {
+            spawnedCameraFollowers[i] = null;
+        }
+
         currentCarCount = 0;
         playerSpawned = false;
+
+        Debug.Log("✅ Все машины и камеры удалены");
     }
 
-    private void OnDrawGizmosSelected()
+    public void ForceSpawnCar()
     {
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawWireCube(transform.position, spawnAreaSize);
+        Debug.Log("🔄 ForceSpawnCar() вызван");
 
-        if (spawnPoints != null)
-        {
-            Gizmos.color = Color.green;
-            foreach (var point in spawnPoints)
-            {
-                if (point != null)
-                {
-                    Gizmos.DrawSphere(point.position, 1f);
-                }
-            }
-        }
+        // Сбрасываем всё
+        currentCarCount = 0;
+        playerSpawned = false;
+
+        // Спавним новую машину
+        SpawnCar();
+
+        Debug.Log("✅ Новая машина заспавнена");
+    }
+
+    public GameObject GetPlayerCar()
+    {
+        return spawnedCars[0];
+    }
+
+    public CameraFollower GetPlayerCamera()
+    {
+        return spawnedCameraFollowers[0];
     }
 }

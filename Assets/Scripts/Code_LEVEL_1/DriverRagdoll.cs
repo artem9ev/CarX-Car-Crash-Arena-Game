@@ -3,7 +3,8 @@
 public class DriverRagdoll : MonoBehaviour
 {
     [Header("Ссылки")]
-    [SerializeField] private ConfigurableJoint configurableJoint;
+    [SerializeField] private ConfigurableJoint mainJoint;
+    [SerializeField] private CharacterJoint[] characterJoints;
     [SerializeField] private Rigidbody[] ragdollParts;
 
     [Header("Настройки вылета")]
@@ -15,21 +16,16 @@ public class DriverRagdoll : MonoBehaviour
     [Header("Задержки")]
     [SerializeField] private float activateDelay = 0.05f;
 
-    private MovingCar car;
+    [Header("Ссылки на системы")]
+    [SerializeField] private VehicleHealth vehicleHealth;  // ← НОВОЕ
+
+    private Rigidbody carRootRigidbody;  // ← Переименовал для ясности
+    private Transform carTransform;
     private Rigidbody rootRigidbody;
     private bool isRagdollActive = false;
-    private ConfigurableJoint[] allJoints;  // Все суставы ragdoll
 
     private void Start()
     {
-        car = GetComponentInParent<MovingCar>();
-
-        if (car == null)
-        {
-            Debug.LogError("❌ DriverRagdoll: MovingCar не найден!");
-            return;
-        }
-
         rootRigidbody = GetComponent<Rigidbody>();
         if (rootRigidbody == null)
         {
@@ -37,15 +33,25 @@ public class DriverRagdoll : MonoBehaviour
             return;
         }
 
-        if (configurableJoint == null)
+        // Ищем VehicleHealth (вместо MovingCar)
+        if (vehicleHealth == null)
         {
-            configurableJoint = GetComponent<ConfigurableJoint>();
+            vehicleHealth = GetComponentInParent<VehicleHealth>();
         }
 
-        if (configurableJoint == null)
+        if (vehicleHealth == null)
         {
-            Debug.LogError("❌ Configurable Joint не найден!");
+            Debug.LogError("❌ DriverRagdoll: VehicleHealth не найден!");
             return;
+        }
+
+        // Находим корневой Rigidbody машины (для скорости и направления)
+        carRootRigidbody = vehicleHealth.GetComponent<Rigidbody>();
+        carTransform = vehicleHealth.transform;
+
+        if (mainJoint == null)
+        {
+            mainJoint = GetComponent<ConfigurableJoint>();
         }
 
         // Автоматически находим части тела
@@ -54,25 +60,28 @@ public class DriverRagdoll : MonoBehaviour
             ragdollParts = GetComponentsInChildren<Rigidbody>();
         }
 
-        // Находим все ConfigurableJoint на частях тела
-        allJoints = GetComponentsInChildren<ConfigurableJoint>();
-        Debug.Log($"✅ Найдено {allJoints.Length} ConfigurableJoint");
+        // Автоматически находим Character Joint
+        if (characterJoints == null || characterJoints.Length == 0)
+        {
+            characterJoints = GetComponentsInChildren<CharacterJoint>();
+            Debug.Log($"✅ Найдено {characterJoints.Length} Character Joint");
+        }
 
-        // Усыпляем ragdoll при старте
+        // Усыпляем ragdoll
         SleepRagdoll();
 
-        car.OnDeath += HandleDeath;
+        // Подписываемся на событие смерти
+        vehicleHealth.OnDeath += HandleDeath;
     }
 
     private void OnDestroy()
     {
-        if (car != null)
+        if (vehicleHealth != null)
         {
-            car.OnDeath -= HandleDeath;
+            vehicleHealth.OnDeath -= HandleDeath;
         }
     }
 
-    // ===== УСЫПИТЬ RAGDOLL =====
     private void SleepRagdoll()
     {
         foreach (var rb in ragdollParts)
@@ -82,11 +91,9 @@ public class DriverRagdoll : MonoBehaviour
             rb.linearVelocity = Vector3.zero;
             rb.angularVelocity = Vector3.zero;
         }
-
         isRagdollActive = false;
     }
 
-    // ===== ВКЛЮЧИТЬ RAGDOLL =====
     private void EnableRagdoll(Vector3 ejectDirection)
     {
         if (isRagdollActive) return;
@@ -94,16 +101,22 @@ public class DriverRagdoll : MonoBehaviour
 
         Debug.Log("👤 Активация ragdoll...");
 
-        // 1. Ломаем главный Configurable Joint (который крепит к машине)
-        if (configurableJoint != null)
+        // 1. Ломаем главный Configurable Joint
+        if (mainJoint != null)
         {
-            Destroy(configurableJoint);
-            Debug.Log("🔓 Главный Joint уничтожен");
+            Destroy(mainJoint);
         }
 
-        // 2. РАЗБЛОКИРУЕМ все остальные суставы частей тела
-        UnlockAllJoints();
-        Debug.Log($"🔓 Разблокировано {allJoints.Length} суставов");
+        // 2. Включаем все Character Joint
+        foreach (var joint in characterJoints)
+        {
+            if (joint != null)
+            {
+                joint.enableProjection = true;
+                joint.projectionDistance = 0.1f;
+                joint.projectionAngle = 10f;
+            }
+        }
 
         // 3. Отсоединяем от машины
         transform.SetParent(null);
@@ -118,14 +131,10 @@ public class DriverRagdoll : MonoBehaviour
             rb.collisionDetectionMode = CollisionDetectionMode.Continuous;
 
             // Наследуем скорость машины
-            if (car != null)
+            if (carRootRigidbody != null)
             {
-                Rigidbody carRb = car.GetComponent<Rigidbody>();
-                if (carRb != null)
-                {
-                    rb.linearVelocity = carRb.linearVelocity;
-                    rb.angularVelocity = carRb.angularVelocity * 0.5f;
-                }
+                rb.linearVelocity = carRootRigidbody.linearVelocity;
+                rb.angularVelocity = carRootRigidbody.angularVelocity * 0.5f;
             }
         }
 
@@ -136,64 +145,6 @@ public class DriverRagdoll : MonoBehaviour
         }
 
         Debug.Log("✅ Ragdoll активирован!");
-    }
-
-    // ===== РАЗБЛОКИРОВКА ВСЕХ СУСТАВОВ =====
-    private void UnlockAllJoints()
-    {
-        foreach (var joint in allJoints)
-        {
-            if (joint == null) continue;
-
-            // Разблокируем линейное движение
-            joint.xMotion = ConfigurableJointMotion.Limited;
-            joint.yMotion = ConfigurableJointMotion.Limited;
-            joint.zMotion = ConfigurableJointMotion.Limited;
-
-            // Разблокируем вращение
-            joint.angularXMotion = ConfigurableJointMotion.Limited;
-            joint.angularYMotion = ConfigurableJointMotion.Limited;
-            joint.angularZMotion = ConfigurableJointMotion.Limited;
-
-            // Настраиваем лимиты (чтобы не разваливался полностью)
-            SoftJointLimit limit = new SoftJointLimit
-            {
-                limit = 45f  // Угол отклонения (можно настроить)
-            };
-
-            joint.lowAngularXLimit = limit;
-            joint.highAngularXLimit = limit;
-            joint.angularYLimit = limit;
-            joint.angularZLimit = limit;
-
-            // Настраиваем линейные лимиты (чтобы части не улетали далеко друг от друга)
-            SoftJointLimitSpring spring = new SoftJointLimitSpring
-            {
-                spring = 500f,
-                damper = 50f
-            };
-
-            joint.xDrive = new JointDrive
-            {
-                positionSpring = 500f,
-                positionDamper = 50f,
-                maximumForce = Mathf.Infinity
-            };
-
-            joint.yDrive = new JointDrive
-            {
-                positionSpring = 500f,
-                positionDamper = 50f,
-                maximumForce = Mathf.Infinity
-            };
-
-            joint.zDrive = new JointDrive
-            {
-                positionSpring = 500f,
-                positionDamper = 50f,
-                maximumForce = Mathf.Infinity
-            };
-        }
     }
 
     private void ApplyEjectForce(Vector3 direction)
@@ -225,17 +176,13 @@ public class DriverRagdoll : MonoBehaviour
     {
         Vector3 ejectDirection = Vector3.forward;
 
-        if (car != null)
+        if (carRootRigidbody != null && carRootRigidbody.linearVelocity.magnitude > 1f)
         {
-            Rigidbody carRb = car.GetComponent<Rigidbody>();
-            if (carRb != null && carRb.linearVelocity.magnitude > 1f)
-            {
-                ejectDirection = carRb.linearVelocity.normalized;
-            }
-            else
-            {
-                ejectDirection = car.transform.forward;
-            }
+            ejectDirection = carRootRigidbody.linearVelocity.normalized;
+        }
+        else if (carTransform != null)
+        {
+            ejectDirection = carTransform.forward;
         }
 
         EnableRagdoll(ejectDirection);

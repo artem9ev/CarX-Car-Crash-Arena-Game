@@ -1,14 +1,16 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
-using TMPro; // ← ВАЖНО! Добавь эту строку
+using TMPro;
 
 public class HealthBar : MonoBehaviour
 {
     [Header("Ссылки")]
     [SerializeField] private RectTransform fill;
-    [SerializeField] private MovingCar car;
     [SerializeField] private Camera mainCamera;
-    [SerializeField] private TextMeshProUGUI hpText; // ← ДОБАВЬ ЭТО ПОЛЕ
+    [SerializeField] private TextMeshProUGUI hpText;
+
+    [Header("Ссылки на системы")]
+    [SerializeField] private VehicleHealth vehicleHealth;  // ← НОВОЕ (можно оставить пустым)
 
     [Header("Настройки")]
     [SerializeField] private float smoothSpeed = 5f;
@@ -26,25 +28,43 @@ public class HealthBar : MonoBehaviour
 
     private void Start()
     {
-        if (car != null)
+        // Ищем VehicleHealth игрока, если не назначен вручную
+        if (vehicleHealth == null)
         {
-            car.OnHealthChanged += UpdateHealthBar;
-            targetFillAmount = 1f;
-            currentFillAmount = 1f;
-
-            // Показываем начальное значение HP
-            if (hpText != null)
+            GameObject playerCar = transform.parent.gameObject;
+            if (playerCar != null)
             {
-                hpText.text = $"{Mathf.CeilToInt(car.MaxHealth)} HP";
+                vehicleHealth = playerCar.GetComponent<VehicleHealth>();
             }
+
+        }
+
+        if (vehicleHealth == null)
+        {
+            Debug.LogError("❌ HealthBar: VehicleHealth не найден!");
+            return;
+        }
+
+        // Подписываемся на событие изменения HP
+        vehicleHealth.OnHealthChanged += UpdateHealthBar;
+        vehicleHealth.OnDeath += HandleDeath;
+
+        // Инициализация
+        targetFillAmount = 1f;
+        currentFillAmount = 1f;
+
+        if (hpText != null)
+        {
+            hpText.text = $"{Mathf.CeilToInt(vehicleHealth.MaxHealth)} HP";
         }
     }
 
     private void OnDestroy()
     {
-        if (car != null)
+        if (vehicleHealth != null)
         {
-            car.OnHealthChanged -= UpdateHealthBar;
+            vehicleHealth.OnHealthChanged -= UpdateHealthBar;
+            vehicleHealth.OnDeath -= HandleDeath;
         }
     }
 
@@ -59,17 +79,27 @@ public class HealthBar : MonoBehaviour
         }
     }
 
+    // ===== ОБНОВЛЕНИЕ ПОЛОСКИ HP =====
     private void UpdateHealthBar(float currentHealth)
     {
-        targetFillAmount = currentHealth / car.MaxHealth;
+        targetFillAmount = currentHealth / vehicleHealth.MaxHealth;
 
         if (hpText != null)
         {
             int hpInt = Mathf.CeilToInt(currentHealth);
-            hpText.text = $"{hpInt} / {Mathf.CeilToInt(car.MaxHealth)} HP";
+            hpText.text = $"{hpInt} / {Mathf.CeilToInt(vehicleHealth.MaxHealth)} HP";
+        }
+    }
 
-            // 👆 ВСЁ! Больше ничего не нужно.
-            // Текст останется того цвета, который ты задал в Inspector.
+    // ===== ОБРАБОТКА СМЕРТИ =====
+    private void HandleDeath()
+    {
+        // Плавно опускаем полоску до 0
+        targetFillAmount = 0f;
+
+        if (hpText != null)
+        {
+            hpText.text = "0 HP";
         }
     }
 
@@ -84,6 +114,49 @@ public class HealthBar : MonoBehaviour
         else
         {
             fillImage.color = Color.Lerp(Color.red, Color.green, currentFillAmount);
+        }
+    }
+
+    // ===== ПУБЛИЧНЫЙ МЕТОД ДЛЯ ПЕРЕПОДПИСКИ ПОСЛЕ РЕСПАВНА =====
+    public void SubscribeToNewVehicle()
+    {
+        // Отписываемся от старой
+        if (vehicleHealth != null)
+        {
+            vehicleHealth.OnHealthChanged -= UpdateHealthBar;
+            vehicleHealth.OnDeath -= HandleDeath;
+        }
+
+        // Ищем новую машину игрока
+        GameObject playerCar = GameObject.FindGameObjectWithTag("Player");
+        if (playerCar != null)
+        {
+            vehicleHealth = playerCar.GetComponent<VehicleHealth>();
+        }
+        else
+        {
+            vehicleHealth = FindObjectOfType<VehicleHealth>();
+        }
+
+        if (vehicleHealth != null)
+        {
+            vehicleHealth.OnHealthChanged += UpdateHealthBar;
+            vehicleHealth.OnDeath += HandleDeath;
+
+            // Сбрасываем полоску
+            targetFillAmount = 1f;
+            currentFillAmount = 1f;
+
+            if (hpText != null)
+            {
+                hpText.text = $"{Mathf.CeilToInt(vehicleHealth.MaxHealth)} HP";
+            }
+
+            Debug.Log("✅ HealthBar: Подписка на новую машину");
+        }
+        else
+        {
+            Debug.LogError("❌ HealthBar: Не удалось найти новую машину!");
         }
     }
 }

@@ -14,24 +14,25 @@ public class WheelDustEffect : MonoBehaviour
     [SerializeField] private float impactIntensityMultiplier = 0.5f;
     [SerializeField] private bool rotateByNormal = true;
 
-    [Header("Дым при повреждении")]
-    [SerializeField] private ParticleSystem smokeEffect;
-    [SerializeField] private float smokeThreshold = 0.5f;   // Порог HP для дыма (50%)
-    [SerializeField] private float smokeIntensity = 1f;
-
-    [Header("Взрыв при смерти")]
-    [SerializeField] private GameObject explosionEffectPrefab;  // ПРЕФАБ взрыва
-
-    private MovingCar car;
+    private VehicleHealth vehicleHealth;
     private Rigidbody rb;
-    private bool isSmoking = false;
     private bool isDead = false;
-    private float currentHealth;  // Храним текущее HP
 
     private void Start()
     {
-        car = GetComponent<MovingCar>();
         rb = GetComponent<Rigidbody>();
+
+        // Ищем VehicleHealth
+        vehicleHealth = GetComponent<VehicleHealth>();
+        if (vehicleHealth == null)
+        {
+            Debug.LogWarning("⚠️ WheelDustEffect: VehicleHealth не найден!");
+        }
+        else
+        {
+            // Подписываемся на событие смерти (чтобы остановить пыль)
+            vehicleHealth.OnDeath += HandleDeath;
+        }
 
         if (dustParticles == null || dustParticles.Count == 0)
         {
@@ -43,57 +44,35 @@ public class WheelDustEffect : MonoBehaviour
             Debug.LogWarning("WheelDustEffect: Не назначен префаб эффекта удара!");
         }
 
-        // Выключаем дым при старте
-        if (smokeEffect != null) smokeEffect.Stop();
-
-        // Инициализируем HP
-        if (car != null)
+        // Выключаем пыль при старте
+        if (dustParticles != null)
         {
-            currentHealth = car.MaxHealth;
-
-            // Подписываемся на события
-            car.OnHealthChanged += HandleHealthChanged;
-            car.OnDeath += HandleDeath;
+            foreach (var p in dustParticles)
+            {
+                if (p != null) p.Stop();
+            }
         }
     }
 
     private void OnDestroy()
     {
-        // Отписываемся от событий
-        if (car != null)
+        if (vehicleHealth != null)
         {
-            car.OnHealthChanged -= HandleHealthChanged;
-            car.OnDeath -= HandleDeath;
+            vehicleHealth.OnDeath -= HandleDeath;
         }
     }
 
     private void Update()
     {
-        if (car == null || rb == null) return;
+        if (isDead || rb == null) return;
 
-        // ===== ПЫЛЬ ИЗ-ПОД КОЛЁС =====
         UpdateWheelDust();
-
-        // ===== ДЫМ =====
-        UpdateSmokeEffect();
-    }
-
-    // ===== ОБРАБОТКА ИЗМЕНЕНИЯ HP =====
-    private void HandleHealthChanged(float newHealth)
-    {
-        currentHealth = newHealth;
     }
 
     // ===== ОБРАБОТКА СМЕРТИ =====
     private void HandleDeath()
     {
         isDead = true;
-
-        // Выключаем дым
-        if (smokeEffect != null && smokeEffect.isPlaying)
-        {
-            smokeEffect.Stop();
-        }
 
         // Выключаем пыль
         if (dustParticles != null)
@@ -104,68 +83,13 @@ public class WheelDustEffect : MonoBehaviour
             }
         }
 
-        // Запускаем взрыв
-        if (explosionEffectPrefab != null)
-        {
-            GameObject explosionInstance = Instantiate(
-                explosionEffectPrefab,
-                transform.position,
-                Quaternion.identity
-            );
-
-            // Уничтожаем через время
-            ParticleSystem ps = explosionInstance.GetComponent<ParticleSystem>();
-            if (ps != null)
-            {
-                var main = ps.main;
-                float duration = main.duration + main.startLifetime.constantMax;
-                Destroy(explosionInstance, duration);
-            }
-            else
-            {
-                Destroy(explosionInstance, 2f);
-            }
-
-            Debug.Log("💥 Взрыв!");
-        }
-    }
-
-    // ===== УПРАВЛЕНИЕ ДЫМОМ =====
-    private void UpdateSmokeEffect()
-    {
-        if (isDead || smokeEffect == null || car == null) return;
-
-        float healthPercent = currentHealth / car.MaxHealth;
-
-        // Если HP ниже порога и дым ещё не идёт
-        if (healthPercent <= smokeThreshold && !isSmoking)
-        {
-            smokeEffect.Play();
-            isSmoking = true;
-            Debug.Log($"💨 Машина начала дымить! HP: {healthPercent * 100:F0}%");
-        }
-
-        // Если дым идёт, меняем интенсивность в зависимости от HP
-        if (isSmoking)
-        {
-            var main = smokeEffect.main;
-            float intensity = (1f - healthPercent) * smokeIntensity;
-            main.startSpeed = intensity * 5f;
-            main.startSize = intensity * 2f;
-        }
-
-        // Если HP восстановилось выше порога
-        if (healthPercent > smokeThreshold && isSmoking)
-        {
-            smokeEffect.Stop();
-            isSmoking = false;
-        }
+        Debug.Log("💨 Пыль остановлена (машина уничтожена)");
     }
 
     // ===== ПЫЛЬ ИЗ-ПОД КОЛЁС =====
     private void UpdateWheelDust()
     {
-        if (isDead || dustParticles == null) return;
+        if (dustParticles == null) return;
 
         float speed = rb.linearVelocity.magnitude;
 
@@ -201,13 +125,13 @@ public class WheelDustEffect : MonoBehaviour
     // ===== ЧАСТИЦЫ ПРИ СТОЛКНОВЕНИИ =====
     private void OnCollisionEnter(Collision collision)
     {
-        if (isDead) return;  // Не создаём эффекты после смерти
+        if (isDead) return;
 
         if (impactEffectPrefab == null || rb == null) return;
         if (collision.contacts == null || collision.contacts.Length == 0) return;
         if (LayerMask.LayerToName(collision.thisCollider.gameObject.layer) == "Default") return;
-        float impactForce = collision.relativeVelocity.magnitude * rb.mass;
 
+        float impactForce = collision.relativeVelocity.magnitude * rb.mass;
         if (impactForce < minImpactForce) return;
 
         Vector3 contactPoint = collision.contacts[0].point;
@@ -249,10 +173,5 @@ public class WheelDustEffect : MonoBehaviour
 
         float duration = main.duration + main.startLifetime.constantMax;
         Destroy(impactInstance, duration);
-    }
-
-    private bool IsWheelOnGround()
-    {
-        return Physics.Raycast(transform.position, Vector3.down, 0.5f);
     }
 }

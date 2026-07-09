@@ -3,7 +3,7 @@ using UnityEngine;
 public class Arena : MonoBehaviour
 {
     [Header("Spawn")]
-    [SerializeField] private SpawnPoints _spawnPoints;
+    [SerializeField] private SpawnManager _spawnPoints;
     [SerializeField] private float _spawnTime;
 
 

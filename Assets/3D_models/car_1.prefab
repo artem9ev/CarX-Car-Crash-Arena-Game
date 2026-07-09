@@ -16781,9 +16781,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HealthBar
   fill: {fileID: 3694597212375230079}
-  car: {fileID: 7834508491955151903}
   mainCamera: {fileID: 0}
   hpText: {fileID: 667431482795083794}
+  vehicleHealth: {fileID: 0}
   smoothSpeed: 5
   colorGradient:
     serializedVersion: 2
@@ -17016,6 +17016,7 @@ GameObject:
   - component: {fileID: 2280500443456318668}
   - component: {fileID: 7943798203987155602}
   - component: {fileID: 7433010135714416950}
+  - component: {fileID: 5084873408733236367}
   m_Layer: 3
   m_Name: car_1
   m_TagString: Untagged
@@ -17098,9 +17099,6 @@ MonoBehaviour:
   rearRightTransform: {fileID: -5816889912940413735}
   accelerationSensitivity: 1
   steeringSensitivity: 1
-  maxHealth: 100
-  collisionDamageMultiplier: 0.0005
-  minCollisionDamage: 1
 --- !u!114 &2280500443456318668
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -17124,10 +17122,6 @@ MonoBehaviour:
   minImpactForce: 5
   impactIntensityMultiplier: 0.5
   rotateByNormal: 1
-  smokeEffect: {fileID: 198603562046773920}
-  smokeThreshold: 0.5
-  smokeIntensity: 1
-  explosionEffectPrefab: {fileID: 6873310722658342338, guid: 674d7d8177ebfbb4c926f4e8d55a1bd2, type: 3}
 --- !u!82 &7943798203987155602
 AudioSource:
   m_ObjectHideFlags: 0
@@ -17246,12 +17240,30 @@ MonoBehaviour:
   minImpactForce: 3
   maxImpactVolume: 50
   engineSound: {fileID: 8300000, guid: ce444cc8b73d2664180a1c8cceb066ba, type: 3}
-  minEngineVolume: 0.5
-  maxEngineVolume: 10
-  minEnginePitch: 5.94
+  minEngineVolume: 80
+  maxEngineVolume: 90
+  minEnginePitch: 1.04
   maxEnginePitch: 3.11
   engineSmoothSpeed: 4.81
+  maxSpeed: 100
   playSoundsIn3D: 1
+  vehicleHealth: {fileID: 0}
+--- !u!114 &5084873408733236367
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 919132149155446097}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6bafe84bccb4f6143bd58e9a47b06847, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::VehicleHealth
+  maxHealth: 100
+  collisionDamageMultiplier: 0.0005
+  minCollisionDamage: 1
+  destroyDelay: 3
 --- !u!1 &1005787171171632615
 GameObject:
   m_ObjectHideFlags: 0
@@ -18799,13 +18811,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cf769a966036b3d499d988c39d984d29, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DriverRagdoll
-  configurableJoint: {fileID: 4029109360144272726}
+  mainJoint: {fileID: 0}
+  characterJoints: []
   ragdollParts: []
   ejectOnDeath: 1
   ejectForce: 100
   ejectUpForce: 10
   randomTorque: 20
   activateDelay: 0.05
+  vehicleHealth: {fileID: 0}
 --- !u!1 &2627250427482226344
 GameObject:
   m_ObjectHideFlags: 0

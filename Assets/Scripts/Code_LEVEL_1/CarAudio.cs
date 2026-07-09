@@ -16,32 +16,41 @@ public class CarAudio : MonoBehaviour
     [SerializeField] private float maxImpactVolume = 1.5f;
 
     [Header("Звук двигателя")]
-    [SerializeField] private AudioClip engineSound;           // Аудиоклип двигателя (зацикленный)
-    [SerializeField] private float minEngineVolume = 0.3f;    // Громкость на холостых (минимальная скорость)
-    [SerializeField] private float maxEngineVolume = 1f;      // Громкость на максимальной скорости
-    [SerializeField] private float minEnginePitch = 0.8f;     // Тон на холостых
-    [SerializeField] private float maxEnginePitch = 1.5f;     // Тон на максимальной скорости
-    [SerializeField] private float engineSmoothSpeed = 5f;    // Плавность изменения звука двигателя
+    [SerializeField] private AudioClip engineSound;
+    [SerializeField] private float minEngineVolume = 0.3f;
+    [SerializeField] private float maxEngineVolume = 1f;
+    [SerializeField] private float minEnginePitch = 0.8f;
+    [SerializeField] private float maxEnginePitch = 1.5f;
+    [SerializeField] private float engineSmoothSpeed = 5f;
+    [SerializeField] private float maxSpeed = 100f;  // Макс. скорость для расчёта звука
 
     [Header("Настройки AudioSource")]
     [SerializeField] private bool playSoundsIn3D = true;
 
-    private MovingCar car;
+    [Header("Ссылки на системы")]
+    [SerializeField] private VehicleHealth vehicleHealth;  // ← НОВОЕ
+
     private AudioSource audioSource;
-    private AudioSource engineAudioSource;  // Отдельный AudioSource для двигателя
+    private AudioSource engineAudioSource;
     private Rigidbody rb;
     private float currentEngineVolume;
     private float currentEnginePitch;
+    private bool isDead = false;
 
     private void Start()
     {
-        car = GetComponent<MovingCar>();
         rb = GetComponent<Rigidbody>();
         audioSource = GetComponent<AudioSource>();
 
-        if (car == null)
+        // Ищем VehicleHealth
+        if (vehicleHealth == null)
         {
-            Debug.LogError("❌ CarAudio: MovingCar не найден на объекте!");
+            vehicleHealth = GetComponent<VehicleHealth>();
+        }
+
+        if (vehicleHealth == null)
+        {
+            Debug.LogError("❌ CarAudio: VehicleHealth не найден!");
             return;
         }
 
@@ -56,15 +65,15 @@ public class CarAudio : MonoBehaviour
         engineObj.transform.localPosition = Vector3.zero;
         engineAudioSource = engineObj.AddComponent<AudioSource>();
         engineAudioSource.playOnAwake = false;
-        engineAudioSource.loop = true;  // Зацикливаем звук двигателя
+        engineAudioSource.loop = true;
         engineAudioSource.spatialBlend = playSoundsIn3D ? 1f : 0f;
 
         // Настройки основного AudioSource
         audioSource.playOnAwake = false;
         audioSource.spatialBlend = playSoundsIn3D ? 1f : 0f;
 
-        // Подписываемся на события
-        car.OnDeath += HandleDeath;
+        // Подписываемся на событие смерти
+        vehicleHealth.OnDeath += HandleDeath;
 
         // Инициализируем значения двигателя
         currentEngineVolume = minEngineVolume;
@@ -75,23 +84,23 @@ public class CarAudio : MonoBehaviour
 
     private void OnDestroy()
     {
-        if (car != null)
+        if (vehicleHealth != null)
         {
-            car.OnDeath -= HandleDeath;
+            vehicleHealth.OnDeath -= HandleDeath;
         }
     }
 
     private void Update()
     {
-        if (car == null || rb == null) return;
+        if (isDead || vehicleHealth == null || rb == null) return;
 
-        // Обновляем звук двигателя
         UpdateEngineSound();
     }
 
     // ===== ОБРАБОТКА СМЕРТИ МАШИНЫ =====
     private void HandleDeath()
     {
+        isDead = true;
         PlayExplosionSound();
         StopEngineSound();
     }
@@ -100,11 +109,9 @@ public class CarAudio : MonoBehaviour
     private void UpdateEngineSound()
     {
         if (engineSound == null || engineAudioSource == null) return;
-        if (car.IsDead) return;  // Не обновляем после смерти
 
         // Получаем текущую скорость в км/ч
         float speed = rb.linearVelocity.magnitude * 3.6f;
-        float maxSpeed = 100f;  // Можно сделать настраиваемым
 
         // Нормализуем скорость (0 до 1)
         float normalizedSpeed = Mathf.Clamp01(speed / maxSpeed);
@@ -163,10 +170,9 @@ public class CarAudio : MonoBehaviour
     // ===== ВОСПРОИЗВЕДЕНИЕ ЗВУКА УДАРА =====
     private void OnCollisionEnter(Collision collision)
     {
-        if (rb == null) return;
+        if (isDead || rb == null) return;
 
         float impactForce = collision.relativeVelocity.magnitude * rb.mass;
-
         if (impactForce < minImpactForce) return;
 
         PlayImpactSound(impactForce);
@@ -176,7 +182,7 @@ public class CarAudio : MonoBehaviour
     {
         if (impactSound == null)
         {
-            Debug.LogWarning("️ CarAudio: impactSound не назначен!");
+            Debug.LogWarning("⚠️ CarAudio: impactSound не назначен!");
             return;
         }
 
@@ -193,7 +199,5 @@ public class CarAudio : MonoBehaviour
         float scaledVolume = Mathf.Lerp(impactVolume * 0.5f, maxImpactVolume, normalizedForce);
 
         audioSource.PlayOneShot(impactSound, scaledVolume);
-
-        //Debug.Log($"🔊 Звук удара! Сила: {impactForce:F1} | Громкость: {scaledVolume:F2} | Pitch: {randomPitch:F2}");
     }
 }
