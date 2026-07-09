@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:Assets/Models.meta
 guid: 7bb5864c29728e74e8ce43a2a8132c5a
+========
+guid: 94373adeffc374040935ee5dc9dd1388
+>>>>>>>> Cars-branch:Assets/Settings/Code.meta
 folderAsset: yes
 DefaultImporter:
   externalObjects: {}
