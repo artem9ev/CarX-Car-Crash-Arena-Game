@@ -36340,9 +36340,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HealthBar
   fill: {fileID: 3694597212375230079}
-  car: {fileID: 7834508491955151903}
   mainCamera: {fileID: 0}
   hpText: {fileID: 667431482795083794}
+  vehicleHealth: {fileID: 0}
   smoothSpeed: 5
   colorGradient:
     serializedVersion: 2
@@ -36518,7 +36518,6 @@ GameObject:
   - component: {fileID: -2683180858150351812}
   - component: {fileID: 7834508491955151903}
   - component: {fileID: 4391329620947305147}
-  - component: {fileID: 2280500443456318668}
   - component: {fileID: 686277926517070426}
   - component: {fileID: 8395875272797007045}
   - component: {fileID: 3080615326168750693}
@@ -36612,7 +36611,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 919132149155446097}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a9e7fbd27c1a86d408730d8217b6fdb3, type: 3}
+  m_Script: {fileID: 11500000, guid: 4b6fcaa2130df524d9c1803d897bc3c9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MovingCar
   ShowTopMostFoldoutHeaderGroup: 1
@@ -36639,8 +36638,8 @@ MonoBehaviour:
   rearLeftTransform: {fileID: 2261459007979518510}
   rearRightTransform: {fileID: -5816889912940413735}
   maxHealth: 100
-  collisionDamageMultiplier: 0.0005
-  minCollisionDamage: 1
+  collisionDamageMultiplier: 0.5
+  minCollisionDamage: 5
 --- !u!114 &4391329620947305147
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -36654,29 +36653,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CarController
   ShowTopMostFoldoutHeaderGroup: 1
---- !u!114 &2280500443456318668
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 919132149155446097}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ba727b0e6625a644ba6f1fc85e6f9034, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::WheelDustEffect
-  dustParticles:
-  - {fileID: 198124144702787664}
-  - {fileID: 5739230271379830789}
-  - {fileID: 7350198456344306005}
-  - {fileID: 6742854610094910721}
-  minSpeedForDust: 2
-  dustIntensity: 1
-  impactEffectPrefab: {fileID: 4749980201479958301, guid: a4cbca814b838a5458720cd2f8d6a501, type: 3}
-  minImpactForce: 5
-  impactIntensityMultiplier: 0.5
-  rotateByNormal: 1
 --- !u!114 &686277926517070426
 MonoBehaviour:
   m_ObjectHideFlags: 0

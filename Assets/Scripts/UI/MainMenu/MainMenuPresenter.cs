@@ -15,6 +15,8 @@ public class MainMenuPresenter : MonoBehaviour
         SetNickname(nickname);
 
         ConnectionManager.Instance.OnClientConnectionNotification += OnClientConnectionNotification;
+
+        ActivateFirstScreen();
     }
 
 

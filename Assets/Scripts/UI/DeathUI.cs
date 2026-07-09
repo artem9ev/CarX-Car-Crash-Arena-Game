@@ -121,7 +121,7 @@ public class DeathUI : MonoBehaviour
         }
 
         // Респавним игрока
-        RespawnPlayer();
+        //RespawnPlayer();
     }
 
     // ===== ОБРАБОТКА НАЖАТИЯ КНОПКИ МЕНЮ =====
@@ -143,7 +143,7 @@ public class DeathUI : MonoBehaviour
     }
 
     // ===== РЕСПАВН ИГРОКА =====
-    private void RespawnPlayer()
+    /*private void RespawnPlayer()
     {
         // Находим CarSpawner на сцене
         CarSpawner spawner = FindObjectOfType<CarSpawner>();
@@ -168,7 +168,7 @@ public class DeathUI : MonoBehaviour
 
         // Сбрасываем флаг смерти
         isDead = false;
-    }
+    }*/
 
     // ===== ПОДПИСКА НА НОВУЮ МАШИНУ ПОСЛЕ РЕСПАВНА =====
     private void SubscribeToNewPlayer()

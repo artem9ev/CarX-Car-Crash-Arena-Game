@@ -231,6 +231,54 @@ Transform:
   m_Children: []
   m_Father: {fileID: 991253015}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &134293717
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 134293718}
+  - component: {fileID: 134293719}
+  m_Layer: 0
+  m_Name: SpawnPoint (2)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &134293718
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 134293717}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 93.4, y: 0, z: -89.6}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1551629689}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &134293719
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 134293717}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e61d0a8bdb09303498a7113674fddd73, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SpawnPoint
+  _boxSize: {x: 5, y: 5, z: 5}
+  _layerMask:
+    serializedVersion: 2
+    m_Bits: 8
 --- !u!1 &207173487
 GameObject:
   m_ObjectHideFlags: 0
@@ -343,7 +391,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 991253015}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &352883611
+--- !u!1 &260665651
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -351,57 +399,46 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 352883613}
-  - component: {fileID: 352883612}
+  - component: {fileID: 260665652}
+  - component: {fileID: 260665653}
   m_Layer: 0
-  m_Name: Spawns_5
+  m_Name: SpawnPoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &352883612
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 352883611}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c1850497ee872284c826a3f54aa8606b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::CarSpawner
-  carPrefab: {fileID: 919132149155446097, guid: 4fc85751782a8254db0b6b87f14891ef, type: 3}
-  spawnPoints:
-  - {fileID: 352883613}
-  maxCars: 1
-  spawnInterval: 5
-  minDistance: 10
-  useRandomSpawning: 0
-  spawnAreaSize: {x: 1, y: 1, z: 1}
-  playerCameraOffset: {x: 0, y: 2, z: -5}
-  playerCameraAngle: 15
-  cameraRange: 5
-  cameraAcceleration: 3
-  cameraHitMask:
-    serializedVersion: 2
-    m_Bits: 0
---- !u!4 &352883613
+--- !u!4 &260665652
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 352883611}
+  m_GameObject: {fileID: 260665651}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.1, y: 0, z: 198.8}
+  m_LocalPosition: {x: -45.8, y: 0, z: 68.3}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 1551629689}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &260665653
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 260665651}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e61d0a8bdb09303498a7113674fddd73, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SpawnPoint
+  _boxSize: {x: 5, y: 5, z: 5}
+  _layerMask:
+    serializedVersion: 2
+    m_Bits: 8
 --- !u!1 &410087039
 GameObject:
   m_ObjectHideFlags: 0
@@ -529,183 +566,6 @@ MonoBehaviour:
   m_ShadowLayerMask: 1
   m_RenderingLayers: 1
   m_ShadowRenderingLayers: 1
---- !u!1 &438491021
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 438491023}
-  - component: {fileID: 438491022}
-  m_Layer: 0
-  m_Name: Spawns_7
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &438491022
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 438491021}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c1850497ee872284c826a3f54aa8606b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::CarSpawner
-  carPrefab: {fileID: 919132149155446097, guid: 4fc85751782a8254db0b6b87f14891ef, type: 3}
-  spawnPoints:
-  - {fileID: 438491023}
-  maxCars: 1
-  spawnInterval: 5
-  minDistance: 10
-  useRandomSpawning: 0
-  spawnAreaSize: {x: 1, y: 1, z: 1}
-  playerCameraOffset: {x: 0, y: 2, z: -5}
-  playerCameraAngle: 15
-  cameraRange: 5
-  cameraAcceleration: 3
-  cameraHitMask:
-    serializedVersion: 2
-    m_Bits: 0
---- !u!4 &438491023
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 438491021}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 197, y: 0, z: 0.9}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &544010658
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 544010660}
-  - component: {fileID: 544010659}
-  m_Layer: 0
-  m_Name: Spawns_6
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &544010659
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 544010658}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c1850497ee872284c826a3f54aa8606b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::CarSpawner
-  carPrefab: {fileID: 919132149155446097, guid: 4fc85751782a8254db0b6b87f14891ef, type: 3}
-  spawnPoints:
-  - {fileID: 544010660}
-  maxCars: 1
-  spawnInterval: 5
-  minDistance: 10
-  useRandomSpawning: 0
-  spawnAreaSize: {x: 1, y: 1, z: 1}
-  playerCameraOffset: {x: 0, y: 2, z: -5}
-  playerCameraAngle: 15
-  cameraRange: 5
-  cameraAcceleration: 3
-  cameraHitMask:
-    serializedVersion: 2
-    m_Bits: 0
---- !u!4 &544010660
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 544010658}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 200.5, y: 0, z: 200.1}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &573030125
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 573030127}
-  - component: {fileID: 573030126}
-  m_Layer: 0
-  m_Name: Spawns_1
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &573030126
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 573030125}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c1850497ee872284c826a3f54aa8606b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::CarSpawner
-  carPrefab: {fileID: 919132149155446097, guid: a0b293e7b1bc706418627629921142f0, type: 3}
-  spawnPoints:
-  - {fileID: 573030127}
-  maxCars: 1
-  spawnInterval: 1
-  minDistance: 10
-  useRandomSpawning: 0
-  spawnAreaSize: {x: 1, y: 1, z: 1}
-  playerCameraOffset: {x: 0, y: 1, z: -1}
-  playerCameraAngle: 15
-  cameraRange: 5
-  cameraAcceleration: 3
-  cameraHitMask:
-    serializedVersion: 2
-    m_Bits: 0
---- !u!4 &573030127
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 573030125}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.5, y: 0, z: -199.2}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &767206179 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: e0339c2c9b428c94d802349335c0e3b0, type: 3}
@@ -782,65 +642,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &885291418
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 885291420}
-  - component: {fileID: 885291419}
-  m_Layer: 0
-  m_Name: Spawns_3
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &885291419
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 885291418}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c1850497ee872284c826a3f54aa8606b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::CarSpawner
-  carPrefab: {fileID: 919132149155446097, guid: 4fc85751782a8254db0b6b87f14891ef, type: 3}
-  spawnPoints:
-  - {fileID: 885291420}
-  maxCars: 1
-  spawnInterval: 5
-  minDistance: 10
-  useRandomSpawning: 0
-  spawnAreaSize: {x: 1, y: 1, z: 1}
-  playerCameraOffset: {x: 0, y: 2, z: -5}
-  playerCameraAngle: 15
-  cameraRange: 5
-  cameraAcceleration: 3
-  cameraHitMask:
-    serializedVersion: 2
-    m_Bits: 0
---- !u!4 &885291420
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 885291418}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -201, y: 0, z: -1}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &890478379 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: e0339c2c9b428c94d802349335c0e3b0, type: 3}
@@ -868,7 +669,7 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 3331795126931125770, guid: e0339c2c9b428c94d802349335c0e3b0, type: 3}
---- !u!1 &953573298
+--- !u!1 &909468342
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -876,57 +677,46 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 953573300}
-  - component: {fileID: 953573299}
+  - component: {fileID: 909468343}
+  - component: {fileID: 909468344}
   m_Layer: 0
-  m_Name: Spawns_4
+  m_Name: SpawnPoint (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &953573299
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 953573298}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c1850497ee872284c826a3f54aa8606b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::CarSpawner
-  carPrefab: {fileID: 919132149155446097, guid: 4fc85751782a8254db0b6b87f14891ef, type: 3}
-  spawnPoints:
-  - {fileID: 953573300}
-  maxCars: 1
-  spawnInterval: 5
-  minDistance: 10
-  useRandomSpawning: 0
-  spawnAreaSize: {x: 1, y: 1, z: 1}
-  playerCameraOffset: {x: 0, y: 2, z: -5}
-  playerCameraAngle: 15
-  cameraRange: 5
-  cameraAcceleration: 3
-  cameraHitMask:
-    serializedVersion: 2
-    m_Bits: 0
---- !u!4 &953573300
+--- !u!4 &909468343
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 953573298}
+  m_GameObject: {fileID: 909468342}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -200.3, y: 0, z: 198.6}
+  m_LocalPosition: {x: -54, y: 0, z: -96.3}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 1551629689}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &909468344
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 909468342}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e61d0a8bdb09303498a7113674fddd73, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SpawnPoint
+  _boxSize: {x: 5, y: 5, z: 5}
+  _layerMask:
+    serializedVersion: 2
+    m_Bits: 8
 --- !u!1001 &959717543
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1371,6 +1161,54 @@ Transform:
   m_Children: []
   m_Father: {fileID: 991253015}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1364711627
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1364711628}
+  - component: {fileID: 1364711629}
+  m_Layer: 0
+  m_Name: SpawnPoint (1)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1364711628
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1364711627}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 93, y: 0, z: 65.8}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1551629689}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1364711629
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1364711627}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e61d0a8bdb09303498a7113674fddd73, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SpawnPoint
+  _boxSize: {x: 5, y: 5, z: 5}
+  _layerMask:
+    serializedVersion: 2
+    m_Bits: 8
 --- !u!1001 &1413735779
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1470,7 +1308,7 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 3331795126931125770, guid: e0339c2c9b428c94d802349335c0e3b0, type: 3}
---- !u!1 &1499370933
+--- !u!1 &1551629687
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1478,55 +1316,46 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 1499370935}
-  - component: {fileID: 1499370934}
+  - component: {fileID: 1551629689}
+  - component: {fileID: 1551629688}
   m_Layer: 0
-  m_Name: Spawns_8
+  m_Name: SpawnManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1499370934
+--- !u!114 &1551629688
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1499370933}
+  m_GameObject: {fileID: 1551629687}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c1850497ee872284c826a3f54aa8606b, type: 3}
+  m_Script: {fileID: 11500000, guid: 68af7d4093b6c3c49ab1a191331c7da5, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::CarSpawner
-  carPrefab: {fileID: 919132149155446097, guid: 4fc85751782a8254db0b6b87f14891ef, type: 3}
-  spawnPoints:
-  - {fileID: 1499370935}
-  maxCars: 1
-  spawnInterval: 5
-  minDistance: 10
-  useRandomSpawning: 0
-  spawnAreaSize: {x: 1, y: 1, z: 1}
-  playerCameraOffset: {x: 0, y: 2, z: -5}
-  playerCameraAngle: 15
-  cameraRange: 5
-  cameraAcceleration: 3
-  cameraHitMask:
-    serializedVersion: 2
-    m_Bits: 0
---- !u!4 &1499370935
+  m_EditorClassIdentifier: Assembly-CSharp::SpawnManager
+  _spawnPointns: []
+  defaultCarPrefab: {fileID: 7834508491955151903, guid: a0b293e7b1bc706418627629921142f0, type: 3}
+--- !u!4 &1551629689
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1499370933}
+  m_GameObject: {fileID: 1551629687}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 200.2, y: 0, z: -200.4}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 260665652}
+  - {fileID: 1364711628}
+  - {fileID: 134293718}
+  - {fileID: 909468343}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1712929406 stripped
@@ -1722,65 +1551,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1944219457
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1944219459}
-  - component: {fileID: 1944219458}
-  m_Layer: 0
-  m_Name: Spawns_2
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1944219458
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1944219457}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c1850497ee872284c826a3f54aa8606b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::CarSpawner
-  carPrefab: {fileID: 919132149155446097, guid: 4fc85751782a8254db0b6b87f14891ef, type: 3}
-  spawnPoints:
-  - {fileID: 1944219459}
-  maxCars: 1
-  spawnInterval: 5
-  minDistance: 10
-  useRandomSpawning: 0
-  spawnAreaSize: {x: 1, y: 1, z: 1}
-  playerCameraOffset: {x: 0, y: 2, z: -5}
-  playerCameraAngle: 15
-  cameraRange: 5
-  cameraAcceleration: 3
-  cameraHitMask:
-    serializedVersion: 2
-    m_Bits: 0
---- !u!4 &1944219459
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1944219457}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -198.9, y: 0, z: -199.7}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &2027886300
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1861,15 +1631,8 @@ SceneRoots:
   - {fileID: 832575519}
   - {fileID: 1896985034}
   - {fileID: 991253015}
-  - {fileID: 573030127}
-  - {fileID: 1944219459}
-  - {fileID: 885291420}
-  - {fileID: 953573300}
-  - {fileID: 352883613}
-  - {fileID: 544010660}
-  - {fileID: 438491023}
-  - {fileID: 1499370935}
   - {fileID: 1727052170}
   - {fileID: 959717543}
   - {fileID: 1413735779}
   - {fileID: 2027886300}
+  - {fileID: 1551629689}

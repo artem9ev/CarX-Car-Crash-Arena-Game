@@ -19,7 +19,7 @@ public class SpawnPoint : MonoBehaviour
             _transform = transform;
         }
 
-        Gizmos.color = Color.magenta;
+        Gizmos.color = new Color(1f, 0, 1f, 0.3f);
 
         Gizmos.DrawCube(_transform.position + _transform.up * _boxSize.y / 2, _boxSize );
     }

@@ -30,11 +30,15 @@ public class SpawnManager : MonoBehaviour
     }
     private void Start()
     {
+        if (!NetworkManager.Singleton.IsServer) return;
+
         NetworkManager.Singleton.OnClientConnectedCallback += OnPlayerConnected;
     }
 
     private void OnPlayerConnected(ulong ClientID)
     {
+        Debug.Log("[CONNECTED] Try to spawn player car");
+
         if (!NetworkManager.Singleton.IsServer) return;
         var car = Instantiate(defaultCarPrefab).GetComponent<NetworkObject>();
         car.SpawnWithOwnership(ClientID);

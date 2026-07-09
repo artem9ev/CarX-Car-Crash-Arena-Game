@@ -22,9 +22,9 @@ public class PlayerData : NetworkBehaviour
 
         if (IsServer) 
         {
-            NetworkObject car = Instantiate(_defaultCar).GetComponent<NetworkObject>();
+            //NetworkObject car = Instantiate(_defaultCar).GetComponent<NetworkObject>();
 
-            car.SpawnWithOwnership(OwnerClientId);
+            //car.SpawnWithOwnership(OwnerClientId);
         }
     }
 
