@@ -1,4 +1,6 @@
+using System;
 using System.Collections;
+using Unity.Netcode;
 using Unity.Services.Multiplayer.Components;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -33,6 +35,20 @@ public class SceneLoader : MonoBehaviour
         LoadMainMenu();
 
         DontDestroyOnLoad(gameObject);
+
+        NetworkManager.Singleton.OnServerStarted += ServerStart;
+        NetworkManager.Singleton.OnServerStopped += ServerStop;
+    }
+
+    private void ServerStop(bool obj)
+    {
+        NetworkManager.Singleton.OnServerStarted -= ServerStart;
+        NetworkManager.Singleton.OnServerStopped -= ServerStop;
+    }
+
+    private void ServerStart()
+    {
+        Debug.Log("SERVER START!!!!!!!!!!!!!!!!");
     }
 
     private void LoadUI()
@@ -91,11 +107,11 @@ public class SceneLoader : MonoBehaviour
 
         if (SceneManager.GetSceneByName("Bootstrap").isLoaded)
         {
-            SceneManager.UnloadSceneAsync("Bootstrap");
+            //SceneManager.UnloadSceneAsync("Bootstrap");
         }
         if (SceneManager.GetSceneByName(_uiName).isLoaded)
         {
-            SceneManager.UnloadSceneAsync(_uiName);
+            //SceneManager.UnloadSceneAsync(_uiName);
         }
 
         //_loadRoutine = StartCoroutine(LoadSceneAsync(_lobbyName));

@@ -3,7 +3,7 @@ using UnityEditor.PackageManager;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class LobbyView : MonoBehaviour
+public class LobbyView : BaseViewUI
 {
     [SerializeField] private ConnectedPlayerGUI _playerPrefabGUI;
     [SerializeField] private VerticalLayoutGroup _root;
