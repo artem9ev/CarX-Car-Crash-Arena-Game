@@ -36557,7 +36557,7 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 919132149155446097}
   serializedVersion: 5
-  m_Mass: 1500
+  m_Mass: 1200
   m_LinearDamping: 0
   m_AngularDamping: 0.05
   m_CenterOfMass: {x: 0, y: 0.91, z: 0}
@@ -36620,8 +36620,8 @@ MonoBehaviour:
   m_turnSpeed: 300
   m_outerWheelCoef: 0.8
   m_safeSteerCoef: 1
-  m_projectedLinearDamping: {x: 0, y: 0, z: 0}
-  m_maxAirAngularVelocity: 300
+  m_projectedLinearDamping: {x: 5, y: 20, z: 0}
+  m_maxAirAngularVelocity: 500
   m_softHitAudio: {fileID: 0}
   m_hardHitAudio: {fileID: 0}
   m_softHitImpulse: 500
@@ -42996,7 +42996,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 2.4488873, y: 1.2821078, z: 3.8830032}
+  m_Size: {x: 1.97, y: 1.2821078, z: 3.35}
   m_Center: {x: 0.017653704, y: 1.1538411, z: -0.29288316}
 --- !u!1 &2749964484469568271
 GameObject:

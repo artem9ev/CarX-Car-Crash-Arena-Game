@@ -18,30 +18,41 @@ public class SpawnManager : MonoBehaviour
         }
     }
 
-    private void Awake()
+    private void Start()
     {
-        for (int i = 1; i < transform.childCount; i++) {
-            SpawnPoint point = transform.GetChild(i).GetComponent<SpawnPoint>();
-            if (point != null && !_spawnPointns.Contains(point))
+        if (NetworkManager.Singleton.IsServer) 
+        {
+            foreach (var clientID in NetworkManager.Singleton.ConnectedClientsIds)
             {
-                _spawnPointns.Add(point);
+                OnClientConnected(clientID);
             }
         }
     }
-    private void Start()
-    {
-        if (!NetworkManager.Singleton.IsServer) return;
 
-        NetworkManager.Singleton.OnClientConnectedCallback += OnPlayerConnected;
+    private void OnEnable()
+    {
+        if (NetworkManager.Singleton != null && NetworkManager.Singleton.IsServer)
+        {
+            NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnected;
+        }
     }
 
-    private void OnPlayerConnected(ulong ClientID)
+    private void OnDisable()
+    {
+        if (NetworkManager.Singleton != null)
+        {
+            NetworkManager.Singleton.OnClientConnectedCallback -= OnClientConnected;
+        }
+    }
+
+    private void OnClientConnected(ulong сlientID)
     {
         Debug.Log("[CONNECTED] Try to spawn player car");
 
         if (!NetworkManager.Singleton.IsServer) return;
+
         var car = Instantiate(defaultCarPrefab).GetComponent<NetworkObject>();
-        car.SpawnWithOwnership(ClientID);
+        car.SpawnWithOwnership(сlientID);
     }
 
 }

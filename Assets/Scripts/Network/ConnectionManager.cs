@@ -25,6 +25,8 @@ public class ConnectionManager : MonoBehaviour
     private static ConnectionManager _instance;
     public static ConnectionManager Instance => _instance;
 
+    public static Action onStart;
+
     private void Awake()
     {
         if (_instance != null)
@@ -39,6 +41,8 @@ public class ConnectionManager : MonoBehaviour
 
     private void Start()
     {
+        onStart?.Invoke();
+
         _networkManager = NetworkManager.Singleton;
 
         _networkManager.OnServerStarted += OnServerStart;
@@ -47,6 +51,11 @@ public class ConnectionManager : MonoBehaviour
 
         var utp = _networkManager.GetComponent<UnityTransport>();
         utp.SetConnectionData("127.0.0.1", 7778 );
+
+        if (BootstrapLoader.ShouldFastConnect)
+        {
+            //CreateLobby();
+        }
     }
 
     private void OnDestroy()
@@ -75,12 +84,14 @@ public class ConnectionManager : MonoBehaviour
     {
         _networkManager.StartHost();
 
-        SceneLoader.Instance.LoadLobby();
+        SceneLoader.Instance.StartGame();
     }
 
     public void ConnectLobby()
     {
         _networkManager.StartClient();
+
+        SceneLoader.Instance.StartGame();
     }
 
     public void Disconnect()

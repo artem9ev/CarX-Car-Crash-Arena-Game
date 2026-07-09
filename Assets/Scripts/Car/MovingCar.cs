@@ -1,8 +1,6 @@
-using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.Events;
-using static UnityEngine.Rendering.DebugUI;
 
 [RequireComponent(typeof(Rigidbody))]
 [RequireComponent(typeof(CarController))]
@@ -97,9 +95,6 @@ public class MovingCar : NetworkBehaviour
     // ===== УРОН ОТ СТОЛКНОВЕНИЙ =====
     private void OnCollisionEnter(Collision collision)
     {
-
-
-
         if (!IsServer) return;
 
         double scheduledTime = AudioSettings.dspTime - 0.2f;
@@ -141,9 +136,6 @@ public class MovingCar : NetworkBehaviour
     {
         if (!IsServer) return;
 
-        if (isDead) return;
-
-        //Debug.Log($"{m_gas} || {m_steering}");
         float localVelocity = Vector3.Dot(transform.forward, _rb.linearVelocity);
         float currentSpeedKmh = Mathf.Abs(localVelocity) * 3.6f;
 
