@@ -34,7 +34,6 @@ public class Bot_hp : MonoBehaviour
     private void OnCollisionEnter(Collision collision)
     {
         if (isDead || rb == null || LayerMask.LayerToName(gameObject.layer) == "bot" || LayerMask.LayerToName(gameObject.layer) == "Player") return;
-
         float impactForce = collision.relativeVelocity.magnitude * rb.mass;
         if (impactForce < minCollisionDamage) return;
 
@@ -48,7 +47,7 @@ public class Bot_hp : MonoBehaviour
 
         currentHealth -= damage;
         currentHealth = Mathf.Max(0, currentHealth);
-
+        Debug.Log(currentHealth);
         OnHealthChanged?.Invoke(currentHealth);
 
         if (currentHealth <= 0)

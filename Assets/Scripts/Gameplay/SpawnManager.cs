@@ -8,6 +8,7 @@ public class SpawnManager : MonoBehaviour
 {
     [SerializeField] private List<SpawnPoint> _spawnPointns = new List<SpawnPoint>();
     [SerializeField] private MovingCar defaultCarPrefab;
+    [SerializeField] private MovingCar defaultBotPrefab;
     public int Count => _spawnPointns.Count;
 
     public SpawnPoint this[int index]
@@ -53,6 +54,8 @@ public class SpawnManager : MonoBehaviour
 
         var car = Instantiate(defaultCarPrefab).GetComponent<NetworkObject>();
         car.SpawnWithOwnership(сlientID);
+        var bot = Instantiate(defaultBotPrefab).GetComponent<NetworkObject>();
+        bot.Spawn();
     }
 
 }
