@@ -1,7 +1,6 @@
 using Unity.Netcode;
 using Unity.Collections;
 using UnityEngine;
-using System.Collections;
 
 public class PlayerData : NetworkBehaviour
 {

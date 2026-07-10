@@ -17,6 +17,8 @@ public class ClientEventBus : MonoBehaviour
             return;
         }
         _instance = this;
+
+        DontDestroyOnLoad(gameObject);
     }
 
     public void InvokeCarOwn(MovingCar car)
