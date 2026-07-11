@@ -133,10 +133,6 @@ public class HealthBar : MonoBehaviour
         {
             vehicleHealth = playerCar.GetComponent<VehicleHealth>();
         }
-        else
-        {
-            vehicleHealth = FindObjectOfType<VehicleHealth>();
-        }
 
         if (vehicleHealth != null)
         {

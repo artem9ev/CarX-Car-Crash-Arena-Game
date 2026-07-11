@@ -1,57 +1,73 @@
-﻿using UnityEngine;
+﻿using Unity.Netcode;
+using UnityEngine;
+using UnityEngine.Events;
 
-public class VehicleHealth : MonoBehaviour
+public class VehicleHealth : NetworkBehaviour
 {
     [Header("Настройки здоровья")]
-    [SerializeField] private float maxHealth = 100f;
-    private float currentHealth;
+    [SerializeField] private float _maxHealth = 100f;
 
     [Header("Настройки урона")]
-    [SerializeField] private float collisionDamageMultiplier = 0.5f;
-    [SerializeField] private float minCollisionDamage = 5f;
+    [SerializeField] private float _damageMultiplier = 0.5f;
+    [SerializeField] private float _minDamage = 5f;
 
-    [Header("Отключение при смерти")]
-    [SerializeField] private float destroyDelay = 3f;
+    private MovingCar _car;
 
-    private bool isDead = false;
-    private Rigidbody rb;
+    private NetworkVariable<float> _currentHealth;
 
-    // События (всё, что нужно другим скриптам)
-    public event System.Action<float> OnHealthChanged;
-    public event System.Action OnDeath;
+    public event UnityAction<float> OnHealthChanged;
+    public event UnityAction OnDeath;
 
-    // Свойства
-    public float MaxHealth => maxHealth;
-    public float CurrentHealth => currentHealth;
-    public bool IsDead => isDead;
+    public float MaxHealth => _maxHealth;
+    public float CurrentHealth => _currentHealth.Value;
+    public bool IsDead => _currentHealth.Value <= 0f;
 
-    private void Start()
+    private void Awake()
     {
-        currentHealth = maxHealth;
-        rb = GetComponent<Rigidbody>();
+        _car = GetComponent<MovingCar>();
     }
 
-    private void OnCollisionEnter(Collision collision)
+    public override void OnNetworkSpawn()
     {
-        if (isDead || rb == null) return;
+        if (IsServer)
+            _currentHealth.Value = _maxHealth;
 
-        float impactForce = collision.relativeVelocity.magnitude * rb.mass;
-        if (impactForce < minCollisionDamage) return;
-
-        float damage = impactForce * collisionDamageMultiplier;
-        TakeDamage(damage);
+        _currentHealth.OnValueChanged += OnHealthValueChange;
     }
 
-    public void TakeDamage(float damage)
+    private void OnHealthValueChange(float oldValue, float newValue)
     {
-        if (isDead) return;
+        Debug.Log($"[client: {OwnerClientId}] --- CAR IS DESTROYED ", gameObject);
+        // Вызываем локальное событие на клиентах
+        OnHealthChanged?.Invoke(newValue);
+        if (newValue <= 0)
+        {
+            OnDeath?.Invoke();
+            // Дополнительно можно вызвать клиентские эффекты через отдельный RPC,
+            // но можно и через событие
+            //ClientCarDeathEffectsRpc(transform.position);
+        }
+    }
 
-        currentHealth -= damage;
-        currentHealth = Mathf.Max(0, currentHealth);
+    public void TakeDamage(float impulse)
+    {
+        if (IsDead || !IsServer) 
+            return;
 
-        OnHealthChanged?.Invoke(currentHealth);
+        float damage = impulse * _damageMultiplier;
 
-        if (currentHealth <= 0)
+        if (impulse < 0)
+            throw new System.ArgumentException($"Try to take damage that have value less 0 (impulse: {impulse})");
+
+        if (damage < _minDamage)
+            damage = _minDamage;
+
+        _currentHealth.Value -= damage;
+        _currentHealth.Value = Mathf.Max(0, CurrentHealth);
+
+        OnHealthChanged?.Invoke(CurrentHealth);
+
+        if (_currentHealth.Value <= 0)
         {
             Die();
         }
@@ -59,19 +75,11 @@ public class VehicleHealth : MonoBehaviour
 
     private void Die()
     {
-        if (isDead) return;
-        isDead = true;
+        if (IsDead || !IsServer) return;
 
-        Debug.Log("☠️ Машина уничтожена!");
+        ClientCarDeathRpc(transform.position);
 
-        // Просто уведомляем всех подписчиков
-        OnDeath?.Invoke();
-
-        // Отключаем скрипты управления
         DisableControlScripts();
-
-        // Удаляем машину через задержку
-        Destroy(gameObject, destroyDelay);
     }
 
     private void DisableControlScripts()
@@ -102,17 +110,26 @@ public class VehicleHealth : MonoBehaviour
 
     public void Repair(float amount)
     {
-        if (isDead) return;
-        currentHealth += amount;
-        currentHealth = Mathf.Min(currentHealth, maxHealth);
-        OnHealthChanged?.Invoke(currentHealth);
+        if (IsDead || !IsServer) 
+            return;
+        _currentHealth.Value += amount;
+        _currentHealth.Value = Mathf.Min(CurrentHealth, _maxHealth);
+
+        OnHealthChanged?.Invoke(CurrentHealth);
     }
 
     public void SetHealth(float health)
     {
-        if (isDead) return;
-        currentHealth = Mathf.Clamp(health, 0, maxHealth);
-        OnHealthChanged?.Invoke(currentHealth);
-        if (currentHealth <= 0) Die();
+        if (IsDead || !IsServer) 
+            return;
+        _currentHealth.Value = Mathf.Clamp(health, 0, _maxHealth);
+        OnHealthChanged?.Invoke(CurrentHealth);
+        if (CurrentHealth <= 0) Die();
+    }
+
+    [Rpc(SendTo.ClientsAndHost)]
+    public void ClientCarDeathRpc(Vector3 position)
+    {
+        ClientEventBus.Instance.InvokeCarExplosion(position);
     }
 }

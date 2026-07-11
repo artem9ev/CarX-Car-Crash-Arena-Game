@@ -35746,12 +35746,12 @@ GameObject:
   m_Component:
   - component: {fileID: -8679921383154817045}
   - component: {fileID: -2683180858150351812}
+  - component: {fileID: 8395875272797007045}
+  - component: {fileID: 3080615326168750693}
   - component: {fileID: 6463885650073322775}
   - component: {fileID: 7834508491955151903}
   - component: {fileID: 4391329620947305147}
   - component: {fileID: 686277926517070426}
-  - component: {fileID: 8395875272797007045}
-  - component: {fileID: 3080615326168750693}
   - component: {fileID: 1675215704071172687}
   m_Layer: 3
   m_Name: car_1
@@ -35793,7 +35793,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 990975425
+  GlobalObjectIdHash: 2612427593
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -35807,103 +35807,6 @@ MonoBehaviour:
   AutoObjectParentSync: 1
   SyncOwnerTransformWhenParented: 1
   AllowOwnerToParent: 0
---- !u!54 &6463885650073322775
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 919132149155446097}
-  serializedVersion: 5
-  m_Mass: 1200
-  m_LinearDamping: 0
-  m_AngularDamping: 0.05
-  m_CenterOfMass: {x: 0, y: 0.7, z: 0}
-  m_InertiaTensor: {x: 1, y: 1, z: 1}
-  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ImplicitCom: 0
-  m_ImplicitTensor: 1
-  m_UseGravity: 1
-  m_IsKinematic: 0
-  m_Interpolate: 1
-  m_Constraints: 0
-  m_CollisionDetection: 1
---- !u!114 &7834508491955151903
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 919132149155446097}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4b6fcaa2130df524d9c1803d897bc3c9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::MovingCar
-  ShowTopMostFoldoutHeaderGroup: 1
-  m_downForceCoef: 15
-  m_steeringMaxAngle: 35
-  m_turnSpeed: 300
-  m_outerWheelCoef: 0.8
-  m_safeSteerCoef: 1
-  m_projectedLinearDamping: {x: 5, y: 20, z: 0}
-  m_maxAirAngularVelocity: 500
-  m_softHitAudio: {fileID: 0}
-  m_hardHitAudio: {fileID: 0}
-  m_softHitImpulse: 500
-  m_hardHitImpulse: 2000
-  motorForce: 2500
-  maxSpeed: 100
-  brakeTorque: 3000
-  WheelFL: {fileID: 4058158894578718026}
-  WheelFR: {fileID: 1599652623752590188}
-  WheelBL: {fileID: 3621001989305673165}
-  WheelBR: {fileID: 3825463642171184544}
-  frontLeftTransform: {fileID: -3245189568780204217}
-  frontRightTransform: {fileID: -324938149649591883}
-  rearLeftTransform: {fileID: 2261459007979518510}
-  rearRightTransform: {fileID: -5816889912940413735}
-  maxHealth: 100
-  collisionDamageMultiplier: 0.5
-  minCollisionDamage: 5
---- !u!114 &4391329620947305147
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 919132149155446097}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f50e197d20fbbdc47a81f9b76408dabd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::CarController
-  ShowTopMostFoldoutHeaderGroup: 1
---- !u!114 &686277926517070426
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 919132149155446097}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fdb2498b7e5669840926b3ae41c54a6f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::CarEffector
-  smokeEffect: {fileID: 0}
-  explosionEffect: {fileID: 0}
-  smokeThreshold: 0.5
-  smokeIntensity: 1
-  wheelDustEffects: []
-  minSpeedForDust: 2
-  dustIntensityMultiplier: 0.5
 --- !u!114 &8395875272797007045
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -35967,6 +35870,103 @@ MonoBehaviour:
   UseRigidBodyForMotion: 0
   AutoUpdateKinematicState: 1
   AutoSetKinematicOnDespawn: 1
+--- !u!54 &6463885650073322775
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 919132149155446097}
+  serializedVersion: 5
+  m_Mass: 1200
+  m_LinearDamping: 0
+  m_AngularDamping: 0.05
+  m_CenterOfMass: {x: 0, y: 0.7, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 0
+  m_ImplicitTensor: 1
+  m_UseGravity: 1
+  m_IsKinematic: 0
+  m_Interpolate: 1
+  m_Constraints: 0
+  m_CollisionDetection: 1
+--- !u!114 &7834508491955151903
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 919132149155446097}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4b6fcaa2130df524d9c1803d897bc3c9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MovingCar
+  ShowTopMostFoldoutHeaderGroup: 1
+  _downForceCoef: 3
+  _steeringMaxAngle: 40
+  _turnSpeed: 300
+  _outerWheelCoef: 0.8
+  _safeSteerCoef: 1
+  m_projectedLinearDamping: {x: 5, y: 20, z: 0}
+  m_maxAirAngularVelocity: 500
+  m_softHitAudio: {fileID: 0}
+  m_hardHitAudio: {fileID: 0}
+  m_softHitImpulse: 500
+  m_hardHitImpulse: 2000
+  motorForce: 2500
+  maxSpeed: 100
+  brakeTorque: 3000
+  WheelFL: {fileID: 4058158894578718026}
+  WheelFR: {fileID: 1599652623752590188}
+  WheelBL: {fileID: 3621001989305673165}
+  WheelBR: {fileID: 3825463642171184544}
+  frontLeftTransform: {fileID: -3245189568780204217}
+  frontRightTransform: {fileID: -324938149649591883}
+  rearLeftTransform: {fileID: 2261459007979518510}
+  rearRightTransform: {fileID: -5816889912940413735}
+  maxHealth: 100
+  collisionDamageMultiplier: 0.5
+  minCollisionDamage: 5
+--- !u!114 &4391329620947305147
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 919132149155446097}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f50e197d20fbbdc47a81f9b76408dabd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CarController
+  ShowTopMostFoldoutHeaderGroup: 1
+--- !u!114 &686277926517070426
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 919132149155446097}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fdb2498b7e5669840926b3ae41c54a6f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CarEffector
+  smokeEffect: {fileID: 0}
+  explosionEffect: {fileID: 0}
+  smokeThreshold: 0.5
+  smokeIntensity: 1
+  wheelDustEffects: []
+  minSpeedForDust: 2
+  dustIntensityMultiplier: 0.5
 --- !u!114 &1675215704071172687
 MonoBehaviour:
   m_ObjectHideFlags: 0

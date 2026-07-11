@@ -79,7 +79,7 @@ public class SceneLoader : MonoBehaviour
     {
         SetupNetcodeSceneManager();
 
-        if (!NetworkManager.Singleton.IsServer) 
+        if (!NetworkManager.Singleton.IsServer && BootstrapLoader.ShouldFastConnect) 
             return;
 
         var status = NetworkManager.Singleton.SceneManager.LoadScene(_levelName, LoadSceneMode.Additive);

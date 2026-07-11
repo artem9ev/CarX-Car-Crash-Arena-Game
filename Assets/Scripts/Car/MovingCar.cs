@@ -4,6 +4,7 @@ using UnityEngine.Events;
 
 [RequireComponent(typeof(Rigidbody))]
 [RequireComponent(typeof(CarEffector))]
+[RequireComponent(typeof(CarPhysics))]
 public class MovingCar : NetworkBehaviour
 {
     [SerializeField, Min(0f)] private float _downForceCoef = 3f;
@@ -16,12 +17,6 @@ public class MovingCar : NetworkBehaviour
     [SerializeField] private Vector3 m_projectedLinearDamping = Vector3.zero;
     [Header("Air controls")]
     [SerializeField, Min(0f)] private float m_maxAirAngularVelocity = 300f;
-
-    [Header("Hits")]
-    [SerializeField] private AudioSource m_softHitAudio;
-    [SerializeField] private AudioSource m_hardHitAudio;
-    [SerializeField, Min(0f)] private float m_softHitImpulse = 500f;
-    [SerializeField, Min(0f)] private float m_hardHitImpulse = 2000f;
 
     [Header("Двигатель")]
     [SerializeField] private float motorForce = 2500f;
@@ -40,16 +35,6 @@ public class MovingCar : NetworkBehaviour
     [SerializeField] private Transform rearLeftTransform;
     [SerializeField] private Transform rearRightTransform;
 
-    [Header("Здоровье")]
-    [SerializeField] private float maxHealth = 100f;
-    private float currentHealth;
-
-    [Header("Настройки урона от столкновений")]
-    [SerializeField] private float collisionDamageMultiplier = 0.5f;
-    [SerializeField] private float minCollisionDamage = 5f;
-
-    private bool isDead = false;
-
     private Transform _transform;
     private Rigidbody _rb;
 
@@ -65,9 +50,6 @@ public class MovingCar : NetworkBehaviour
     // События
     public event UnityAction<float> OnHealthChanged;
     public event UnityAction OnDeath;
-
-
-    public float MaxHealth => maxHealth;
 
     public bool isGrounded => WheelFL.isGrounded || WheelFR.isGrounded || WheelBL.isGrounded || WheelBR.isGrounded;
     public Vector3 position => _rb.position;
@@ -87,7 +69,6 @@ public class MovingCar : NetworkBehaviour
     {
         _transform = transform;
         _rb = GetComponent<Rigidbody>();
-        currentHealth = maxHealth;
 
         StopCar();
     }
@@ -97,30 +78,6 @@ public class MovingCar : NetworkBehaviour
         if (IsOwner)
         {
         }
-    }
-
-    private void OnCollisionEnter(Collision collision)
-    {
-        if (!IsServer) return;
-
-        double scheduledTime = AudioSettings.dspTime - 0.2f;
-        if (collision.impulse.magnitude > m_hardHitImpulse && m_hardHitAudio != null)
-        {
-            m_hardHitAudio.PlayScheduled(scheduledTime);
-        }
-        else if (collision.impulse.magnitude > m_softHitImpulse && m_softHitAudio != null)
-        {
-            m_softHitAudio.PlayScheduled(scheduledTime);
-        }
-
-        if (isDead) return;
-
-        float impactForce = collision.relativeVelocity.magnitude * _rb.mass;
-
-        if (impactForce < minCollisionDamage) return;
-
-        float damage = impactForce * collisionDamageMultiplier;
-        TakeDamage(damage);
     }
 
     private void Update()
@@ -173,12 +130,6 @@ public class MovingCar : NetworkBehaviour
         ApplyLinearDamping();
     }
 
-    private void TakeDamage(float damage)
-    {
-        currentHealth -= damage;
-        currentHealth = Mathf.Max(0, currentHealth);
-    }
-
     private void StopCar()
     {
         WheelBL.motorTorque = 0;
@@ -216,7 +167,6 @@ public class MovingCar : NetworkBehaviour
         _rb.AddForce(m_projectedAirForceY);
         _rb.AddForce(m_projectedAirForceZ);
     }
-
 
     private void ApplyDownforce()
     {

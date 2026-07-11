@@ -50,7 +50,7 @@ public class CarAudio : MonoBehaviour
 
         if (vehicleHealth == null)
         {
-            Debug.LogError("❌ CarAudio: VehicleHealth не найден!");
+            //Debug.LogError("❌ CarAudio: VehicleHealth не найден!");
             return;
         }
 
@@ -198,6 +198,6 @@ public class CarAudio : MonoBehaviour
         float normalizedForce = Mathf.Clamp01((impactForce - minImpactForce) / 50f);
         float scaledVolume = Mathf.Lerp(impactVolume * 0.5f, maxImpactVolume, normalizedForce);
 
-        audioSource.PlayOneShot(impactSound, scaledVolume);
+        //audioSource.PlayOneShot(impactSound, scaledVolume);
     }
 }

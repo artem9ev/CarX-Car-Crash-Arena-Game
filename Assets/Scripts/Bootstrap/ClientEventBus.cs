@@ -7,7 +7,11 @@ public class ClientEventBus : MonoBehaviour
 
     public static ClientEventBus Instance => _instance;
 
-    public UnityAction<MovingCar> onCarOwn;
+    public event UnityAction<MovingCar> onCarOwn;
+
+    public event UnityAction<Vector3, float> onCarCollision;
+
+    public event UnityAction<Vector3> onCarExplosion;
 
     private void Awake()
     {
@@ -24,5 +28,16 @@ public class ClientEventBus : MonoBehaviour
     public void InvokeCarOwn(MovingCar car)
     {
         onCarOwn?.Invoke(car);
+    }
+
+    public void InvokeCarCollisionEvents(CarCollisionEventData carCollisionData)
+    {
+        // Тут обработать пришедшее с сервера событие столкновения одной или нескольких из машин
+    }
+
+    public void InvokeCarExplosion(Vector3 position)
+    {
+        // Тут обработать пришедшее с сервера событие о смерти машины и ее взрыве
+        onCarExplosion?.Invoke(position);
     }
 }
