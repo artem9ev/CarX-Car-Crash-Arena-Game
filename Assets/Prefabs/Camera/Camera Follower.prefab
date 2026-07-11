@@ -48,13 +48,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CameraFollower
   m_target: {fileID: 0}
-  m_acceleration: 8
+  m_acceleration: {x: 7, y: 15, z: 20}
   m_angle: 15
-  m_range: 3
-  m_targetOffset: {x: 0, y: 1, z: -1}
+  m_range: 4
+  m_angleCoef: 1
+  m_targetOffset: {x: 0, y: 1, z: 0}
   m_cameraHitMask:
     serializedVersion: 2
     m_Bits: 0
+  m_amplitude: 0.1
+  m_minShakeSpeed: 100
+  m_maxShakeSpeed: 200
 --- !u!20 &8622536653205021912
 Camera:
   m_ObjectHideFlags: 0

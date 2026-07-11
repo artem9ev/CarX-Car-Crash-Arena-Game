@@ -1640,6 +1640,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3930863439892975856, guid: 3bc592e70b47cb746945a682eec8a572, type: 3}
+      propertyPath: cameraFollowerPrefab
+      value: 
+      objectReference: {fileID: 6369307337272810275, guid: 376050b8b1a1ddc4c8ef5a63463a3205, type: 3}
     - target: {fileID: 4218401796529582568, guid: 3bc592e70b47cb746945a682eec8a572, type: 3}
       propertyPath: m_Name
       value: Local Camera Manager

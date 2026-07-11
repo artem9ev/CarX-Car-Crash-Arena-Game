@@ -15,6 +15,8 @@ public class CarController : NetworkBehaviour
         if (!IsOwner)
             return;
 
+        ClientEventBus.Instance.InvokeCarOwn(_car);
+
         PlayerInputHandler.Instance.onGas += OnGas;
         PlayerInputHandler.Instance.onBrake += OnBrake;
         PlayerInputHandler.Instance.onSteer += OnSteer;

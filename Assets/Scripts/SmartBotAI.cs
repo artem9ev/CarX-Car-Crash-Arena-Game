@@ -2,7 +2,7 @@ using Unity.Netcode;
 using UnityEngine;
 
 [RequireComponent(typeof(MovingCar))]
-public class BotAI : NetworkBehaviour
+public class SmartBotAI : NetworkBehaviour
 {
     [Header("Настройки AI")]
     [SerializeField] private float detectionRange = 15f;

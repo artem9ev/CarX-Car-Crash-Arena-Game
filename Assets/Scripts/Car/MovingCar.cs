@@ -71,6 +71,7 @@ public class MovingCar : NetworkBehaviour
 
     public bool isGrounded => WheelFL.isGrounded || WheelFR.isGrounded || WheelBL.isGrounded || WheelBR.isGrounded;
     public Vector3 position => _rb.position;
+    public Vector3 linearVelocity => _rb.linearVelocity;
 
     private void OnDrawGizmosSelected()
     {
@@ -82,20 +83,19 @@ public class MovingCar : NetworkBehaviour
         }
     }
 
-    private void Start()
+    private void Awake()
     {
-        if (!IsServer) return;
-
         _transform = transform;
         _rb = GetComponent<Rigidbody>();
         currentHealth = maxHealth;
+
+        StopCar();
     }
 
     public override void OnNetworkSpawn()
     {
         if (IsOwner)
         {
-            ClientEventBus.Instance.InvokeCarOwn(this);
         }
     }
 
@@ -177,24 +177,10 @@ public class MovingCar : NetworkBehaviour
     {
         currentHealth -= damage;
         currentHealth = Mathf.Max(0, currentHealth);
-
-        Debug.Log($"💥 Урон: {damage:F1} | HP: {currentHealth:F1}/{maxHealth}");
-
-        OnHealthChanged?.Invoke(currentHealth);
-
-        if (currentHealth <= 0 && !isDead)
-        {
-            Die();
-        }
     }
 
-    private void Die()
+    private void StopCar()
     {
-        isDead = true;
-        Debug.Log("☠️ Машина уничтожена!");
-        OnDeath?.Invoke();
-
-        // Отключаем мотор и тормоза
         WheelBL.motorTorque = 0;
         WheelBR.motorTorque = 0;
         WheelBL.brakeTorque = brakeTorque;
