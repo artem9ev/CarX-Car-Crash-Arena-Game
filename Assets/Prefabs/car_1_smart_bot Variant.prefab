@@ -1,0 +1,106 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &2516142591982161323
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: -8679921383154817045, guid: a0b293e7b1bc706418627629921142f0, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -109.04038
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: a0b293e7b1bc706418627629921142f0, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 6.8404
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: a0b293e7b1bc706418627629921142f0, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -25.5279
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: a0b293e7b1bc706418627629921142f0, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: a0b293e7b1bc706418627629921142f0, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: a0b293e7b1bc706418627629921142f0, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: a0b293e7b1bc706418627629921142f0, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: a0b293e7b1bc706418627629921142f0, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: a0b293e7b1bc706418627629921142f0, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: a0b293e7b1bc706418627629921142f0, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -2683180858150351812, guid: a0b293e7b1bc706418627629921142f0, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 2908269708
+      objectReference: {fileID: 0}
+    - target: {fileID: -2683180858150351812, guid: a0b293e7b1bc706418627629921142f0, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -2683180858150351812, guid: a0b293e7b1bc706418627629921142f0, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 990975425
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: a0b293e7b1bc706418627629921142f0, type: 3}
+      propertyPath: m_Name
+      value: car_1_smart_bot Variant
+      objectReference: {fileID: 0}
+    m_RemovedComponents:
+    - {fileID: 4391329620947305147, guid: a0b293e7b1bc706418627629921142f0, type: 3}
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: a0b293e7b1bc706418627629921142f0, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: -43365489115899164}
+  m_SourcePrefab: {fileID: 100100000, guid: a0b293e7b1bc706418627629921142f0, type: 3}
+--- !u!1 &3326554334390317306 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: a0b293e7b1bc706418627629921142f0, type: 3}
+  m_PrefabInstance: {fileID: 2516142591982161323}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &-43365489115899164
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3326554334390317306}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c894df3f11f370b43ae261ffe4713f3c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::WheelDustEffect
+  ShowTopMostFoldoutHeaderGroup: 1
+  detectionRange: 200
+  stopDistance: 4
+  reactionTime: 1
+  updateTargetInterval: 1
+  turnSpeed: 50
+  obstacleLayer:
+    serializedVersion: 2
+    m_Bits: 1
+  PlayerLayer:
+    serializedVersion: 2
+    m_Bits: 8
+  rayLength: 5
+  avoidanceForce: 2

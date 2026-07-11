@@ -1337,9 +1337,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 68af7d4093b6c3c49ab1a191331c7da5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SpawnManager
-  _spawnPointns: []
+  _spawnPoints: []
   defaultCarPrefab: {fileID: 7834508491955151903, guid: a0b293e7b1bc706418627629921142f0, type: 3}
-  defaultBotPrefab: {fileID: 666155357945534076, guid: c676308d320804f48a36b110ee198489, type: 3}
+  defaultBotPrefab: {fileID: 5643821419744160180, guid: f54bad3d8f25dd540821b1d356f4e827, type: 3}
 --- !u!4 &1551629689
 Transform:
   m_ObjectHideFlags: 0
@@ -1565,7 +1565,7 @@ Camera:
   field of view: 60
   orthographic: 0
   orthographic size: 5
-  m_Depth: 0
+  m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
     m_Bits: 4294967295

@@ -156,7 +156,7 @@ public class MovingCar : NetworkBehaviour
         {
             return;
         }
-        Vector3 targetAngularVelocity = new Vector3(0, 0, m_steering) * m_maxAirAngularVelocity;
+        Vector3 targetAngularVelocity = new Vector3(0, 0, -m_steering) * m_maxAirAngularVelocity;
         Vector3 angularVelocityIncrease = (_transform.TransformDirection(targetAngularVelocity * Mathf.Deg2Rad) - _rb.angularVelocity) * Time.fixedDeltaTime;
         _rb.angularVelocity += angularVelocityIncrease;
     }
@@ -213,9 +213,6 @@ public class MovingCar : NetworkBehaviour
 
     public void SetSpawnPosition(Vector3 pos, Quaternion rot)
     {
-        //_transform.position = pos;
-        //_transform.rotation = rot;
-        Debug.Log($"SPAWN POINT GET {pos} | {rot}");
         _networkTransform.Teleport(pos, rot, _transform.localScale);
         _networkRb.ApplyCurrentTransform();
     }
