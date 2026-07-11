@@ -124,8 +124,8 @@ public class MovingCar : NetworkBehaviour
             currentMotorForce = 0;
         }
 
-        WheelBL.motorTorque = -currentMotorForce;
-        WheelBR.motorTorque = -currentMotorForce;
+        WheelBL.motorTorque = currentMotorForce;
+        WheelBR.motorTorque = currentMotorForce;
 
         WheelFL.brakeTorque = m_brake * brakeTorque;
         WheelFR.brakeTorque = m_brake * brakeTorque;
@@ -196,28 +196,28 @@ public class MovingCar : NetworkBehaviour
 
     private void UpdateWheelVisuals()
     {
-        UpdateSingleWheelVisual(WheelFL, frontLeftTransform, 0);
-        UpdateSingleWheelVisual(WheelFR, frontRightTransform, -0);
-        UpdateSingleWheelVisual(WheelBL, rearLeftTransform, 0);
-        UpdateSingleWheelVisual(WheelBR, rearRightTransform, -0);
+        UpdateSingleWheelVisual(WheelFL, frontLeftTransform);
+        UpdateSingleWheelVisual(WheelFR, frontRightTransform);
+        UpdateSingleWheelVisual(WheelBL, rearLeftTransform);
+        UpdateSingleWheelVisual(WheelBR, rearRightTransform);
     }
 
-    private void UpdateSingleWheelVisual(WheelCollider collider, Transform wheelVisual, float rot)
+    private void UpdateSingleWheelVisual(WheelCollider collider, Transform wheelVisual)
     {
         Vector3 position;
         Quaternion rotation;
         collider.GetWorldPose(out position, out rotation);
         wheelVisual.position = position;
-        wheelVisual.rotation = rotation * Quaternion.Euler(0, rot, 0);
+        wheelVisual.rotation = rotation;
     }
 
     public void SetSpawnPosition(Vector3 pos, Quaternion rot)
     {
-        _transform.position = pos;
-        _transform.rotation = rot;
+        //_transform.position = pos;
+        //_transform.rotation = rot;
         Debug.Log($"SPAWN POINT GET {pos} | {rot}");
-        //_networkTransform.Teleport(pos, rot, _transform.localScale);
-
+        _networkTransform.Teleport(pos, rot, _transform.localScale);
+        _networkRb.ApplyCurrentTransform();
     }
 
     // Ввод
