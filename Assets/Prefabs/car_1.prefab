@@ -35753,6 +35753,7 @@ GameObject:
   - component: {fileID: 4391329620947305147}
   - component: {fileID: 686277926517070426}
   - component: {fileID: 1675215704071172687}
+  - component: {fileID: 5438428424036862306}
   m_Layer: 3
   m_Name: car_1
   m_TagString: Untagged
@@ -35793,7 +35794,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 2612427593
+  GlobalObjectIdHash: 990975425
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -35917,10 +35918,6 @@ MonoBehaviour:
   _safeSteerCoef: 1
   m_projectedLinearDamping: {x: 5, y: 20, z: 0}
   m_maxAirAngularVelocity: 500
-  m_softHitAudio: {fileID: 0}
-  m_hardHitAudio: {fileID: 0}
-  m_softHitImpulse: 500
-  m_hardHitImpulse: 2000
   motorForce: 2500
   maxSpeed: 100
   brakeTorque: 3000
@@ -35932,9 +35929,6 @@ MonoBehaviour:
   frontRightTransform: {fileID: -324938149649591883}
   rearLeftTransform: {fileID: 2261459007979518510}
   rearRightTransform: {fileID: -5816889912940413735}
-  maxHealth: 100
-  collisionDamageMultiplier: 0.5
-  minCollisionDamage: 5
 --- !u!114 &4391329620947305147
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -35979,10 +35973,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6bafe84bccb4f6143bd58e9a47b06847, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::VehicleHealth
-  maxHealth: 100
-  collisionDamageMultiplier: 0.0005
-  minCollisionDamage: 1
-  destroyDelay: 3
+  ShowTopMostFoldoutHeaderGroup: 1
+  _maxHealth: 10000
+  _damageMultiplier: 0.1
+  _minDamage: 5
+--- !u!114 &5438428424036862306
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 919132149155446097}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 96da4de32f7f2694f85c5533e398e458, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CarPhysics
+  ShowTopMostFoldoutHeaderGroup: 1
+  m_softHitImpulse: 500
+  m_hardHitImpulse: 4000
 --- !u!1 &1005787171171632615
 GameObject:
   m_ObjectHideFlags: 0

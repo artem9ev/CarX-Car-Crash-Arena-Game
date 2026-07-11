@@ -21,9 +21,6 @@ public class CarController : NetworkBehaviour
         PlayerInputHandler.Instance.onBrake += OnBrake;
         PlayerInputHandler.Instance.onSteer += OnSteer;
         //PlayerInputHandler.Instance.onHandbrake += OnGas;
-
-        Debug.Log($"client: {OwnerClientId} CAR CONTROLLER");
-
     }
 
     public override void OnNetworkDespawn()

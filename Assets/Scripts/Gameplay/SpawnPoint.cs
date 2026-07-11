@@ -8,9 +8,7 @@ public class SpawnPoint : MonoBehaviour
 
     private Transform _transform;
 
-    private bool _isClear;
-
-    public bool IsClear => _isClear;
+    public bool IsClear => !Physics.CheckBox(_transform.position + _transform.up * _boxSize.y / 2, _boxSize / 2, _transform.rotation, _layerMask);
 
     private void OnDrawGizmos()
     {
@@ -19,13 +17,44 @@ public class SpawnPoint : MonoBehaviour
             _transform = transform;
         }
 
-        Gizmos.color = new Color(1f, 0, 1f, 0.3f);
+        Gizmos.color = Color.magenta;
 
-        Gizmos.DrawCube(_transform.position + _transform.up * _boxSize.y / 2, _boxSize );
+        Vector3[] points =
+        {
+            _transform.TransformPoint(new Vector3(_boxSize.x / 2, 0, _boxSize.z / 2)),
+            _transform.TransformPoint(new Vector3(_boxSize.x / 2, 0, -_boxSize.z / 2)),
+            _transform.TransformPoint(new Vector3(-_boxSize.x / 2, 0, _boxSize.z / 2)),
+            _transform.TransformPoint(new Vector3(-_boxSize.x / 2, 0, -_boxSize.z / 2)),
+            _transform.TransformPoint(new Vector3(_boxSize.x / 2, _boxSize.y, _boxSize.z / 2)),
+            _transform.TransformPoint(new Vector3(_boxSize.x / 2, _boxSize.y, -_boxSize.z / 2)),
+            _transform.TransformPoint(new Vector3(-_boxSize.x / 2, _boxSize.y, _boxSize.z / 2)),
+            _transform.TransformPoint(new Vector3(-_boxSize.x / 2, _boxSize.y, -_boxSize.z / 2)),
+
+            _transform.TransformPoint(new Vector3(_boxSize.x / 2, 0, _boxSize.z / 2)),
+            _transform.TransformPoint(new Vector3(-_boxSize.x / 2, 0, _boxSize.z / 2)),
+            _transform.TransformPoint(new Vector3(_boxSize.x / 2, 0, -_boxSize.z / 2)),
+            _transform.TransformPoint(new Vector3(-_boxSize.x / 2, 0, -_boxSize.z / 2)),
+            _transform.TransformPoint(new Vector3(_boxSize.x / 2, _boxSize.y, _boxSize.z / 2)),
+            _transform.TransformPoint(new Vector3(-_boxSize.x / 2, _boxSize.y, _boxSize.z / 2)),
+            _transform.TransformPoint(new Vector3(_boxSize.x / 2, _boxSize.y, -_boxSize.z / 2)),
+            _transform.TransformPoint(new Vector3(-_boxSize.x / 2, _boxSize.y, -_boxSize.z / 2)),
+
+            _transform.TransformPoint(new Vector3(_boxSize.x / 2, 0, _boxSize.z / 2)),
+            _transform.TransformPoint(new Vector3(_boxSize.x / 2, _boxSize.y, _boxSize.z / 2)),
+            _transform.TransformPoint(new Vector3(-_boxSize.x / 2, 0, _boxSize.z / 2)),
+            _transform.TransformPoint(new Vector3(-_boxSize.x / 2, _boxSize.y, _boxSize.z / 2)),
+            _transform.TransformPoint(new Vector3(_boxSize.x / 2, 0, -_boxSize.z / 2)),
+            _transform.TransformPoint(new Vector3(_boxSize.x / 2, _boxSize.y, -_boxSize.z / 2)),
+            _transform.TransformPoint(new Vector3(-_boxSize.x / 2, 0, -_boxSize.z / 2)),
+            _transform.TransformPoint(new Vector3(-_boxSize.x / 2, _boxSize.y, -_boxSize.z / 2)),
+        };
+
+        Gizmos.DrawLineList(points);
 
         Gizmos.color = Color.green;
         
-        Gizmos.DrawSphere(_transform.position, 0.2f);
+        Gizmos.DrawSphere(_transform.position + 0.5f * _transform.up, 0.2f);
+        Gizmos.DrawRay(_transform.position + 0.5f * _transform.up, _transform.forward * 2);
     }
 
     private void Awake()
@@ -35,9 +64,8 @@ public class SpawnPoint : MonoBehaviour
 
     public bool TryGetPoint(out Vector3 position, out Quaternion rotation)
     {
-        position = _transform.position;
+        position = _transform.position + 0.5f * _transform.up;
         rotation = _transform.rotation;
-        _isClear = Physics.BoxCast(_transform.position + _transform.up * _boxSize.y / 2, _boxSize, Vector3.zero, out RaycastHit hit, _transform.rotation, 0, _layerMask);
-        return _isClear;
+        return IsClear;
     }
 }

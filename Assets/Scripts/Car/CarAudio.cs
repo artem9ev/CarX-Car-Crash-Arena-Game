@@ -78,8 +78,6 @@ public class CarAudio : MonoBehaviour
         // Инициализируем значения двигателя
         currentEngineVolume = minEngineVolume;
         currentEnginePitch = minEnginePitch;
-
-        Debug.Log("✅ CarAudio: Подписка на события успешна");
     }
 
     private void OnDestroy()

@@ -1,4 +1,5 @@
 using Unity.Netcode;
+using Unity.Netcode.Components;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -37,6 +38,8 @@ public class MovingCar : NetworkBehaviour
 
     private Transform _transform;
     private Rigidbody _rb;
+    private NetworkTransform _networkTransform;
+    private NetworkRigidbody _networkRb;
 
     private float m_gas;
     private float m_brake;
@@ -70,13 +73,20 @@ public class MovingCar : NetworkBehaviour
         _transform = transform;
         _rb = GetComponent<Rigidbody>();
 
+        _networkTransform = GetComponent<NetworkTransform>();
+        _networkRb = GetComponent<NetworkRigidbody>();
+
         StopCar();
     }
 
     public override void OnNetworkSpawn()
     {
-        if (IsOwner)
+        if (IsServer) // только сервер задаёт позицию
         {
+            if (_networkTransform != null)
+            {
+                // Принудительно синхронизируем позицию с текущим трансформом
+            }
         }
     }
 
@@ -205,6 +215,9 @@ public class MovingCar : NetworkBehaviour
     {
         _transform.position = pos;
         _transform.rotation = rot;
+        Debug.Log($"SPAWN POINT GET {pos} | {rot}");
+        //_networkTransform.Teleport(pos, rot, _transform.localScale);
+
     }
 
     // Ввод

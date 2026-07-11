@@ -53,8 +53,6 @@ public class MainMenuPresenter : MonoBehaviour
 
     private void OnClientConnectionNotification(ulong clientID, ConnectionManager.ConnectionState connectionState)
     {
-        Debug.Log($"[Client Notification] id: {clientID, 16} | status: {connectionState}");
-
         switch (connectionState)
         {
             case ConnectionManager.ConnectionState.Disconnected:
@@ -77,11 +75,8 @@ public class MainMenuPresenter : MonoBehaviour
 
         _lobbyView.Clear();
 
-        Debug.Log("[CONNECTED CLIENTS: ]");
-
         foreach (var client in NetworkManager.Singleton.ConnectedClients)
         {
-            Debug.Log($"Connected client: {client.Key}");
             if (!client.Value.PlayerObject.TryGetComponent(out PlayerData data))
             {
                 continue;

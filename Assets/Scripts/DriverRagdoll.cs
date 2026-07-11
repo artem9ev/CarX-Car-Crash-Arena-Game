@@ -64,7 +64,7 @@ public class DriverRagdoll : MonoBehaviour
         if (characterJoints == null || characterJoints.Length == 0)
         {
             characterJoints = GetComponentsInChildren<CharacterJoint>();
-            Debug.Log($"✅ Найдено {characterJoints.Length} Character Joint");
+            //Debug.Log($"✅ Найдено {characterJoints.Length} Character Joint");
         }
 
         // Усыпляем ragdoll

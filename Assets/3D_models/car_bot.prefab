@@ -5124,8 +5124,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 569094608515179554}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -1, z: -0, w: 0.00000044703478}
-  m_LocalPosition: {x: -0.35822296, y: 0, z: -0.5857086}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -5133,7 +5133,7 @@ Transform:
   - {fileID: 4467522269393554973}
   - {fileID: 7383220024645120094}
   m_Father: {fileID: 7444756818928150379}
-  m_LocalEulerAnglesHint: {x: 0, y: -180, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &578115123054899858
 GameObject:
   m_ObjectHideFlags: 0
@@ -10342,7 +10342,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0.6, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 2, y: 0.3}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1045375420021427629
@@ -10407,8 +10407,8 @@ MonoBehaviour:
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 0
-  m_HorizontalAlignment: 1
-  m_VerticalAlignment: 256
+  m_HorizontalAlignment: 2
+  m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
   m_characterHorizontalScale: 1
@@ -10714,15 +10714,15 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 988492655347155517}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: 0.10366005, z: -0, w: -0.9946129}
-  m_LocalPosition: {x: -0.17566681, y: 4.6, z: 10.543503}
+  m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
+  m_LocalPosition: {x: 0, y: 1.04, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 977380754491664746}
   - {fileID: 5631434408204767931}
   m_Father: {fileID: 7444756818928150379}
-  m_LocalEulerAnglesHint: {x: 0, y: -11.9, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
 --- !u!1 &997533214918117948
 GameObject:
   m_ObjectHideFlags: 0
@@ -22248,8 +22248,6 @@ GameObject:
   - component: {fileID: 9122932146135950706}
   - component: {fileID: 3910737832342774556}
   - component: {fileID: 979406004585213735}
-  - component: {fileID: 7614238139777178389}
-  - component: {fileID: 2525437386304621639}
   m_Layer: 7
   m_Name: Canvas
   m_TagString: Untagged
@@ -22265,7 +22263,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2887039234820675453}
   m_LocalRotation: {x: -0, y: -0.00000044703478, z: -0, w: -1}
-  m_LocalPosition: {x: 0, y: 0, z: -0.59742737}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -22276,7 +22274,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: -360, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: -0.35791016, y: 2.113}
+  m_AnchoredPosition: {x: 0, y: 2.113}
   m_SizeDelta: {x: 2, y: 0.3}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!223 &3910737832342774556
@@ -22325,70 +22323,6 @@ MonoBehaviour:
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
   m_PresetInfoIsWorld: 1
---- !u!114 &7614238139777178389
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2887039234820675453}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dc42784cf147c0c48a680349fa168899, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.GraphicRaycaster
-  m_IgnoreReversedGraphics: 1
-  m_BlockingObjects: 0
-  m_BlockingMask:
-    serializedVersion: 2
-    m_Bits: 4294967295
---- !u!114 &2525437386304621639
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2887039234820675453}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1be5b1bc414eb214bb49e848efdc38ef, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::HealthBar_bot
-  fill: {fileID: 8333524997883100221}
-  mainCamera: {fileID: 0}
-  hpText: {fileID: 1082737690047275180}
-  Bot_hp: {fileID: 7266550095433849588}
-  smoothSpeed: 5
-  colorGradient:
-    serializedVersion: 2
-    key0: {r: 1, g: 0, b: 0, a: 1}
-    key1: {r: 1, g: 0.57236767, b: 0, a: 1}
-    key2: {r: 0.08220887, g: 1, b: 0, a: 0}
-    key3: {r: 0, g: 0, b: 0, a: 0}
-    key4: {r: 0, g: 0, b: 0, a: 0}
-    key5: {r: 0, g: 0, b: 0, a: 0}
-    key6: {r: 0, g: 0, b: 0, a: 0}
-    key7: {r: 0, g: 0, b: 0, a: 0}
-    ctime0: 0
-    ctime1: 33539
-    ctime2: 65535
-    ctime3: 0
-    ctime4: 0
-    ctime5: 0
-    ctime6: 0
-    ctime7: 0
-    atime0: 0
-    atime1: 65535
-    atime2: 0
-    atime3: 0
-    atime4: 0
-    atime5: 0
-    atime6: 0
-    atime7: 0
-    m_Mode: 0
-    m_ColorSpace: -1
-    m_NumColorKeys: 3
-    m_NumAlphaKeys: 2
 --- !u!1 &3067665143093179579
 GameObject:
   m_ObjectHideFlags: 0
@@ -29360,8 +29294,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5290287132907666619}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -1, z: -0, w: 0.00000044703478}
-  m_LocalPosition: {x: -0.35822296, y: 0, z: -0.5857086}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -29383,7 +29317,7 @@ Transform:
   - {fileID: 3042219402672750671}
   - {fileID: 6478014749187031533}
   m_Father: {fileID: 7444756818928150379}
-  m_LocalEulerAnglesHint: {x: 0, y: -180, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &5309574266930677351
 GameObject:
   m_ObjectHideFlags: 0
@@ -29814,7 +29748,7 @@ Transform:
   m_GameObject: {fileID: 5519455297813554653}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -2.462, y: -3.518, z: -10.891}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -35871,9 +35805,9 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7140900247028691383}
   serializedVersion: 2
-  m_LocalRotation: {x: 1, y: 0, z: -0, w: 0.0000000754979}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -0, y: 0, z: 0}
-  m_LocalScale: {x: 10000, y: 10000, z: 10000}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 6564481895566637319}
@@ -36234,16 +36168,17 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7444756818928150379}
-  - component: {fileID: 477755557730868259}
   - component: {fileID: 7629137448394988016}
+  - component: {fileID: 3114620177830293250}
+  - component: {fileID: 4706904773536486484}
+  - component: {fileID: 477755557730868259}
   - component: {fileID: 666155357945534076}
   - component: {fileID: 7750031251454659641}
   - component: {fileID: 1273951205741975693}
   - component: {fileID: 3587035157910435645}
-  - component: {fileID: 3114620177830293250}
-  - component: {fileID: 4706904773536486484}
-  - component: {fileID: 7761745760895458926}
   - component: {fileID: 7266550095433849588}
+  - component: {fileID: 3918293072096920079}
+  - component: {fileID: 2829747426736626222}
   m_Layer: 7
   m_Name: car_bot
   m_TagString: Untagged
@@ -36260,7 +36195,7 @@ Transform:
   m_GameObject: {fileID: 7643300659757338606}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 10, y: 0, z: 0}
+  m_LocalPosition: {x: 5, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -36272,6 +36207,95 @@ Transform:
   - {fileID: 8008448308341677834}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7629137448394988016
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7643300659757338606}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
+  GlobalObjectIdHash: 4063973073
+  InScenePlacedSourceGlobalObjectIdHash: 0
+  DeferredDespawnTick: 0
+  Ownership: 1
+  AlwaysReplicateAsRoot: 0
+  SynchronizeTransform: 1
+  <InScenePlaced>k__BackingField: 0
+  ActiveSceneSynchronization: 0
+  SceneMigrationSynchronization: 1
+  SpawnWithObservers: 1
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
+  SyncOwnerTransformWhenParented: 1
+  AllowOwnerToParent: 0
+--- !u!114 &3114620177830293250
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7643300659757338606}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e96cb6065543e43c4a752faaa1468eb1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.Components.NetworkTransform
+  ShowTopMostFoldoutHeaderGroup: 1
+  NetworkTransformExpanded: 0
+  AutoOwnerAuthorityTickOffset: 1
+  PositionInterpolationType: 0
+  RotationInterpolationType: 0
+  ScaleInterpolationType: 0
+  PositionLerpSmoothing: 1
+  PositionMaxInterpolationTime: 0.1
+  RotationLerpSmoothing: 1
+  RotationMaxInterpolationTime: 0.1
+  ScaleLerpSmoothing: 1
+  ScaleMaxInterpolationTime: 0.1
+  AuthorityMode: 0
+  TickSyncChildren: 0
+  UseUnreliableDeltas: 0
+  SyncPositionX: 1
+  SyncPositionY: 1
+  SyncPositionZ: 1
+  SyncRotAngleX: 1
+  SyncRotAngleY: 1
+  SyncRotAngleZ: 1
+  SyncScaleX: 1
+  SyncScaleY: 1
+  SyncScaleZ: 1
+  PositionThreshold: 0.001
+  RotAngleThreshold: 0.01
+  ScaleThreshold: 0.01
+  UseQuaternionSynchronization: 0
+  UseQuaternionCompression: 0
+  UseHalfFloatPrecision: 0
+  InLocalSpace: 0
+  SwitchTransformSpaceWhenParented: 0
+  Interpolate: 1
+  SlerpPosition: 0
+--- !u!114 &4706904773536486484
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7643300659757338606}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f6c0be61502bb534f922ebb746851216, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.Components.NetworkRigidbody
+  ShowTopMostFoldoutHeaderGroup: 1
+  NetworkRigidbodyBaseExpanded: 0
+  UseRigidBodyForMotion: 0
+  AutoUpdateKinematicState: 1
+  AutoSetKinematicOnDespawn: 1
 --- !u!54 &477755557730868259
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -36299,32 +36323,6 @@ Rigidbody:
   m_Interpolate: 1
   m_Constraints: 0
   m_CollisionDetection: 1
---- !u!114 &7629137448394988016
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7643300659757338606}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 4063973073
-  InScenePlacedSourceGlobalObjectIdHash: 0
-  DeferredDespawnTick: 0
-  Ownership: 1
-  AlwaysReplicateAsRoot: 0
-  SynchronizeTransform: 1
-  <InScenePlaced>k__BackingField: 0
-  ActiveSceneSynchronization: 0
-  SceneMigrationSynchronization: 1
-  SpawnWithObservers: 1
-  DontDestroyWithOwner: 0
-  AutoObjectParentSync: 1
-  SyncOwnerTransformWhenParented: 1
-  AllowOwnerToParent: 0
 --- !u!114 &666155357945534076
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -36338,17 +36336,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MovingCar
   ShowTopMostFoldoutHeaderGroup: 1
-  m_downForceCoef: 3
-  m_steeringMaxAngle: 40
-  m_turnSpeed: 300
-  m_outerWheelCoef: 0.8
-  m_safeSteerCoef: 1
+  _downForceCoef: 3
+  _steeringMaxAngle: 40
+  _turnSpeed: 300
+  _outerWheelCoef: 0.8
+  _safeSteerCoef: 1
   m_projectedLinearDamping: {x: 0, y: 0, z: 0}
   m_maxAirAngularVelocity: 300
-  m_softHitAudio: {fileID: 0}
-  m_hardHitAudio: {fileID: 0}
-  m_softHitImpulse: 500
-  m_hardHitImpulse: 2000
   motorForce: 2500
   maxSpeed: 100
   brakeTorque: 3000
@@ -36360,9 +36354,6 @@ MonoBehaviour:
   frontRightTransform: {fileID: 2843971398142339280}
   rearLeftTransform: {fileID: 3641726354482889841}
   rearRightTransform: {fileID: 3521323334713416795}
-  maxHealth: 100
-  collisionDamageMultiplier: 0.5
-  minCollisionDamage: 5
 --- !u!114 &7750031251454659641
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -36515,70 +36506,7 @@ MonoBehaviour:
   maxSpeed: 100
   playSoundsIn3D: 1
   vehicleHealth: {fileID: 0}
---- !u!114 &3114620177830293250
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7643300659757338606}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e96cb6065543e43c4a752faaa1468eb1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.Components.NetworkTransform
-  ShowTopMostFoldoutHeaderGroup: 1
-  NetworkTransformExpanded: 0
-  AutoOwnerAuthorityTickOffset: 1
-  PositionInterpolationType: 0
-  RotationInterpolationType: 0
-  ScaleInterpolationType: 0
-  PositionLerpSmoothing: 1
-  PositionMaxInterpolationTime: 0.1
-  RotationLerpSmoothing: 1
-  RotationMaxInterpolationTime: 0.1
-  ScaleLerpSmoothing: 1
-  ScaleMaxInterpolationTime: 0.1
-  AuthorityMode: 0
-  TickSyncChildren: 0
-  UseUnreliableDeltas: 0
-  SyncPositionX: 1
-  SyncPositionY: 1
-  SyncPositionZ: 1
-  SyncRotAngleX: 1
-  SyncRotAngleY: 1
-  SyncRotAngleZ: 1
-  SyncScaleX: 1
-  SyncScaleY: 1
-  SyncScaleZ: 1
-  PositionThreshold: 0.001
-  RotAngleThreshold: 0.01
-  ScaleThreshold: 0.01
-  UseQuaternionSynchronization: 0
-  UseQuaternionCompression: 0
-  UseHalfFloatPrecision: 0
-  InLocalSpace: 0
-  SwitchTransformSpaceWhenParented: 0
-  Interpolate: 1
-  SlerpPosition: 0
---- !u!114 &4706904773536486484
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7643300659757338606}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f6c0be61502bb534f922ebb746851216, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.Components.NetworkRigidbody
-  ShowTopMostFoldoutHeaderGroup: 1
-  NetworkRigidbodyBaseExpanded: 0
-  UseRigidBodyForMotion: 0
-  AutoUpdateKinematicState: 1
-  AutoSetKinematicOnDespawn: 1
---- !u!114 &7761745760895458926
+--- !u!114 &7266550095433849588
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -36589,7 +36517,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fdb2498b7e5669840926b3ae41c54a6f, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::CarEffector
+  m_EditorClassIdentifier: Assembly-CSharp::Bot_hp
   smokeEffect: {fileID: 0}
   explosionEffect: {fileID: 0}
   smokeThreshold: 0.5
@@ -36597,7 +36525,7 @@ MonoBehaviour:
   wheelDustEffects: []
   minSpeedForDust: 2
   dustIntensityMultiplier: 0.5
---- !u!114 &7266550095433849588
+--- !u!114 &3918293072096920079
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -36606,13 +36534,28 @@ MonoBehaviour:
   m_GameObject: {fileID: 7643300659757338606}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5ab43d89732839345b30ce92be572155, type: 3}
+  m_Script: {fileID: 11500000, guid: 6bafe84bccb4f6143bd58e9a47b06847, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Bot_hp
-  maxHealth: 100
-  collisionDamageMultiplier: 0.0005
-  minCollisionDamage: 1
-  destroyDelay: 3
+  m_EditorClassIdentifier: Assembly-CSharp::VehicleHealth
+  ShowTopMostFoldoutHeaderGroup: 1
+  _maxHealth: 10000
+  _damageMultiplier: 0.1
+  _minDamage: 5
+--- !u!114 &2829747426736626222
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7643300659757338606}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 96da4de32f7f2694f85c5533e398e458, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CarPhysics
+  ShowTopMostFoldoutHeaderGroup: 1
+  m_softHitImpulse: 500
+  m_hardHitImpulse: 4000
 --- !u!1 &7740938753866343900
 GameObject:
   m_ObjectHideFlags: 0
@@ -52286,8 +52229,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 2.4488873, y: 1.2821078, z: 3.8830032}
-  m_Center: {x: 0.017653704, y: 1.1538411, z: -0.29288316}
+  m_Size: {x: 2.21, y: 1.2821078, z: 3.26}
+  m_Center: {x: 0, y: 1.11, z: -0.31}
 --- !u!1 &9079694009322553464
 GameObject:
   m_ObjectHideFlags: 0

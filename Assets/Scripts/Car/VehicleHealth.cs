@@ -13,7 +13,7 @@ public class VehicleHealth : NetworkBehaviour
 
     private MovingCar _car;
 
-    private NetworkVariable<float> _currentHealth;
+    private NetworkVariable<float> _currentHealth = new NetworkVariable<float>();
 
     public event UnityAction<float> OnHealthChanged;
     public event UnityAction OnDeath;
@@ -37,11 +37,12 @@ public class VehicleHealth : NetworkBehaviour
 
     private void OnHealthValueChange(float oldValue, float newValue)
     {
-        Debug.Log($"[client: {OwnerClientId}] --- CAR IS DESTROYED ", gameObject);
         // Вызываем локальное событие на клиентах
         OnHealthChanged?.Invoke(newValue);
         if (newValue <= 0)
-        {
+        {        
+            Debug.Log($"[client: {OwnerClientId}] --- CAR IS DESTROYED ", gameObject);
+
             OnDeath?.Invoke();
             // Дополнительно можно вызвать клиентские эффекты через отдельный RPC,
             // но можно и через событие
@@ -62,6 +63,7 @@ public class VehicleHealth : NetworkBehaviour
         if (damage < _minDamage)
             damage = _minDamage;
 
+        //Debug.Log($"Health change: {CurrentHealth - damage} ({CurrentHealth} - {damage})");
         _currentHealth.Value -= damage;
         _currentHealth.Value = Mathf.Max(0, CurrentHealth);
 
