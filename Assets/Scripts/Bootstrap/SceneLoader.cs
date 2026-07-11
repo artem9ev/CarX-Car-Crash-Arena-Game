@@ -1,3 +1,4 @@
+using System;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -34,13 +35,24 @@ public class SceneLoader : MonoBehaviour
         LoadMainMenu();
     }
 
-    private bool ServerSideSceneValidation(int sceneIndex, string sceneName, LoadSceneMode loadSceneMode)
+    private bool NetworkSceneLoadValidation(int sceneIndex, string sceneName, LoadSceneMode loadSceneMode)
     {
         if (sceneName == _uiName || sceneName == _mainName || sceneName == "Bootstrap")
             return false;
 
         if (loadSceneMode == LoadSceneMode.Single)
             return false;
+
+        return true;
+    }
+
+    private bool NetworkSceneUnloadValidation(Scene scene)
+    {
+        // Запрещаем выгрузку Bootstrap и UI
+        if (scene.name == "Bootstrap" || scene.name == _uiName)
+        {
+            return false;
+        }
 
         return true;
     }
@@ -57,7 +69,10 @@ public class SceneLoader : MonoBehaviour
         sceneManager.OnSceneEvent += SceneManager_OnSceneEvent;
 
         if (NetworkManager.Singleton.IsServer)
-            sceneManager.VerifySceneBeforeLoading = ServerSideSceneValidation;
+        {
+            sceneManager.VerifySceneBeforeLoading = NetworkSceneLoadValidation;
+            sceneManager.VerifySceneBeforeUnloading = NetworkSceneUnloadValidation;
+        }
     }
 
     public void StartGame()
@@ -86,11 +101,13 @@ public class SceneLoader : MonoBehaviour
         switch (sceneEvent.SceneEventType)
         {
             case SceneEventType.Load:
+                // Когда уровень загружен у клиента (по команде сервера) — вот тут можно выгрузить меню
+                //
                 break;
             case SceneEventType.LoadComplete:
-                // Когда уровень загружен у клиента (по команде сервера) — вот тут можно выгрузить меню
                 if (sceneEvent.SceneName == _levelName)
-                        UnloadMainMenu();
+                    UnloadMainMenu();
+
                 // We want to handle this for only the server-side
                 if (sceneEvent.ClientId == NetworkManager.ServerClientId)
                 {

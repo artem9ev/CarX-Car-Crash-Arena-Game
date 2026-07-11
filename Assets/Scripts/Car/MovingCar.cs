@@ -6,12 +6,12 @@ using UnityEngine.Events;
 [RequireComponent(typeof(CarEffector))]
 public class MovingCar : NetworkBehaviour
 {
-    [SerializeField, Min(0f)] private float m_downForceCoef = 3f;
+    [SerializeField, Min(0f)] private float _downForceCoef = 3f;
     [Header("Steering Settings")]
-    [SerializeField, Min(0f)] private float m_steeringMaxAngle = 40f;
-    [SerializeField, Min(0f)] private float m_turnSpeed = 300f;
-    [SerializeField, Range(0f, 2f)] private float m_outerWheelCoef = 0.8f;
-    [SerializeField, Range(0f, 10f)] private float m_safeSteerCoef = 1f;
+    [SerializeField, Min(0f)] private float _steeringMaxAngle = 40f;
+    [SerializeField, Min(0f)] private float _turnSpeed = 300f;
+    [SerializeField, Range(0f, 2f)] private float _outerWheelCoef = 0.8f;
+    [SerializeField, Range(0f, 10f)] private float _safeSteerCoef = 1f;
     [Header("Air")]
     [SerializeField] private Vector3 m_projectedLinearDamping = Vector3.zero;
     [Header("Air controls")]
@@ -50,7 +50,7 @@ public class MovingCar : NetworkBehaviour
 
     private bool isDead = false;
 
-    private Transform m_transform;
+    private Transform _transform;
     private Rigidbody _rb;
 
     private float m_gas;
@@ -86,7 +86,7 @@ public class MovingCar : NetworkBehaviour
     {
         if (!IsServer) return;
 
-        m_transform = transform;
+        _transform = transform;
         _rb = GetComponent<Rigidbody>();
         currentHealth = maxHealth;
     }
@@ -127,8 +127,8 @@ public class MovingCar : NetworkBehaviour
     {
         if (!IsServer) return;
 
-        SteerWheel(WheelFR, m_steering, m_turnSpeed, m_steeringMaxAngle);
-        SteerWheel(WheelFL, m_steering, m_turnSpeed, m_steeringMaxAngle);
+        SteerWheel(WheelFR, m_steering, _turnSpeed, _steeringMaxAngle);
+        SteerWheel(WheelFL, m_steering, _turnSpeed, _steeringMaxAngle);
     }
 
     private void SteerWheel(WheelCollider wheel, float steering, float turnSpeed, float maxAngle)
@@ -209,8 +209,8 @@ public class MovingCar : NetworkBehaviour
         {
             return;
         }
-        Vector3 targetAngularVelocity = new Vector3(0, 0, -m_steering);
-        Vector3 angularVelocityIncrease = (m_transform.TransformDirection(targetAngularVelocity * m_maxAirAngularVelocity * Mathf.Deg2Rad) - _rb.angularVelocity) * Time.fixedDeltaTime;
+        Vector3 targetAngularVelocity = new Vector3(0, 0, m_steering) * m_maxAirAngularVelocity;
+        Vector3 angularVelocityIncrease = (_transform.TransformDirection(targetAngularVelocity * Mathf.Deg2Rad) - _rb.angularVelocity) * Time.fixedDeltaTime;
         _rb.angularVelocity += angularVelocityIncrease;
     }
 
@@ -218,9 +218,9 @@ public class MovingCar : NetworkBehaviour
     {
         const float air = 0.6125f;
 
-        Vector3 projVelForward = -Vector3.Project(_rb.linearVelocity, m_transform.forward);
-        Vector3 projVelUp = -Vector3.Project(_rb.linearVelocity, m_transform.up);
-        Vector3 projVelRight = -Vector3.Project(_rb.linearVelocity, m_transform.right);
+        Vector3 projVelForward = -Vector3.Project(_rb.linearVelocity, _transform.forward);
+        Vector3 projVelUp = -Vector3.Project(_rb.linearVelocity, _transform.up);
+        Vector3 projVelRight = -Vector3.Project(_rb.linearVelocity, _transform.right);
 
         m_projectedAirForceX = m_projectedLinearDamping.x * air * projVelRight * projVelRight.magnitude;
         m_projectedAirForceY = m_projectedLinearDamping.y * air * projVelUp * projVelUp.magnitude;
@@ -242,10 +242,10 @@ public class MovingCar : NetworkBehaviour
         float forwardSpeed = Vector3.Dot(_rb.linearVelocity, transform.forward);
         if (forwardSpeed < 0) forwardSpeed = 0;
 
-        float downforce = m_downForceCoef * forwardSpeed * forwardSpeed;
-        downforce = Mathf.Min(downforce, m_downForceCoef * m_downForceCoef * m_downForceCoef);
+        float downforce = _downForceCoef * forwardSpeed * forwardSpeed;
+        downforce = Mathf.Min(downforce, _downForceCoef * _downForceCoef * _downForceCoef);
 
-        _rb.AddForce(-m_transform.up * downforce, ForceMode.Force);
+        _rb.AddForce(-_transform.up * downforce, ForceMode.Force);
     }
 
     private void UpdateWheelVisuals()
@@ -263,6 +263,12 @@ public class MovingCar : NetworkBehaviour
         collider.GetWorldPose(out position, out rotation);
         wheelVisual.position = position;
         wheelVisual.rotation = rotation * Quaternion.Euler(0, rot, 0);
+    }
+
+    public void SetSpawnPosition(Vector3 pos, Quaternion rot)
+    {
+        _transform.position = pos;
+        _transform.rotation = rot;
     }
 
     // Ввод

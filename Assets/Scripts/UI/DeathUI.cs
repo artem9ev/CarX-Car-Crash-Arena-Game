@@ -41,7 +41,7 @@ public class DeathUI : MonoBehaviour
 
         if (playerHealth == null)
         {
-            Debug.LogError("❌ DeathUI: VehicleHealth игрока не найден!");
+            //Debug.LogError("❌ DeathUI: VehicleHealth игрока не найден!");
             return;
         }
 

@@ -22,6 +22,10 @@ public class SpawnPoint : MonoBehaviour
         Gizmos.color = new Color(1f, 0, 1f, 0.3f);
 
         Gizmos.DrawCube(_transform.position + _transform.up * _boxSize.y / 2, _boxSize );
+
+        Gizmos.color = Color.green;
+        
+        Gizmos.DrawSphere(_transform.position, 0.2f);
     }
 
     private void Awake()

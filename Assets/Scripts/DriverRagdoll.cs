@@ -29,7 +29,7 @@ public class DriverRagdoll : MonoBehaviour
         rootRigidbody = GetComponent<Rigidbody>();
         if (rootRigidbody == null)
         {
-            Debug.LogError("❌ DriverRagdoll: Rigidbody не найден!");
+            //Debug.LogError("❌ DriverRagdoll: Rigidbody не найден!");
             return;
         }
 
@@ -41,7 +41,7 @@ public class DriverRagdoll : MonoBehaviour
 
         if (vehicleHealth == null)
         {
-            Debug.LogError("❌ DriverRagdoll: VehicleHealth не найден!");
+            //Debug.LogError("❌ DriverRagdoll: VehicleHealth не найден!");
             return;
         }
 

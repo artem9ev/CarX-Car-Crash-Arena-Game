@@ -48,12 +48,11 @@ public class SpawnManager : MonoBehaviour
 
     private void OnClientConnected(ulong сlientID)
     {
-        Debug.Log("[CONNECTED] Try to spawn player car");
-
         if (!NetworkManager.Singleton.IsServer) return;
 
         var car = Instantiate(defaultCarPrefab);
         car.GetComponent<NetworkObject>().SpawnWithOwnership(сlientID);
+
         var bot = Instantiate(defaultBotPrefab);
         bot.GetComponent<NetworkObject>().Spawn();
     }
