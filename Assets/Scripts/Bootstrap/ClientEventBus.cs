@@ -9,7 +9,7 @@ public class ClientEventBus : MonoBehaviour
 
     public event UnityAction<MovingCar> onCarOwn;
 
-    public event UnityAction<Vector3, float> onCarCollision;
+    public event UnityAction<CarCollisionEventData> onCarCollision;
 
     public event UnityAction<Vector3> onCarExplosion;
 
@@ -33,6 +33,7 @@ public class ClientEventBus : MonoBehaviour
     public void InvokeCarCollisionEvents(CarCollisionEventData carCollisionData)
     {
         // Тут обработать пришедшее с сервера событие столкновения одной или нескольких из машин
+        onCarCollision?.Invoke(carCollisionData);
     }
 
     public void InvokeCarExplosion(Vector3 position)

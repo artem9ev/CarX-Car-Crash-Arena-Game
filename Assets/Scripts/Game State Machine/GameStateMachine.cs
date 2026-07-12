@@ -7,6 +7,7 @@ public class GameStateMachine : MonoBehaviour
     public enum State
     {
         MainMenu,
+        Lobby,
         Level
     }
 

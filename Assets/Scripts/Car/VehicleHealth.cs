@@ -5,10 +5,10 @@ using UnityEngine.Events;
 public class VehicleHealth : NetworkBehaviour
 {
     [Header("Настройки здоровья")]
-    [SerializeField] private float _maxHealth = 100f;
+    [SerializeField] private float _maxHealth = 5000f;
 
     [Header("Настройки урона")]
-    [SerializeField] private float _damageMultiplier = 0.5f;
+    [SerializeField] private float _damageMultiplier = 0.2f;
     [SerializeField] private float _minDamage = 5f;
 
     private MovingCar _car;
@@ -32,7 +32,8 @@ public class VehicleHealth : NetworkBehaviour
         if (IsServer)
             _currentHealth.Value = _maxHealth;
 
-        _currentHealth.OnValueChanged += OnHealthValueChange;
+        if (IsClient)
+            _currentHealth.OnValueChanged += OnHealthValueChange;
     }
 
     private void OnHealthValueChange(float oldValue, float newValue)
@@ -69,18 +70,18 @@ public class VehicleHealth : NetworkBehaviour
 
         OnHealthChanged?.Invoke(CurrentHealth);
 
-        if (_currentHealth.Value <= 0)
+        if (CurrentHealth <= 0)
         {
             Die();
         }
     }
-
+    
     private void Die()
     {
-        if (IsDead || !IsServer) return;
+        if (!IsServer) return;
 
         ClientCarDeathRpc(transform.position);
-
+        
         DisableControlScripts();
     }
 

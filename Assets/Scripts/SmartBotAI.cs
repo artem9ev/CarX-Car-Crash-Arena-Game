@@ -56,7 +56,7 @@ public class SmartBotAI : NetworkBehaviour
         if (!IsServer) return;
         if (targetPlayer != null)
         {
-            ChaseTarget();
+            //ChaseTarget();
         }
         else
         {
@@ -88,8 +88,6 @@ public class SmartBotAI : NetworkBehaviour
 
     private void ChaseTarget()
     {
-        if (targetPlayer == null) return;
-
         Vector3 directionToTarget = (targetPlayer.position - transform.position).normalized;
         float distanceToTarget = Vector3.Distance(transform.position, targetPlayer.position);
 
