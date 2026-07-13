@@ -54,7 +54,7 @@ public struct CarCollisionEventData : INetworkSerializable
 
     public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
     {
-        // Сериализуем каждое поле Vector3 как три float
+        // Сериализуем каждое поле
         serializer.SerializeValue(ref point);
         serializer.SerializeValue(ref normal);
         serializer.SerializeValue(ref impulse);

@@ -1,0 +1,11 @@
+Model Information:
+* title:	Simple Oil Barrel
+* source:	https://sketchfab.com/3d-models/simple-oil-barrel-0ee443fd9cf041e08b708b338be5ffe2
+* author:	Jamey_B (https://sketchfab.com/Jamey98)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Simple Oil Barrel" (https://sketchfab.com/3d-models/simple-oil-barrel-0ee443fd9cf041e08b708b338be5ffe2) by Jamey_B (https://sketchfab.com/Jamey98) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
