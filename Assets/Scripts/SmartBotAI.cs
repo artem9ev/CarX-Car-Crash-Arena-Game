@@ -21,7 +21,7 @@ public class SmartBotAI : NetworkBehaviour
 
     private MovingCar targetPlayer;
 
-    private MovingCar movingCar;
+    private CarController controller;
     private float timer;
     private float targetUpdateTimer;
     private bool hasTarget = false;
@@ -31,7 +31,7 @@ public class SmartBotAI : NetworkBehaviour
     {
         if (!IsServer) return;
 
-        movingCar = GetComponent<MovingCar>();
+        controller = GetComponent<CarController>();
         timer = reactionTime;
         targetUpdateTimer = updateTargetInterval;
         currentDirection = transform.forward;
@@ -98,11 +98,11 @@ public class SmartBotAI : NetworkBehaviour
         // Управление через MovingCar
         if (distanceToTarget > stopDistance)
         {
-            movingCar.OnGas(-0.8f);
+            controller.OnGas(-0.8f);
         }
         else
         {
-            movingCar.OnBrake(1);
+            controller.OnBrake(1);
         }
 
         currentDirection = directionToTarget;
@@ -120,7 +120,7 @@ public class SmartBotAI : NetworkBehaviour
         Quaternion targetRotation = Quaternion.LookRotation(currentDirection);
         transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, turnSpeed * Time.fixedDeltaTime * 0.01f);
 
-        movingCar.OnGas(-0.5f); ;  // Медленное движение
+        controller.OnGas(-0.5f); ;  // Медленное движение
     }
 
     private void OnDrawGizmosSelected()

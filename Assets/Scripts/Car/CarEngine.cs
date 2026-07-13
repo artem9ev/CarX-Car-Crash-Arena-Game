@@ -29,10 +29,6 @@ public class CarEngine : NetworkBehaviour
     [Header("Brakes")]
     [SerializeField, Min(0f)] private float m_maxBrakeTorque = 3000f;
 
-    [Header("Materials")]
-    [SerializeField] private int m_backwardLightsIndex;
-    [SerializeField, Min(1f)] private float m_brightnessCoef = 1.3f;
-    [SerializeField] private MeshRenderer m_renderer;
     private Color m_backwardLightsColor;
 
     private MovingCar _car;
@@ -83,11 +79,6 @@ public class CarEngine : NetworkBehaviour
     private void Awake()
     {
         _car = GetComponent<MovingCar>();
-        if (m_renderer == null)
-            m_renderer = GetComponent<MeshRenderer>();
-
-        m_renderer.materials[m_backwardLightsIndex].EnableKeyword("_EMISSION");
-        m_backwardLightsColor = m_renderer.materials[m_backwardLightsIndex].GetColor("_EmissionColor");
     }
 
     public override void OnNetworkSpawn()
@@ -98,15 +89,6 @@ public class CarEngine : NetworkBehaviour
             m_clutch = 0f;
             PushNetState();
         }
-    }
-
-    private void Update()
-    {
-        // Косметика (стоп-сигналы) — читаем синхронизированное состояние у всех,
-        // чтобы клиенты видели горящий свет так же, как сервер.
-        m_renderer.materials[m_backwardLightsIndex].SetColor(
-            "_EmissionColor",
-            isBraking ? m_backwardLightsColor * m_brightnessCoef : m_backwardLightsColor);
     }
 
     private void FixedUpdate()
@@ -155,12 +137,19 @@ public class CarEngine : NetworkBehaviour
             m_engineAngularVelocity = m_idleRPM * Mathf.PI / 30f;
 
         if (gearRatio != 0f)
+        {
             m_wheelTorque = m_clutchTorque * totalRatio * m_efficiency;
+        }
         else
             m_wheelTorque = 0f;
 
         ApplyWheelTorque();
         PushNetState();
+
+        if (IsOwner)
+        {
+            Debug.Log($"[CAR STATE] rpm: {m_netState.Value.rpm, 10:f2} | gear: {m_netState.Value.gear, 4} | gas: {m_gas, 10:f2} | torque: {m_engineTorque, 10:f2} | m_wheelTorque: {m_wheelTorque}");
+        }
     }
 
     private void PushNetState()

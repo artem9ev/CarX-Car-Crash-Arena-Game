@@ -49,12 +49,15 @@ public class MovingCar : NetworkBehaviour
     private Vector3 m_projectedAirForceY;
     private Vector3 m_projectedAirForceZ;
 
+    private Vector3 m_projectedVelocityZ;
+
     public event UnityAction<float> OnHealthChanged;
     public event UnityAction OnDeath;
 
     public bool isGrounded => _wheelFR.IsGrounded || _wheelFL.IsGrounded || _wheelBR.IsGrounded || _wheelBL.IsGrounded;
     public Vector3 position => _rb.position;
     public Vector3 linearVelocity => _rb.linearVelocity;
+    public Vector3 projectedVelocityZ => Vector3.Project(_rb.linearVelocity, _transform.forward);
 
     private void OnDrawGizmosSelected()
     {
