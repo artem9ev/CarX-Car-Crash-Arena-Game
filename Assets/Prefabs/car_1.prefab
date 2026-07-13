@@ -34548,6 +34548,7 @@ GameObject:
   - component: {fileID: 6463885650073322775}
   - component: {fileID: 1675215704071172687}
   - component: {fileID: 7834508491955151903}
+  - component: {fileID: 3123742909767309079}
   - component: {fileID: 4391329620947305147}
   - component: {fileID: 5438428424036862306}
   - component: {fileID: 686277926517070426}
@@ -34573,6 +34574,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 436646223339386984}
   - {fileID: 7752565537515583664}
   - {fileID: 442357645607428254}
   - {fileID: 5124030743494957110}
@@ -34711,9 +34713,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::VehicleHealth
   ShowTopMostFoldoutHeaderGroup: 1
-  _maxHealth: 5000
-  _damageMultiplier: 0.2
-  _minDamage: 5
+  _maxHealth: 1000
+  _damageMultiplier: 0.1
+  _minDamage: 50
 --- !u!114 &7834508491955151903
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -34727,24 +34729,92 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MovingCar
   ShowTopMostFoldoutHeaderGroup: 1
-  _downForceCoef: 3
+  _downForceCoef: 15
   _steeringMaxAngle: 40
   _turnSpeed: 300
   _outerWheelCoef: 0.8
   _safeSteerCoef: 1
-  m_projectedLinearDamping: {x: 5, y: 20, z: 0}
-  m_maxAirAngularVelocity: 500
-  motorForce: 2500
-  maxSpeed: 100
+  m_projectedLinearDamping: {x: 7, y: 14, z: 0}
+  m_maxAirAngularVelocity: 300
+  _wheelFR: {fileID: 8287512271974914898}
+  _wheelFL: {fileID: 5120494557764392918}
+  _wheelBR: {fileID: 525000458298391890}
+  _wheelBL: {fileID: 2936783875174850358}
   brakeTorque: 3000
-  WheelFL: {fileID: 3825463642171184544}
-  WheelFR: {fileID: 3621001989305673165}
-  WheelBL: {fileID: 1599652623752590188}
-  WheelBR: {fileID: 4058158894578718026}
-  frontLeftTransform: {fileID: 1324140661720643738}
-  frontRightTransform: {fileID: 4317573066535612008}
-  rearLeftTransform: {fileID: 6914396867144320499}
-  rearRightTransform: {fileID: 8057167181465371396}
+--- !u!114 &3123742909767309079
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 919132149155446097}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1120a8c037d973d439244852ec53e998, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CarEngine
+  ShowTopMostFoldoutHeaderGroup: 1
+  m_torqueCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0.6
+      inSlope: 1.9999999
+      outSlope: 1.9999999
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.2
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.68566436
+      value: 0.95118904
+      inSlope: -0.01633859
+      outSlope: -0.01633859
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.53271294
+    - serializedVersion: 3
+      time: 1
+      value: 0.7
+      inSlope: -0.79911095
+      outSlope: -0.79911095
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  m_idleRPM: 800
+  m_peakRPM: 6500
+  m_maxEngineTorque: 1500
+  m_engineInertia: 1.2
+  m_engineFrictionCoeff: 0.3
+  m_mainRatio: 4
+  m_gears:
+  - 3
+  - 2
+  - 1.4
+  - 1
+  - 0.8
+  m_reverseGear: 3.4
+  m_efficiency: 0.93
+  m_clutchTime: 0.4
+  m_maxClutchFrictionTorque: 3000
+  m_clutchSpringRate: 5
+  m_clutchDampingCoeff: 1
+  m_maxBrakeTorque: 3000
 --- !u!114 &4391329620947305147
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -34758,6 +34828,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CarController
   ShowTopMostFoldoutHeaderGroup: 1
+  m_nextGearRPM: 0.9
+  m_prevGearRPM: 0.5
+  m_waitTime: 0.4
+  m_rpmShortMemoryTime: 0.3
+  m_rpmLongMemoryTime: 2
+  m_rpmMaxDifference: 2500
+  m_rpmMinDifference: 200
 --- !u!114 &5438428424036862306
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -34771,8 +34848,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CarPhysics
   ShowTopMostFoldoutHeaderGroup: 1
-  m_softHitImpulse: 500
-  m_hardHitImpulse: 4000
+  m_softHitImpulse: 1000
+  m_hardHitImpulse: 5000
 --- !u!114 &686277926517070426
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -34825,7 +34902,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CarDestruction
   carParts: []
-  explosionForce: 500
+  explosionForce: 5
   explosionRadius: 5
   driver: {fileID: 4815418831979996293}
   driverEjectForce: 5
@@ -34895,10 +34972,10 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 3532504197558763642}
   - {fileID: -6931342207739320322}
-  - {fileID: 5615894729551968498}
+  - {fileID: 3532504197558763642}
   - {fileID: 5166553597093196485}
+  - {fileID: 5615894729551968498}
   m_Father: {fileID: -8679921383154817045}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1240069838427047896
@@ -35369,6 +35446,7 @@ GameObject:
   m_Component:
   - component: {fileID: -6931342207739320322}
   - component: {fileID: 3621001989305673165}
+  - component: {fileID: 8287512271974914898}
   m_Layer: 3
   m_Name: WC FR
   m_TagString: Untagged
@@ -35430,6 +35508,21 @@ WheelCollider:
   m_LayerOverridePriority: 0
   m_Enabled: 1
   m_ProvidesContacts: 0
+--- !u!114 &8287512271974914898
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2432495897333500834}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 85f423d03811a934ea70da557e66c300, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CarWheel
+  ShowTopMostFoldoutHeaderGroup: 1
+  _wheelCollider: {fileID: 3621001989305673165}
+  _wheelTransform: {fileID: 4317573066535612008}
 --- !u!1 &2450066179066314305
 GameObject:
   m_ObjectHideFlags: 0
@@ -40706,6 +40799,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5166553597093196485}
   - component: {fileID: 4058158894578718026}
+  - component: {fileID: 525000458298391890}
   m_Layer: 3
   m_Name: WC BR
   m_TagString: Untagged
@@ -40767,6 +40861,21 @@ WheelCollider:
   m_LayerOverridePriority: 0
   m_Enabled: 1
   m_ProvidesContacts: 0
+--- !u!114 &525000458298391890
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3292069454762012108}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 85f423d03811a934ea70da557e66c300, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CarWheel
+  ShowTopMostFoldoutHeaderGroup: 1
+  _wheelCollider: {fileID: 4058158894578718026}
+  _wheelTransform: {fileID: 8057167181465371396}
 --- !u!1 &3589846644507500555
 GameObject:
   m_ObjectHideFlags: 0
@@ -46041,6 +46150,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5615894729551968498}
   - component: {fileID: 1599652623752590188}
+  - component: {fileID: 2936783875174850358}
   m_Layer: 3
   m_Name: WC BL
   m_TagString: Untagged
@@ -46102,6 +46212,21 @@ WheelCollider:
   m_LayerOverridePriority: 0
   m_Enabled: 1
   m_ProvidesContacts: 0
+--- !u!114 &2936783875174850358
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5321460431709881898}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 85f423d03811a934ea70da557e66c300, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CarWheel
+  ShowTopMostFoldoutHeaderGroup: 1
+  _wheelCollider: {fileID: 1599652623752590188}
+  _wheelTransform: {fileID: 6914396867144320499}
 --- !u!1 &5465915204756299465
 GameObject:
   m_ObjectHideFlags: 0
@@ -56150,6 +56275,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3532504197558763642}
   - component: {fileID: 3825463642171184544}
+  - component: {fileID: 5120494557764392918}
   m_Layer: 3
   m_Name: WC FL
   m_TagString: Untagged
@@ -56211,6 +56337,21 @@ WheelCollider:
   m_LayerOverridePriority: 0
   m_Enabled: 1
   m_ProvidesContacts: 0
+--- !u!114 &5120494557764392918
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6443941888216277843}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 85f423d03811a934ea70da557e66c300, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CarWheel
+  ShowTopMostFoldoutHeaderGroup: 1
+  _wheelCollider: {fileID: 3825463642171184544}
+  _wheelTransform: {fileID: 1324140661720643738}
 --- !u!1 &6448653358317067097
 GameObject:
   m_ObjectHideFlags: 0
@@ -66881,4 +67022,66 @@ Transform:
 Transform:
   m_CorrespondingSourceObject: {fileID: -5816889912940413735, guid: 5099a307e2c1f704ca6c9c84654b7a45, type: 3}
   m_PrefabInstance: {fileID: 4654065239779704797}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &8030142807755221833
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: -8679921383154817045}
+    m_Modifications:
+    - target: {fileID: 705326642075391691, guid: 67895fc80d9046f4e8b6f5ed20c779ee, type: 3}
+      propertyPath: m_Name
+      value: Engine Audio
+      objectReference: {fileID: 0}
+    - target: {fileID: 7601947784584925985, guid: 67895fc80d9046f4e8b6f5ed20c779ee, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0.985
+      objectReference: {fileID: 0}
+    - target: {fileID: 7601947784584925985, guid: 67895fc80d9046f4e8b6f5ed20c779ee, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 1.3848
+      objectReference: {fileID: 0}
+    - target: {fileID: 7601947784584925985, guid: 67895fc80d9046f4e8b6f5ed20c779ee, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0.54621
+      objectReference: {fileID: 0}
+    - target: {fileID: 7601947784584925985, guid: 67895fc80d9046f4e8b6f5ed20c779ee, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7601947784584925985, guid: 67895fc80d9046f4e8b6f5ed20c779ee, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7601947784584925985, guid: 67895fc80d9046f4e8b6f5ed20c779ee, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7601947784584925985, guid: 67895fc80d9046f4e8b6f5ed20c779ee, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7601947784584925985, guid: 67895fc80d9046f4e8b6f5ed20c779ee, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7601947784584925985, guid: 67895fc80d9046f4e8b6f5ed20c779ee, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7601947784584925985, guid: 67895fc80d9046f4e8b6f5ed20c779ee, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 67895fc80d9046f4e8b6f5ed20c779ee, type: 3}
+--- !u!4 &436646223339386984 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 7601947784584925985, guid: 67895fc80d9046f4e8b6f5ed20c779ee, type: 3}
+  m_PrefabInstance: {fileID: 8030142807755221833}
   m_PrefabAsset: {fileID: 0}
