@@ -143,7 +143,6 @@ GameObject:
   - component: {fileID: 5454276912431567296}
   - component: {fileID: 8011894017304333763}
   - component: {fileID: 3716282997504014033}
-  - component: {fileID: 2264118016189748158}
   m_Layer: 6
   m_Name: mixamorig:Head
   m_TagString: Untagged
@@ -257,22 +256,6 @@ CharacterJoint:
   m_EnableProjection: 0
   m_ProjectionDistance: 0.1
   m_ProjectionAngle: 180
-  m_BreakForce: Infinity
-  m_BreakTorque: Infinity
-  m_EnableCollision: 0
-  m_EnablePreprocessing: 1
-  m_MassScale: 1
-  m_ConnectedMassScale: 1
---- !u!138 &2264118016189748158
-FixedJoint:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 353942336975758708}
-  serializedVersion: 1
-  m_ConnectedBody: {fileID: 0}
-  m_ConnectedArticulationBody: {fileID: 0}
   m_BreakForce: Infinity
   m_BreakTorque: Infinity
   m_EnableCollision: 0
@@ -825,7 +808,6 @@ GameObject:
   - component: {fileID: 8908968575654418587}
   - component: {fileID: 3445602092890824291}
   - component: {fileID: 8032275225860045942}
-  - component: {fileID: 9118916126301949501}
   m_Layer: 6
   m_Name: mixamorig:RightForeArm
   m_TagString: Untagged
@@ -945,22 +927,6 @@ CharacterJoint:
   m_EnablePreprocessing: 1
   m_MassScale: 1
   m_ConnectedMassScale: 1
---- !u!138 &9118916126301949501
-FixedJoint:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1754470022677551599}
-  serializedVersion: 1
-  m_ConnectedBody: {fileID: 0}
-  m_ConnectedArticulationBody: {fileID: 0}
-  m_BreakForce: Infinity
-  m_BreakTorque: Infinity
-  m_EnableCollision: 0
-  m_EnablePreprocessing: 1
-  m_MassScale: 1
-  m_ConnectedMassScale: 1
 --- !u!1 &1869369207647294355
 GameObject:
   m_ObjectHideFlags: 0
@@ -973,7 +939,6 @@ GameObject:
   - component: {fileID: 2831972673325004547}
   - component: {fileID: 5635381885622185305}
   - component: {fileID: 8687552011423123768}
-  - component: {fileID: 8189135815245736953}
   m_Layer: 6
   m_Name: mixamorig:LeftArm
   m_TagString: Untagged
@@ -1093,22 +1058,6 @@ CharacterJoint:
   m_EnablePreprocessing: 1
   m_MassScale: 1
   m_ConnectedMassScale: 1
---- !u!138 &8189135815245736953
-FixedJoint:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1869369207647294355}
-  serializedVersion: 1
-  m_ConnectedBody: {fileID: 0}
-  m_ConnectedArticulationBody: {fileID: 0}
-  m_BreakForce: Infinity
-  m_BreakTorque: Infinity
-  m_EnableCollision: 0
-  m_EnablePreprocessing: 1
-  m_MassScale: 1
-  m_ConnectedMassScale: 1
 --- !u!1 &2017013701105535807
 GameObject:
   m_ObjectHideFlags: 0
@@ -1185,7 +1134,6 @@ GameObject:
   - component: {fileID: 7734146493556320385}
   - component: {fileID: 6145360722493101956}
   - component: {fileID: 6798143333015855164}
-  - component: {fileID: 4021346641628468586}
   m_Layer: 6
   m_Name: mixamorig:Spine1
   m_TagString: Untagged
@@ -1305,22 +1253,6 @@ CharacterJoint:
   m_EnablePreprocessing: 1
   m_MassScale: 1
   m_ConnectedMassScale: 1
---- !u!138 &4021346641628468586
-FixedJoint:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2199423859391777303}
-  serializedVersion: 1
-  m_ConnectedBody: {fileID: 0}
-  m_ConnectedArticulationBody: {fileID: 0}
-  m_BreakForce: Infinity
-  m_BreakTorque: Infinity
-  m_EnableCollision: 0
-  m_EnablePreprocessing: 1
-  m_MassScale: 1
-  m_ConnectedMassScale: 1
 --- !u!1 &2216431307661061166
 GameObject:
   m_ObjectHideFlags: 0
@@ -1397,7 +1329,6 @@ GameObject:
   - component: {fileID: 6973969755638639868}
   - component: {fileID: 4112779962333709891}
   - component: {fileID: 7947211209490997700}
-  - component: {fileID: 4962692525487949068}
   m_Layer: 6
   m_Name: mixamorig:RightLeg
   m_TagString: Untagged
@@ -1511,22 +1442,6 @@ CharacterJoint:
   m_EnableProjection: 1
   m_ProjectionDistance: 0.01
   m_ProjectionAngle: 5
-  m_BreakForce: Infinity
-  m_BreakTorque: Infinity
-  m_EnableCollision: 0
-  m_EnablePreprocessing: 1
-  m_MassScale: 1
-  m_ConnectedMassScale: 1
---- !u!138 &4962692525487949068
-FixedJoint:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2337666396740537176}
-  serializedVersion: 1
-  m_ConnectedBody: {fileID: 0}
-  m_ConnectedArticulationBody: {fileID: 0}
   m_BreakForce: Infinity
   m_BreakTorque: Infinity
   m_EnableCollision: 0
@@ -1702,7 +1617,6 @@ GameObject:
   - component: {fileID: 6032718800430719381}
   - component: {fileID: 4524733485762717301}
   - component: {fileID: 5840641612261561380}
-  - component: {fileID: 5517705191305912472}
   m_Layer: 6
   m_Name: mixamorig:Spine2
   m_TagString: Untagged
@@ -1824,22 +1738,6 @@ CharacterJoint:
   m_EnablePreprocessing: 1
   m_MassScale: 1
   m_ConnectedMassScale: 1
---- !u!138 &5517705191305912472
-FixedJoint:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3277223874005096653}
-  serializedVersion: 1
-  m_ConnectedBody: {fileID: 0}
-  m_ConnectedArticulationBody: {fileID: 0}
-  m_BreakForce: Infinity
-  m_BreakTorque: Infinity
-  m_EnableCollision: 0
-  m_EnablePreprocessing: 1
-  m_MassScale: 1
-  m_ConnectedMassScale: 1
 --- !u!1 &3515776509199712487
 GameObject:
   m_ObjectHideFlags: 0
@@ -1915,7 +1813,6 @@ GameObject:
   - component: {fileID: 4266789746093759400}
   - component: {fileID: 8754116232251738906}
   - component: {fileID: 7757995559428309789}
-  - component: {fileID: 3395257008690914971}
   m_Layer: 6
   m_Name: mixamorig:RightUpLeg
   m_TagString: Untagged
@@ -2029,22 +1926,6 @@ CharacterJoint:
   m_EnableProjection: 1
   m_ProjectionDistance: 0.01
   m_ProjectionAngle: 5
-  m_BreakForce: Infinity
-  m_BreakTorque: Infinity
-  m_EnableCollision: 0
-  m_EnablePreprocessing: 1
-  m_MassScale: 1
-  m_ConnectedMassScale: 1
---- !u!138 &3395257008690914971
-FixedJoint:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3928524200266502811}
-  serializedVersion: 1
-  m_ConnectedBody: {fileID: 0}
-  m_ConnectedArticulationBody: {fileID: 0}
   m_BreakForce: Infinity
   m_BreakTorque: Infinity
   m_EnableCollision: 0
@@ -2258,7 +2139,6 @@ GameObject:
   - component: {fileID: 5672864334544829235}
   - component: {fileID: 6892050841509110585}
   - component: {fileID: 292082222692501034}
-  - component: {fileID: 6750559389121855422}
   m_Layer: 6
   m_Name: mixamorig:RightHand
   m_TagString: Untagged
@@ -2382,22 +2262,6 @@ CharacterJoint:
   m_EnablePreprocessing: 1
   m_MassScale: 1
   m_ConnectedMassScale: 1
---- !u!138 &6750559389121855422
-FixedJoint:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5044467486541482769}
-  serializedVersion: 1
-  m_ConnectedBody: {fileID: 0}
-  m_ConnectedArticulationBody: {fileID: 0}
-  m_BreakForce: Infinity
-  m_BreakTorque: Infinity
-  m_EnableCollision: 0
-  m_EnablePreprocessing: 1
-  m_MassScale: 1
-  m_ConnectedMassScale: 1
 --- !u!1 &5166810059273990345
 GameObject:
   m_ObjectHideFlags: 0
@@ -2442,7 +2306,6 @@ GameObject:
   - component: {fileID: 2666607138299291450}
   - component: {fileID: 8355771987724135397}
   - component: {fileID: 1506895412174553460}
-  - component: {fileID: 8777372621701432241}
   m_Layer: 6
   m_Name: mixamorig:LeftUpLeg
   m_TagString: Untagged
@@ -2562,22 +2425,6 @@ CharacterJoint:
   m_EnablePreprocessing: 1
   m_MassScale: 1
   m_ConnectedMassScale: 1
---- !u!138 &8777372621701432241
-FixedJoint:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5200297256350526525}
-  serializedVersion: 1
-  m_ConnectedBody: {fileID: 0}
-  m_ConnectedArticulationBody: {fileID: 0}
-  m_BreakForce: Infinity
-  m_BreakTorque: Infinity
-  m_EnableCollision: 0
-  m_EnablePreprocessing: 1
-  m_MassScale: 1
-  m_ConnectedMassScale: 1
 --- !u!1 &5214317954874804564
 GameObject:
   m_ObjectHideFlags: 0
@@ -2654,7 +2501,6 @@ GameObject:
   - component: {fileID: 5460663297492994420}
   - component: {fileID: 2819594401735564268}
   - component: {fileID: 8087382238413196054}
-  - component: {fileID: 8589334448460322156}
   m_Layer: 6
   m_Name: mixamorig:LeftLeg
   m_TagString: Untagged
@@ -2768,22 +2614,6 @@ CharacterJoint:
   m_EnableProjection: 1
   m_ProjectionDistance: 0.01
   m_ProjectionAngle: 5
-  m_BreakForce: Infinity
-  m_BreakTorque: Infinity
-  m_EnableCollision: 0
-  m_EnablePreprocessing: 1
-  m_MassScale: 1
-  m_ConnectedMassScale: 1
---- !u!138 &8589334448460322156
-FixedJoint:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5328783149770908688}
-  serializedVersion: 1
-  m_ConnectedBody: {fileID: 0}
-  m_ConnectedArticulationBody: {fileID: 0}
   m_BreakForce: Infinity
   m_BreakTorque: Infinity
   m_EnableCollision: 0
@@ -2991,7 +2821,6 @@ GameObject:
   - component: {fileID: 7565519724225527618}
   - component: {fileID: 4523812848018298900}
   - component: {fileID: 2999773246184942598}
-  - component: {fileID: 685179220508975284}
   m_Layer: 6
   m_Name: mixamorig:Neck
   m_TagString: Untagged
@@ -3105,22 +2934,6 @@ CharacterJoint:
   m_EnableProjection: 1
   m_ProjectionDistance: 0.01
   m_ProjectionAngle: 5
-  m_BreakForce: Infinity
-  m_BreakTorque: Infinity
-  m_EnableCollision: 0
-  m_EnablePreprocessing: 1
-  m_MassScale: 1
-  m_ConnectedMassScale: 1
---- !u!138 &685179220508975284
-FixedJoint:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6073481930072003432}
-  serializedVersion: 1
-  m_ConnectedBody: {fileID: 0}
-  m_ConnectedArticulationBody: {fileID: 0}
   m_BreakForce: Infinity
   m_BreakTorque: Infinity
   m_EnableCollision: 0
@@ -3460,7 +3273,6 @@ GameObject:
   - component: {fileID: 2889684754885270697}
   - component: {fileID: 5888931952105042851}
   - component: {fileID: 3653478064067083482}
-  - component: {fileID: 1391528289414864458}
   m_Layer: 6
   m_Name: mixamorig:LeftHand
   m_TagString: Untagged
@@ -3584,22 +3396,6 @@ CharacterJoint:
   m_EnablePreprocessing: 1
   m_MassScale: 1
   m_ConnectedMassScale: 1
---- !u!138 &1391528289414864458
-FixedJoint:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6759740346757591004}
-  serializedVersion: 1
-  m_ConnectedBody: {fileID: 0}
-  m_ConnectedArticulationBody: {fileID: 0}
-  m_BreakForce: Infinity
-  m_BreakTorque: Infinity
-  m_EnableCollision: 0
-  m_EnablePreprocessing: 1
-  m_MassScale: 1
-  m_ConnectedMassScale: 1
 --- !u!1 &6776422868175656125
 GameObject:
   m_ObjectHideFlags: 0
@@ -3644,7 +3440,6 @@ GameObject:
   - component: {fileID: 338431149237959879}
   - component: {fileID: 4100192671997540320}
   - component: {fileID: 7440225120147376120}
-  - component: {fileID: 7059285707633239056}
   m_Layer: 6
   m_Name: mixamorig:RightArm
   m_TagString: Untagged
@@ -3764,22 +3559,6 @@ CharacterJoint:
   m_EnablePreprocessing: 1
   m_MassScale: 1
   m_ConnectedMassScale: 1
---- !u!138 &7059285707633239056
-FixedJoint:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7039424501527831638}
-  serializedVersion: 1
-  m_ConnectedBody: {fileID: 0}
-  m_ConnectedArticulationBody: {fileID: 0}
-  m_BreakForce: Infinity
-  m_BreakTorque: Infinity
-  m_EnableCollision: 0
-  m_EnablePreprocessing: 1
-  m_MassScale: 1
-  m_ConnectedMassScale: 1
 --- !u!1 &7173873717900994793
 GameObject:
   m_ObjectHideFlags: 0
@@ -3792,7 +3571,6 @@ GameObject:
   - component: {fileID: 8412785232517893669}
   - component: {fileID: 1265889222273952958}
   - component: {fileID: 258724069214625562}
-  - component: {fileID: 26229473673958894}
   m_Layer: 6
   m_Name: mixamorig:RightShoulder
   m_TagString: Untagged
@@ -3912,22 +3690,6 @@ CharacterJoint:
   m_EnablePreprocessing: 1
   m_MassScale: 1
   m_ConnectedMassScale: 1
---- !u!138 &26229473673958894
-FixedJoint:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7173873717900994793}
-  serializedVersion: 1
-  m_ConnectedBody: {fileID: 0}
-  m_ConnectedArticulationBody: {fileID: 0}
-  m_BreakForce: Infinity
-  m_BreakTorque: Infinity
-  m_EnableCollision: 0
-  m_EnablePreprocessing: 1
-  m_MassScale: 1
-  m_ConnectedMassScale: 1
 --- !u!1 &7354677885081062960
 GameObject:
   m_ObjectHideFlags: 0
@@ -3971,7 +3733,6 @@ GameObject:
   - component: {fileID: 2915173128002150767}
   - component: {fileID: 7471367432549638902}
   - component: {fileID: 4081034880805684615}
-  - component: {fileID: 3091164802429267623}
   m_Layer: 6
   m_Name: mixamorig:Hips
   m_TagString: Untagged
@@ -4047,22 +3808,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!138 &3091164802429267623
-FixedJoint:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7830402605620328474}
-  serializedVersion: 1
-  m_ConnectedBody: {fileID: 0}
-  m_ConnectedArticulationBody: {fileID: 0}
-  m_BreakForce: Infinity
-  m_BreakTorque: Infinity
-  m_EnableCollision: 0
-  m_EnablePreprocessing: 1
-  m_MassScale: 1
-  m_ConnectedMassScale: 1
 --- !u!1 &7908395487745412965
 GameObject:
   m_ObjectHideFlags: 0
@@ -4103,6 +3848,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7216055572034699771}
+  - component: {fileID: 4557121735219123619}
+  - component: {fileID: 245224256090438704}
   m_Layer: 6
   m_Name: SpiderMan Ragdoll
   m_TagString: Untagged
@@ -4119,7 +3866,7 @@ Transform:
   m_GameObject: {fileID: 8029712406134070081}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0.99461275, z: -0, w: -0.1036605}
-  m_LocalPosition: {x: -0.18251705, y: 4.6, z: -11.129224}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -4127,6 +3874,78 @@ Transform:
   - {fileID: 5289228264603095298}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4557121735219123619
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8029712406134070081}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
+  GlobalObjectIdHash: 1811553027
+  InScenePlacedSourceGlobalObjectIdHash: 0
+  DeferredDespawnTick: 0
+  Ownership: 1
+  AlwaysReplicateAsRoot: 0
+  SynchronizeTransform: 1
+  <InScenePlaced>k__BackingField: 0
+  ActiveSceneSynchronization: 0
+  SceneMigrationSynchronization: 1
+  SpawnWithObservers: 1
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
+  SyncOwnerTransformWhenParented: 1
+  AllowOwnerToParent: 0
+--- !u!114 &245224256090438704
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8029712406134070081}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e96cb6065543e43c4a752faaa1468eb1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.Components.NetworkTransform
+  ShowTopMostFoldoutHeaderGroup: 1
+  NetworkTransformExpanded: 0
+  AutoOwnerAuthorityTickOffset: 1
+  PositionInterpolationType: 0
+  RotationInterpolationType: 0
+  ScaleInterpolationType: 0
+  PositionLerpSmoothing: 1
+  PositionMaxInterpolationTime: 0.1
+  RotationLerpSmoothing: 1
+  RotationMaxInterpolationTime: 0.1
+  ScaleLerpSmoothing: 1
+  ScaleMaxInterpolationTime: 0.1
+  AuthorityMode: 0
+  TickSyncChildren: 0
+  UseUnreliableDeltas: 0
+  SyncPositionX: 1
+  SyncPositionY: 1
+  SyncPositionZ: 1
+  SyncRotAngleX: 1
+  SyncRotAngleY: 1
+  SyncRotAngleZ: 1
+  SyncScaleX: 1
+  SyncScaleY: 1
+  SyncScaleZ: 1
+  PositionThreshold: 0.001
+  RotAngleThreshold: 0.01
+  ScaleThreshold: 0.01
+  UseQuaternionSynchronization: 0
+  UseQuaternionCompression: 0
+  UseHalfFloatPrecision: 0
+  InLocalSpace: 0
+  SwitchTransformSpaceWhenParented: 0
+  Interpolate: 1
+  SlerpPosition: 0
 --- !u!1 &8159216811654861309
 GameObject:
   m_ObjectHideFlags: 0
