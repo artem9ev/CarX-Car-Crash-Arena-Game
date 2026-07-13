@@ -23,11 +23,12 @@ public class HealthBar : MonoBehaviour
     private void Awake()
     {
         fillImage = fill.GetComponent<Image>();
-        if (mainCamera == null) mainCamera = Camera.main;
     }
 
     private void Start()
     {
+        if (mainCamera == null) mainCamera = Camera.main;
+
         // Ищем VehicleHealth игрока, если не назначен вручную
         if (vehicleHealth == null)
         {
@@ -70,13 +71,16 @@ public class HealthBar : MonoBehaviour
 
     private void Update()
     {
+        //transform.LookAt(transform.position + mainCamera.transform.forward);
         currentFillAmount = Mathf.Lerp(currentFillAmount, targetFillAmount, Time.deltaTime * smoothSpeed);
         UpdateFillVisual();
 
-        if (mainCamera != null)
+        if (mainCamera == null)
         {
-            transform.LookAt(transform.position + mainCamera.transform.forward);
+            mainCamera = Camera.main;
         }
+
+        transform.LookAt(transform.position + Camera.main.transform.forward);
     }
 
     // ===== ОБНОВЛЕНИЕ ПОЛОСКИ HP =====
@@ -114,45 +118,6 @@ public class HealthBar : MonoBehaviour
         else
         {
             fillImage.color = Color.Lerp(Color.red, Color.green, currentFillAmount);
-        }
-    }
-
-    // ===== ПУБЛИЧНЫЙ МЕТОД ДЛЯ ПЕРЕПОДПИСКИ ПОСЛЕ РЕСПАВНА =====
-    public void SubscribeToNewVehicle()
-    {
-        // Отписываемся от старой
-        if (vehicleHealth != null)
-        {
-            vehicleHealth.OnHealthChanged -= UpdateHealthBar;
-            vehicleHealth.OnDeath -= HandleDeath;
-        }
-
-        // Ищем новую машину игрока
-        GameObject playerCar = GameObject.FindGameObjectWithTag("Player");
-        if (playerCar != null)
-        {
-            vehicleHealth = playerCar.GetComponent<VehicleHealth>();
-        }
-
-        if (vehicleHealth != null)
-        {
-            vehicleHealth.OnHealthChanged += UpdateHealthBar;
-            vehicleHealth.OnDeath += HandleDeath;
-
-            // Сбрасываем полоску
-            targetFillAmount = 1f;
-            currentFillAmount = 1f;
-
-            if (hpText != null)
-            {
-                hpText.text = $"{Mathf.CeilToInt(vehicleHealth.MaxHealth)} HP";
-            }
-
-            Debug.Log("✅ HealthBar: Подписка на новую машину");
-        }
-        else
-        {
-            Debug.LogError("❌ HealthBar: Не удалось найти новую машину!");
         }
     }
 }
