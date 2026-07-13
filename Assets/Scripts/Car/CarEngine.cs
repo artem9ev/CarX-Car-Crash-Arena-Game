@@ -1,16 +1,19 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 
-public class CarEngine : MonoBehaviour
+[RequireComponent(typeof(MovingCar))]
+public class CarEngine : NetworkBehaviour
 {
-    /*[Header("Engine")]
+    [Header("Engine")]
     [SerializeField] private AnimationCurve m_torqueCurve;
     [SerializeField, Min(0)] private float m_idleRPM = 800f;
     [SerializeField, Min(0)] private float m_peakRPM = 6500f;
     [SerializeField, Min(0)] private float m_maxEngineTorque = 800f;
     [SerializeField, Min(0.01f)] private float m_engineInertia = 1f;
-    [SerializeField, Min(0)] private float m_engineFrictionCoeff = 0.3f; // подбирается под ощущения
+    [SerializeField, Min(0)] private float m_engineFrictionCoeff = 0.3f;
+
     [Header("Transmission")]
     [SerializeField, Min(0f)] private float m_mainRatio = 4f;
     [SerializeField] private List<float> m_gears = new List<float>() { 3f, 2f, 1.4f, 1f, 0.8f };
@@ -20,25 +23,25 @@ public class CarEngine : MonoBehaviour
     [Header("Clutch")]
     [SerializeField] private float m_clutchTime = 0.4f;
     [SerializeField] private float m_maxClutchFrictionTorque = 3000f;
-    [SerializeField] private float m_clutchSpringRate = 200f;   // коэффициент демпфирования (чем больше, тем быстрее схватывает)
-    [SerializeField] private float m_clutchDampingCoeff = 1f;   // коэффициент демпфирования (чем больше, тем быстрее схватывает)
+    [SerializeField] private float m_clutchSpringRate = 200f;
+    [SerializeField] private float m_clutchDampingCoeff = 1f;
+
+    [Header("Brakes")]
+    [SerializeField, Min(0f)] private float m_maxBrakeTorque = 3000f;
 
     [Header("Materials")]
     [SerializeField] private int m_backwardLightsIndex;
     [SerializeField, Min(1f)] private float m_brightnessCoef = 1.3f;
-
     [SerializeField] private MeshRenderer m_renderer;
     private Color m_backwardLightsColor;
 
-    private Moving m_car;
-    private Rigidbody m_rb;
+    private MovingCar _car;
     private Coroutine m_clutchRoutine;
 
+    // Локальные значения, реально участвующие в симуляции — валидны только на сервере
     private float m_gas;
     private float m_brake;
     private float m_clutch;
-
-    private float m_rpm;
 
     private float m_engineAngularVelocity;
     private float m_transAngVel;
@@ -51,89 +54,99 @@ public class CarEngine : MonoBehaviour
 
     private int m_currentGear = 0;
 
+    // Синхронизируемое состояние для UI/звука/света на клиентах.
+    // Пишет только сервер, читают все.
+    private NetworkVariable<EngineNetworkState> m_netState = new NetworkVariable<EngineNetworkState>(
+        default, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+
     public List<float> gears => m_gears;
     public float idleRPM => m_idleRPM;
     public float peakRPM => m_peakRPM;
-    public float rpm => m_engineAngularVelocity * 30f / Mathf.PI;
-    public float transRPM => m_transAngVel * 60f / (2f * Mathf.PI);
+
+    // Публичное API теперь всегда читает синхронизированное состояние —
+    // одинаково работает и на сервере (он же его и пишет), и на клиентах.
+    public float rpm => m_netState.Value.rpm;
+    public int currentGear => m_netState.Value.gear;
+    public float clutch => m_netState.Value.clutch;
+    public bool isBraking => m_netState.Value.isBraking;
+
     public float maxEngineTorque => m_maxEngineTorque;
     public float maxClutchTorque => m_maxClutchFrictionTorque;
     public float engineTorque => m_engineTorque;
     public float wheelTorque => m_wheelTorque;
     public float clutchTorque => m_clutchTorque;
     public float clutchTime => m_clutchTime;
-    public int currentGear => m_currentGear;
     public float gas => m_gas;
-    public float clutch => m_clutch;
 
     public bool isClutchPressed => m_clutch < 0.1f && m_clutchRoutine == null;
 
     private void Awake()
     {
-        m_car = GetComponent<Car>();
-        m_rb = GetComponent<Rigidbody>();
+        _car = GetComponent<MovingCar>();
         if (m_renderer == null)
             m_renderer = GetComponent<MeshRenderer>();
+
         m_renderer.materials[m_backwardLightsIndex].EnableKeyword("_EMISSION");
         m_backwardLightsColor = m_renderer.materials[m_backwardLightsIndex].GetColor("_EmissionColor");
     }
 
-    private void Start()
+    public override void OnNetworkSpawn()
     {
-        m_engineAngularVelocity = m_idleRPM * Mathf.PI / 30f;
-        m_clutch = 0f;
+        if (IsServer)
+        {
+            m_engineAngularVelocity = m_idleRPM * Mathf.PI / 30f;
+            m_clutch = 0f;
+            PushNetState();
+        }
+    }
+
+    private void Update()
+    {
+        // Косметика (стоп-сигналы) — читаем синхронизированное состояние у всех,
+        // чтобы клиенты видели горящий свет так же, как сервер.
+        m_renderer.materials[m_backwardLightsIndex].SetColor(
+            "_EmissionColor",
+            isBraking ? m_backwardLightsColor * m_brightnessCoef : m_backwardLightsColor);
     }
 
     private void FixedUpdate()
     {
-        if (m_currentGear == -1) 
+        // Вся симуляция двигателя/сцепления — авторитетная физика, только сервер.
+        if (!IsServer) return;
+
+        if (m_currentGear == -1)
         {
             m_clutch = 0f;
         }
 
         m_engineTorque = CalculateEngineTorque();
 
-        // 2. Сцепление: чисто демпферное
         float gearRatio = 0;
         if (m_currentGear >= 0)
         {
             gearRatio = m_gears[m_currentGear];
         }
-        else if (m_currentGear == -2) 
+        else if (m_currentGear == -2)
         {
             gearRatio = -m_reverseGear;
         }
         float totalRatio = m_mainRatio * gearRatio;
-        float wheelAngVel = GetWheelAngularVelocity(); // Средняя скорость ведущих колес
+        float wheelAngVel = GetWheelAngularVelocity();
         m_transAngVel = wheelAngVel * totalRatio;
 
         float slip = m_engineAngularVelocity - m_transAngVel;
 
-        // Угловое смещение (интеграл от slip)
         m_clutchAngularDeflection += slip * Time.fixedDeltaTime;
         float maxDeflection = m_maxClutchFrictionTorque / Mathf.Max(m_clutchSpringRate, 0.01f);
         m_clutchAngularDeflection = Mathf.Clamp(m_clutchAngularDeflection, -maxDeflection, maxDeflection);
 
-        // Момент через пружину + демпфер
         float springTorque = m_clutchSpringRate * m_clutchAngularDeflection;
-        float dampingTorque = m_clutchDampingCoeff * slip; // отдельный коэффициент демпфирования, в 5-10 раз меньше springRate
+        float dampingTorque = m_clutchDampingCoeff * slip;
         float rawClutchTorque = (springTorque + dampingTorque) * m_clutch;
         m_clutchTorque = Mathf.Clamp(rawClutchTorque, -m_maxClutchFrictionTorque * m_clutch, m_maxClutchFrictionTorque * m_clutch);
 
         float loadTorque = m_clutchTorque;
-        if (Mathf.Abs(slip) < 15f)
-        {
-            foreach (var wheelPair in m_car.wheelPairs)
-            {
-                if (wheelPair.isMotorPair)
-                {
-                    //loadTorque += wheelPair.GetResistanceForce();
-                }
-            }
-            loadTorque += m_car.physics.projectedAirForceZ.magnitude * m_car.wheelPairs[0].rightWheel.radius;
-        }
 
-        // 3. Интегрирование скорости двигателя
         float frictionTorque = m_engineFrictionCoeff * m_engineAngularVelocity;
         float netEngineTorque = m_engineTorque - loadTorque - frictionTorque;
         m_engineAngularVelocity += netEngineTorque / m_engineInertia * Time.fixedDeltaTime;
@@ -141,28 +154,40 @@ public class CarEngine : MonoBehaviour
         if (m_engineAngularVelocity < m_idleRPM * Mathf.PI / 30f)
             m_engineAngularVelocity = m_idleRPM * Mathf.PI / 30f;
 
-        // 5. Передача момента на колёса (если не нейтраль)
         if (gearRatio != 0f)
             m_wheelTorque = m_clutchTorque * totalRatio * m_efficiency;
         else
             m_wheelTorque = 0f;
+
         ApplyWheelTorque();
+        PushNetState();
+    }
+
+    private void PushNetState()
+    {
+        m_netState.Value = new EngineNetworkState
+        {
+            rpm = m_engineAngularVelocity * 30f / Mathf.PI,
+            gear = m_currentGear,
+            clutch = m_clutch,
+            isBraking = m_brake > 0.5f
+        };
     }
 
     private float CalculateEngineTorque()
     {
-        float torqueFactor = m_torqueCurve.Evaluate(Mathf.InverseLerp(m_idleRPM, m_peakRPM, rpm));
+        float currentRpm = m_engineAngularVelocity * 30f / Mathf.PI;
+        float torqueFactor = m_torqueCurve.Evaluate(Mathf.InverseLerp(m_idleRPM, m_peakRPM, currentRpm));
         float baseTorque = torqueFactor * m_gas * m_maxEngineTorque;
 
-        // Ограничитель оборотов (мягкое удушение выше пика)
         float revLimitSoft = m_peakRPM * 0.97f;
         float revLimitHard = m_peakRPM * 1.05f;
-        if (rpm > revLimitSoft)
+        if (currentRpm > revLimitSoft)
         {
-            float limiter = 1f - Mathf.InverseLerp(revLimitSoft, revLimitHard, rpm);
+            float limiter = 1f - Mathf.InverseLerp(revLimitSoft, revLimitHard, currentRpm);
             baseTorque *= limiter;
         }
-        if (rpm >= revLimitHard)
+        if (currentRpm >= revLimitHard)
         {
             baseTorque = Mathf.Min(baseTorque, 0f);
             baseTorque -= m_engineFrictionCoeff * m_engineAngularVelocity * 2f;
@@ -171,33 +196,20 @@ public class CarEngine : MonoBehaviour
         return baseTorque;
     }
 
+    // Мотор-пара = передние колёса (соответствует прежней логике MovingCar).
+    // Если привод другой — поменяй список колёс здесь.
     private void ApplyWheelTorque()
     {
-        int motorPairsCount = 0;
-        foreach (var pair in m_car.wheelPairs)
-            if (pair.isMotorPair) motorPairsCount++;
-
-        foreach (var pair in m_car.wheelPairs)
-            if (pair.isMotorPair) pair.SetTorque(m_wheelTorque / Mathf.Max(1, motorPairsCount));
+        float perWheelTorque = m_wheelTorque / 2f;
+        _car.WheelFR.SetTorque(perWheelTorque);
+        _car.WheelFL.SetTorque(perWheelTorque);
     }
 
     private float GetWheelAngularVelocity()
     {
-        float totalRPM = 0f;
-        int count = 0;
-        foreach (var wheelPair in m_car.wheelPairs)
-            if (wheelPair.isMotorPair)
-            {
-                totalRPM += wheelPair.rightWheel.rpm;
-                totalRPM += wheelPair.leftWheel.rpm;
-                count += 2;
-            }
-        if (count == 0) return 0;
-
-        float avgRPM = totalRPM / count;
+        float avgRPM = (_car.WheelFR.rpm + _car.WheelFL.rpm) / 2f;
         float rawAngVel = avgRPM * 2f * Mathf.PI / 60f;
 
-        // Фильтр
         m_filteredWheelAngVel = Mathf.Lerp(m_filteredWheelAngVel, rawAngVel, Time.fixedDeltaTime * 4f);
         return m_filteredWheelAngVel;
     }
@@ -212,29 +224,30 @@ public class CarEngine : MonoBehaviour
             m_clutch = Mathf.Lerp(0, 1, (Time.time - timeAnchor) / m_clutchTime);
         }
         m_clutch = 1;
-
         m_clutchRoutine = null;
     }
 
     public void PressClutch()
     {
+        if (!IsServer) return;
         m_clutch = 0;
     }
 
     public void UnPressClutch()
     {
+        if (!IsServer) return;
+
         if (m_clutchRoutine != null)
-        {
             StopCoroutine(m_clutchRoutine);
-        }
-        if (m_currentGear != -1) 
-        {
+
+        if (m_currentGear != -1)
             m_clutchRoutine = StartCoroutine(ClutchRoutine());
-        }
     }
 
     public void NextGear()
     {
+        if (!IsServer) return;
+
         if (m_currentGear < m_gears.Count - 1)
         {
             UnPressClutch();
@@ -244,6 +257,8 @@ public class CarEngine : MonoBehaviour
 
     public void PrevGear()
     {
+        if (!IsServer) return;
+
         if (m_currentGear > -1)
         {
             UnPressClutch();
@@ -253,33 +268,50 @@ public class CarEngine : MonoBehaviour
 
     public void SetGear(int gear)
     {
-        if (gear >= m_gears.Count || gear < -2)
-        {
-            return;
-        }
+        if (!IsServer) return;
+        if (gear >= m_gears.Count || gear < -2) return;
+
         m_currentGear = gear;
         UnPressClutch();
     }
 
+    // Вызывается сервером (через CarController RPC от владельца)
     public void OnGas(float value)
     {
+        if (!IsServer) return;
         m_gas = value;
     }
 
+    // Вызывается сервером; тормозит ВСЕ 4 колеса машины
     public void OnBrake(float value)
     {
-        foreach (var wheelPair in m_car.wheelPairs)
-        {
-            wheelPair.Brake(value);
-        }
+        if (!IsServer) return;
 
-        if (value > 0.5f)
-        {
-            m_renderer.materials[m_backwardLightsIndex].SetColor("_EmissionColor", m_backwardLightsColor * m_brightnessCoef);
-        }
-        else
-        {
-            m_renderer.materials[m_backwardLightsIndex].SetColor("_EmissionColor", m_backwardLightsColor);
-        }
-    }*/
+        m_brake = value;
+        float torque = value * m_maxBrakeTorque;
+
+        _car.WheelFR.SetBrake(torque);
+        _car.WheelFL.SetBrake(torque);
+        _car.WheelBR.SetBrake(torque);
+        _car.WheelBL.SetBrake(torque);
+    }
+}
+
+public struct EngineNetworkState : INetworkSerializable, System.IEquatable<EngineNetworkState>
+{
+    public float rpm;
+    public int gear;
+    public float clutch;
+    public bool isBraking;
+
+    public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
+    {
+        serializer.SerializeValue(ref rpm);
+        serializer.SerializeValue(ref gear);
+        serializer.SerializeValue(ref clutch);
+        serializer.SerializeValue(ref isBraking);
+    }
+
+    public bool Equals(EngineNetworkState other) =>
+        rpm.Equals(other.rpm) && gear == other.gear && clutch.Equals(other.clutch) && isBraking == other.isBraking;
 }

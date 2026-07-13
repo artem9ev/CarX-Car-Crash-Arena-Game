@@ -6,6 +6,7 @@ using UnityEngine.Events;
 [RequireComponent(typeof(Rigidbody))]
 [RequireComponent(typeof(CarEffector))]
 [RequireComponent(typeof(CarPhysics))]
+[RequireComponent(typeof(CarEngine))]
 public class MovingCar : NetworkBehaviour
 {
     [SerializeField, Min(0f)] private float _downForceCoef = 3f;
@@ -25,9 +26,13 @@ public class MovingCar : NetworkBehaviour
     [SerializeField] private CarWheel _wheelBR;
     [SerializeField] private CarWheel _wheelBL;
 
-    [Header("Двигатель")]
-    [SerializeField] private float motorForce = 2500f;
-    [SerializeField] private float maxSpeed = 100f;
+    // Нужны CarEngine для доступа к колёсам
+    public CarWheel WheelFR => _wheelFR;
+    public CarWheel WheelFL => _wheelFL;
+    public CarWheel WheelBR => _wheelBR;
+    public CarWheel WheelBL => _wheelBL;
+
+    [Header("Torque (для StopCar / аварийной остановки)")]
     [SerializeField] private float brakeTorque = 3000f;
 
     private Transform _transform;
@@ -35,17 +40,17 @@ public class MovingCar : NetworkBehaviour
     private NetworkTransform _networkTransform;
     private NetworkRigidbody _networkRb;
 
-    // Локальные (только сервер) значения инпута
-    private float m_gas;
-    private float m_brake;
     private float m_steering = 0f;
 
-    // Реплицируемые значения — сервер пишет, все читают для визуала
     private NetworkVariable<WheelVisualState> m_netWheelState = new NetworkVariable<WheelVisualState>(
-        new WheelVisualState(), NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+        default, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+
     private Vector3 m_projectedAirForceX;
     private Vector3 m_projectedAirForceY;
     private Vector3 m_projectedAirForceZ;
+
+    public event UnityAction<float> OnHealthChanged;
+    public event UnityAction OnDeath;
 
     public bool isGrounded => _wheelFR.IsGrounded || _wheelFL.IsGrounded || _wheelBR.IsGrounded || _wheelBL.IsGrounded;
     public Vector3 position => _rb.position;
@@ -74,7 +79,7 @@ public class MovingCar : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
-        if (IsServer) // только сервер задаёт позицию
+        if (IsServer)
         {
             if (_networkTransform != null)
             {
@@ -83,24 +88,14 @@ public class MovingCar : NetworkBehaviour
         }
     }
 
-/*    private void Update()
-    {
-        if (!IsServer) return;
-
-        _wheelFR.SteerWheel(m_steering, _turnSpeed, _steeringMaxAngle);
-        _wheelFL.SteerWheel(m_steering, _turnSpeed, _steeringMaxAngle);
-    }
-*/
     private void Update()
     {
-        // Реальная физика руления (влияет на трение шин) — только сервер
         if (IsServer)
         {
             _wheelFR.SteerWheel(m_steering, _turnSpeed, _steeringMaxAngle);
             _wheelFL.SteerWheel(m_steering, _turnSpeed, _steeringMaxAngle);
         }
 
-        // Визуал колёс — у ВСЕХ, но данные берутся из разных источников
         WheelVisualState state = IsServer
             ? new WheelVisualState
             {
@@ -124,46 +119,21 @@ public class MovingCar : NetworkBehaviour
         }
     }
 
-
     private void FixedUpdate()
     {
+        // Мотор и тормоза теперь считает CarEngine.
+        // Здесь остаётся только руление, аэродинамика и демпфирование в воздухе.
         if (!IsServer) return;
 
-        float localVelocity = Vector3.Dot(transform.forward, _rb.linearVelocity);
-        float currentSpeedKmh = Mathf.Abs(localVelocity) * 3.6f;
-
-        float currentMotorForce;
-        // ===== УПРАВЛЕНИЕ ДВИГАТЕЛЕМ =====
-        if (currentSpeedKmh < maxSpeed || m_gas < 0)
-        {
-            float reverseMultiplier = m_gas < 0 ? 0.7f : 1f;
-            currentMotorForce = motorForce * m_gas * reverseMultiplier;
-        }
-        else
-        {
-            currentMotorForce = 0;
-        }
-
-        _wheelFR.SetTorque(currentMotorForce);
-        _wheelFL.SetTorque(currentMotorForce);
-
-        _wheelFR.SetBrake(m_brake * brakeTorque);
-        _wheelFL.SetBrake(m_brake * brakeTorque);
-        _wheelBR.SetBrake(m_brake * brakeTorque);
-        _wheelBL.SetBrake(m_brake * brakeTorque);
-
         RotateInAir();
-
         ApplyDownforce();
         ApplyLinearDamping();
     }
 
     private void RotateInAir()
     {
-        if (isGrounded)
-        {
-            return;
-        }
+        if (isGrounded) return;
+
         Vector3 targetAngularVelocity = new Vector3(0, 0, -m_steering) * m_maxAirAngularVelocity;
         Vector3 angularVelocityIncrease = (_transform.TransformDirection(targetAngularVelocity * Mathf.Deg2Rad) - _rb.angularVelocity) * Time.fixedDeltaTime;
         _rb.angularVelocity += angularVelocityIncrease;
@@ -188,10 +158,7 @@ public class MovingCar : NetworkBehaviour
 
     private void ApplyDownforce()
     {
-        if (!isGrounded)
-        {
-            return;
-        }
+        if (!isGrounded) return;
 
         float forwardSpeed = Vector3.Dot(_rb.linearVelocity, transform.forward);
         if (forwardSpeed < 0) forwardSpeed = 0;
@@ -204,8 +171,7 @@ public class MovingCar : NetworkBehaviour
 
     public void StopCar()
     {
-        if (!IsServer)
-            return;
+        if (!IsServer) return;
 
         _wheelFR.SetTorque(0);
         _wheelFL.SetTorque(0);
@@ -222,19 +188,25 @@ public class MovingCar : NetworkBehaviour
         _networkRb.ApplyCurrentTransform();
     }
 
-    // Ввод
-    public void OnSteer(float direction)
-    {
-        m_steering = direction;
-    }
+    public void OnSteer(float direction) => m_steering = direction;
+}
 
-    public void OnGas(float value)
-    {
-        m_gas = value;
-    }
+public struct WheelVisualState : INetworkSerializable
+{
+    public float frCompression;
+    public float flCompression;
+    public float brCompression;
+    public float blCompression;
+    public float steerAngle;
+    public float forwardSpeed;
 
-    public void OnBrake(float value)
+    public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
     {
-        m_brake = value;
+        serializer.SerializeValue(ref frCompression);
+        serializer.SerializeValue(ref flCompression);
+        serializer.SerializeValue(ref brCompression);
+        serializer.SerializeValue(ref blCompression);
+        serializer.SerializeValue(ref steerAngle);
+        serializer.SerializeValue(ref forwardSpeed);
     }
 }

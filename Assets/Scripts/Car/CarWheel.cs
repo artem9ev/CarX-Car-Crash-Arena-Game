@@ -14,6 +14,11 @@ public class CarWheel : NetworkBehaviour
     public bool IsGrounded => _wheelCollider.isGrounded;
     public float CurrentSteerAngle => _wheelCollider.steerAngle;
 
+    // Нужно движку для расчёта угловой скорости трансмиссии.
+    // Валидно только на сервере — на клиенте WheelCollider не симулируется физически.
+    public float rpm => _wheelCollider.rpm;
+    public float radius => _wheelCollider.radius;
+
     private void Update()
     {
         /*if (!IsServer) 
@@ -67,25 +72,5 @@ public class CarWheel : NetworkBehaviour
     public void SetBrake(float value)
     {
         _wheelCollider.brakeTorque = value;
-    }
-}
-
-public struct WheelVisualState : INetworkSerializable
-{
-    public float frCompression;
-    public float flCompression;
-    public float brCompression;
-    public float blCompression;
-    public float steerAngle;
-    public float forwardSpeed;
-
-    public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
-    {
-        serializer.SerializeValue(ref frCompression);
-        serializer.SerializeValue(ref flCompression);
-        serializer.SerializeValue(ref brCompression);
-        serializer.SerializeValue(ref blCompression);
-        serializer.SerializeValue(ref steerAngle);
-        serializer.SerializeValue(ref forwardSpeed);
     }
 }
