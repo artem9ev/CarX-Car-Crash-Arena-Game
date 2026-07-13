@@ -64,6 +64,22 @@ PrefabInstance:
       propertyPath: m_Name
       value: car_1_smart_bot Variant
       objectReference: {fileID: 0}
+    - target: {fileID: 1923666335973715388, guid: a0b293e7b1bc706418627629921142f0, type: 3}
+      propertyPath: m_limiterVolume
+      value: 0.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1923666335973715388, guid: a0b293e7b1bc706418627629921142f0, type: 3}
+      propertyPath: m_audioSamples.Array.data[0].m_volume
+      value: 0.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1923666335973715388, guid: a0b293e7b1bc706418627629921142f0, type: 3}
+      propertyPath: m_audioSamples.Array.data[1].m_volume
+      value: 0.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1923666335973715388, guid: a0b293e7b1bc706418627629921142f0, type: 3}
+      propertyPath: m_audioSamples.Array.data[2].m_volume
+      value: 0.3
+      objectReference: {fileID: 0}
     - target: {fileID: 8395875272797007045, guid: a0b293e7b1bc706418627629921142f0, type: 3}
       propertyPath: SyncScaleX
       value: 0

@@ -1,9 +1,9 @@
 using UnityEngine;
 
-public class EffectPoolsHandler : MonoBehaviour
+public class SoundEffectPoolsHandler : MonoBehaviour
 {
-    [SerializeField] private BurstParticlesPool _carHitPool;
-    [SerializeField] private BurstParticlesPool _carExplosionPool;
+    [SerializeField] private SoundEffectPool _carHitPool;
+    [SerializeField] private SoundEffectPool _carExplosionPool;
 
     private void Start()
     {
@@ -22,14 +22,14 @@ public class EffectPoolsHandler : MonoBehaviour
         if (_carHitPool == null)
             return;
 
-        _carHitPool.OnEmmit(eventData.point, eventData.normal);
+        _carHitPool.OnPlaySound(eventData.point);
     }
 
     private void OnCarExplosion(Vector3 position)
     {
-        if ( _carExplosionPool == null)
+        if (_carExplosionPool == null)
             return;
 
-        _carExplosionPool.OnEmmit(position, Vector3.up);
+        _carExplosionPool.OnPlaySound(position);
     }
 }

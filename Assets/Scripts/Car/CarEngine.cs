@@ -145,11 +145,6 @@ public class CarEngine : NetworkBehaviour
 
         ApplyWheelTorque();
         PushNetState();
-
-        if (IsOwner)
-        {
-            Debug.Log($"[CAR STATE] rpm: {m_netState.Value.rpm, 10:f2} | gear: {m_netState.Value.gear, 4} | gas: {m_gas, 10:f2} | torque: {m_engineTorque, 10:f2} | m_wheelTorque: {m_wheelTorque}");
-        }
     }
 
     private void PushNetState()

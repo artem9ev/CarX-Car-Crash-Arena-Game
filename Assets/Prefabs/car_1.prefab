@@ -34713,7 +34713,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::VehicleHealth
   ShowTopMostFoldoutHeaderGroup: 1
-  _maxHealth: 1000
+  _maxHealth: 5000
   _damageMultiplier: 0.1
   _minDamage: 50
 --- !u!114 &7834508491955151903

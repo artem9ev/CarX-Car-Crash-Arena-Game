@@ -7,7 +7,7 @@ public class SoundEffect : MonoBehaviour
 {
     [SerializeField][Range(0, 2)] private float m_pitctMaxRandomOffset;
 
-    [SerializeField] private AudioSource m_audio;
+    private AudioSource m_audio;
 
     private Transform m_transform;
     private float m_pitch;
@@ -22,6 +22,8 @@ public class SoundEffect : MonoBehaviour
 
     private void Awake()
     {
+        m_audio = GetComponent<AudioSource>();
+
         m_transform = transform;
         m_pitch = m_audio.pitch;
     }
@@ -42,10 +44,12 @@ public class SoundEffect : MonoBehaviour
 
     private IEnumerator PlayRoutine()
     {
-        if (m_audio != null && m_audio.clip != null)
+        if (m_audio != null)
         {
-            yield return new WaitForSeconds(m_audio.clip.length / m_audio.pitch);
-
+            while (m_audio.isPlaying) 
+            {
+                yield return null;
+            }
             m_pool.Release(this);
         }
     }
