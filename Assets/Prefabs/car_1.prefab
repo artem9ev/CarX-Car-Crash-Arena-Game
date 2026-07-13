@@ -34384,9 +34384,9 @@ MonoBehaviour:
   SyncRotAngleX: 1
   SyncRotAngleY: 1
   SyncRotAngleZ: 1
-  SyncScaleX: 1
-  SyncScaleY: 1
-  SyncScaleZ: 1
+  SyncScaleX: 0
+  SyncScaleY: 0
+  SyncScaleZ: 0
   PositionThreshold: 0.001
   RotAngleThreshold: 0.01
   ScaleThreshold: 0.01
@@ -34477,17 +34477,13 @@ MonoBehaviour:
   _safeSteerCoef: 1
   m_projectedLinearDamping: {x: 5, y: 20, z: 0}
   m_maxAirAngularVelocity: 500
+  _wheelFR: {fileID: 5564611171676138096}
+  _wheelFL: {fileID: 3277196798355783517}
+  _wheelBR: {fileID: 8644557661111101760}
+  _wheelBL: {fileID: 3233681886554975133}
   motorForce: 2500
   maxSpeed: 100
   brakeTorque: 3000
-  WheelFL: {fileID: 3825463642171184544}
-  WheelFR: {fileID: 3621001989305673165}
-  WheelBL: {fileID: 1599652623752590188}
-  WheelBR: {fileID: 4058158894578718026}
-  frontLeftTransform: {fileID: 1324140661720643738}
-  frontRightTransform: {fileID: 4317573066535612008}
-  rearLeftTransform: {fileID: 6914396867144320499}
-  rearRightTransform: {fileID: 8057167181465371396}
 --- !u!114 &4391329620947305147
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -34564,10 +34560,10 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 3532504197558763642}
   - {fileID: -6931342207739320322}
-  - {fileID: 5615894729551968498}
+  - {fileID: 3532504197558763642}
   - {fileID: 5166553597093196485}
+  - {fileID: 5615894729551968498}
   m_Father: {fileID: -8679921383154817045}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1554561698782568213
@@ -34751,6 +34747,7 @@ GameObject:
   m_Component:
   - component: {fileID: -6931342207739320322}
   - component: {fileID: 3621001989305673165}
+  - component: {fileID: 5564611171676138096}
   m_Layer: 3
   m_Name: WC FR
   m_TagString: Untagged
@@ -34812,6 +34809,21 @@ WheelCollider:
   m_LayerOverridePriority: 0
   m_Enabled: 1
   m_ProvidesContacts: 0
+--- !u!114 &5564611171676138096
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2432495897333500834}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 85f423d03811a934ea70da557e66c300, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CarWheel
+  ShowTopMostFoldoutHeaderGroup: 1
+  _wheelCollider: {fileID: 3621001989305673165}
+  _wheelTransform: {fileID: 4317573066535612008}
 --- !u!1 &2450066179066314305
 GameObject:
   m_ObjectHideFlags: 0
@@ -39799,6 +39811,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5166553597093196485}
   - component: {fileID: 4058158894578718026}
+  - component: {fileID: 8644557661111101760}
   m_Layer: 3
   m_Name: WC BR
   m_TagString: Untagged
@@ -39860,6 +39873,21 @@ WheelCollider:
   m_LayerOverridePriority: 0
   m_Enabled: 1
   m_ProvidesContacts: 0
+--- !u!114 &8644557661111101760
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3292069454762012108}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 85f423d03811a934ea70da557e66c300, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CarWheel
+  ShowTopMostFoldoutHeaderGroup: 1
+  _wheelCollider: {fileID: 4058158894578718026}
+  _wheelTransform: {fileID: 8057167181465371396}
 --- !u!1 &3882716705844201422
 GameObject:
   m_ObjectHideFlags: 0
@@ -44719,6 +44747,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5615894729551968498}
   - component: {fileID: 1599652623752590188}
+  - component: {fileID: 3233681886554975133}
   m_Layer: 3
   m_Name: WC BL
   m_TagString: Untagged
@@ -44780,6 +44809,21 @@ WheelCollider:
   m_LayerOverridePriority: 0
   m_Enabled: 1
   m_ProvidesContacts: 0
+--- !u!114 &3233681886554975133
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5321460431709881898}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 85f423d03811a934ea70da557e66c300, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CarWheel
+  ShowTopMostFoldoutHeaderGroup: 1
+  _wheelCollider: {fileID: 1599652623752590188}
+  _wheelTransform: {fileID: 6914396867144320499}
 --- !u!1 &5489269563914173228
 GameObject:
   m_ObjectHideFlags: 0
@@ -54539,6 +54583,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3532504197558763642}
   - component: {fileID: 3825463642171184544}
+  - component: {fileID: 3277196798355783517}
   m_Layer: 3
   m_Name: WC FL
   m_TagString: Untagged
@@ -54600,6 +54645,21 @@ WheelCollider:
   m_LayerOverridePriority: 0
   m_Enabled: 1
   m_ProvidesContacts: 0
+--- !u!114 &3277196798355783517
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6443941888216277843}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 85f423d03811a934ea70da557e66c300, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CarWheel
+  ShowTopMostFoldoutHeaderGroup: 1
+  _wheelCollider: {fileID: 3825463642171184544}
+  _wheelTransform: {fileID: 1324140661720643738}
 --- !u!1 &6530457914392811896
 GameObject:
   m_ObjectHideFlags: 0

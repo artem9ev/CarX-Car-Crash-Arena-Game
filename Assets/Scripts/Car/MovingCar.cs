@@ -19,42 +19,35 @@ public class MovingCar : NetworkBehaviour
     [Header("Air controls")]
     [SerializeField, Min(0f)] private float m_maxAirAngularVelocity = 300f;
 
+    [Header("Wheels")]
+    [SerializeField] private CarWheel _wheelFR;
+    [SerializeField] private CarWheel _wheelFL;
+    [SerializeField] private CarWheel _wheelBR;
+    [SerializeField] private CarWheel _wheelBL;
+
     [Header("Двигатель")]
     [SerializeField] private float motorForce = 2500f;
     [SerializeField] private float maxSpeed = 100f;
     [SerializeField] private float brakeTorque = 3000f;
-
-    [Header("Колёса")]
-    [SerializeField] private WheelCollider WheelFL;
-    [SerializeField] private WheelCollider WheelFR;
-    [SerializeField] private WheelCollider WheelBL;
-    [SerializeField] private WheelCollider WheelBR;
-
-    [Header("Визуализация колёс")]
-    [SerializeField] private Transform frontLeftTransform;
-    [SerializeField] private Transform frontRightTransform;
-    [SerializeField] private Transform rearLeftTransform;
-    [SerializeField] private Transform rearRightTransform;
 
     private Transform _transform;
     private Rigidbody _rb;
     private NetworkTransform _networkTransform;
     private NetworkRigidbody _networkRb;
 
+    // Локальные (только сервер) значения инпута
     private float m_gas;
     private float m_brake;
     private float m_steering = 0f;
 
-
+    // Реплицируемые значения — сервер пишет, все читают для визуала
+    private NetworkVariable<WheelVisualState> m_netWheelState = new NetworkVariable<WheelVisualState>(
+        new WheelVisualState(), NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
     private Vector3 m_projectedAirForceX;
     private Vector3 m_projectedAirForceY;
     private Vector3 m_projectedAirForceZ;
 
-    // События
-    public event UnityAction<float> OnHealthChanged;
-    public event UnityAction OnDeath;
-
-    public bool isGrounded => WheelFL.isGrounded || WheelFR.isGrounded || WheelBL.isGrounded || WheelBR.isGrounded;
+    public bool isGrounded => _wheelFR.IsGrounded || _wheelFL.IsGrounded || _wheelBR.IsGrounded || _wheelBL.IsGrounded;
     public Vector3 position => _rb.position;
     public Vector3 linearVelocity => _rb.linearVelocity;
 
@@ -90,20 +83,47 @@ public class MovingCar : NetworkBehaviour
         }
     }
 
-    private void Update()
+/*    private void Update()
     {
         if (!IsServer) return;
 
-        SteerWheel(WheelFR, m_steering, _turnSpeed, _steeringMaxAngle);
-        SteerWheel(WheelFL, m_steering, _turnSpeed, _steeringMaxAngle);
+        _wheelFR.SteerWheel(m_steering, _turnSpeed, _steeringMaxAngle);
+        _wheelFL.SteerWheel(m_steering, _turnSpeed, _steeringMaxAngle);
+    }
+*/
+    private void Update()
+    {
+        // Реальная физика руления (влияет на трение шин) — только сервер
+        if (IsServer)
+        {
+            _wheelFR.SteerWheel(m_steering, _turnSpeed, _steeringMaxAngle);
+            _wheelFL.SteerWheel(m_steering, _turnSpeed, _steeringMaxAngle);
+        }
+
+        // Визуал колёс — у ВСЕХ, но данные берутся из разных источников
+        WheelVisualState state = IsServer
+            ? new WheelVisualState
+            {
+                frCompression = _wheelFR.GetSuspensionCompression(),
+                flCompression = _wheelFL.GetSuspensionCompression(),
+                brCompression = _wheelBR.GetSuspensionCompression(),
+                blCompression = _wheelBL.GetSuspensionCompression(),
+                steerAngle = _wheelFR.CurrentSteerAngle,
+                forwardSpeed = Vector3.Dot(transform.forward, _rb.linearVelocity)
+            }
+            : m_netWheelState.Value;
+
+        _wheelFR.ApplyVisual(state.frCompression, state.steerAngle, state.forwardSpeed);
+        _wheelFL.ApplyVisual(state.flCompression, state.steerAngle, state.forwardSpeed);
+        _wheelBR.ApplyVisual(state.brCompression, 0f, state.forwardSpeed);
+        _wheelBL.ApplyVisual(state.blCompression, 0f, state.forwardSpeed);
+
+        if (IsServer)
+        {
+            m_netWheelState.Value = state;
+        }
     }
 
-    private void SteerWheel(WheelCollider wheel, float steering, float turnSpeed, float maxAngle)
-    {
-        float angleT = wheel.steerAngle / maxAngle;
-        float t = Mathf.Lerp(angleT, steering, Time.deltaTime * turnSpeed / maxAngle / Mathf.Abs(steering - angleT));
-        wheel.steerAngle = maxAngle * t;
-    }
 
     private void FixedUpdate()
     {
@@ -124,30 +144,18 @@ public class MovingCar : NetworkBehaviour
             currentMotorForce = 0;
         }
 
-        WheelBL.motorTorque = currentMotorForce;
-        WheelBR.motorTorque = currentMotorForce;
+        _wheelFR.SetTorque(currentMotorForce);
+        _wheelFL.SetTorque(currentMotorForce);
 
-        WheelFL.brakeTorque = m_brake * brakeTorque;
-        WheelFR.brakeTorque = m_brake * brakeTorque;
-        WheelBL.brakeTorque = m_brake * brakeTorque;
-        WheelBR.brakeTorque = m_brake * brakeTorque;
-
-        UpdateWheelVisuals();
+        _wheelFR.SetBrake(m_brake * brakeTorque);
+        _wheelFL.SetBrake(m_brake * brakeTorque);
+        _wheelBR.SetBrake(m_brake * brakeTorque);
+        _wheelBL.SetBrake(m_brake * brakeTorque);
 
         RotateInAir();
 
         ApplyDownforce();
         ApplyLinearDamping();
-    }
-
-    private void StopCar()
-    {
-        WheelBL.motorTorque = 0;
-        WheelBR.motorTorque = 0;
-        WheelBL.brakeTorque = brakeTorque;
-        WheelBR.brakeTorque = brakeTorque;
-        WheelFL.brakeTorque = brakeTorque;
-        WheelFR.brakeTorque = brakeTorque;
     }
 
     private void RotateInAir()
@@ -194,21 +202,18 @@ public class MovingCar : NetworkBehaviour
         _rb.AddForce(-_transform.up * downforce, ForceMode.Force);
     }
 
-    private void UpdateWheelVisuals()
+    public void StopCar()
     {
-        UpdateSingleWheelVisual(WheelFL, frontLeftTransform);
-        UpdateSingleWheelVisual(WheelFR, frontRightTransform);
-        UpdateSingleWheelVisual(WheelBL, rearLeftTransform);
-        UpdateSingleWheelVisual(WheelBR, rearRightTransform);
-    }
+        if (!IsServer)
+            return;
 
-    private void UpdateSingleWheelVisual(WheelCollider collider, Transform wheelVisual)
-    {
-        Vector3 position;
-        Quaternion rotation;
-        collider.GetWorldPose(out position, out rotation);
-        wheelVisual.position = position;
-        wheelVisual.rotation = rotation;
+        _wheelFR.SetTorque(0);
+        _wheelFL.SetTorque(0);
+
+        _wheelFR.SetBrake(brakeTorque);
+        _wheelFL.SetBrake(brakeTorque);
+        _wheelBR.SetBrake(brakeTorque);
+        _wheelBL.SetBrake(brakeTorque);
     }
 
     public void SetSpawnPosition(Vector3 pos, Quaternion rot)

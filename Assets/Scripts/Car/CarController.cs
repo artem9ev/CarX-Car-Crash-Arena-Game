@@ -1,9 +1,12 @@
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class CarController : NetworkBehaviour
 {
     private MovingCar _car;
+
+    private bool _isControlling;
 
     private void Awake()
     {
@@ -17,10 +20,7 @@ public class CarController : NetworkBehaviour
 
         ClientEventBus.Instance.InvokeCarOwn(_car);
 
-        PlayerInputHandler.Instance.onGas += OnGas;
-        PlayerInputHandler.Instance.onBrake += OnBrake;
-        PlayerInputHandler.Instance.onSteer += OnSteer;
-        //PlayerInputHandler.Instance.onHandbrake += OnGas;
+        EnableControlls();
     }
 
     public override void OnNetworkDespawn()
@@ -28,9 +28,7 @@ public class CarController : NetworkBehaviour
         if (!IsOwner)
             return;
 
-        PlayerInputHandler.Instance.onGas -= OnGas;
-        PlayerInputHandler.Instance.onBrake -= OnBrake;
-        PlayerInputHandler.Instance.onSteer -= OnSteer;
+        DisableControlls();
     }
 
     private void OnGas(float value) 
@@ -44,6 +42,30 @@ public class CarController : NetworkBehaviour
     private void OnSteer(float value)
     {
         OnSteerRpc(value);
+    }
+
+    public void EnableControlls()
+    {
+        if (!IsOwner || _isControlling)
+            return;
+
+        PlayerInputHandler.Instance.onGas += OnGas;
+        PlayerInputHandler.Instance.onBrake += OnBrake;
+        PlayerInputHandler.Instance.onSteer += OnSteer;
+
+        _isControlling = true;
+    }
+
+    public void DisableControlls()
+    {
+        if (!IsOwner || !_isControlling)
+            return;
+
+        PlayerInputHandler.Instance.onGas -= OnGas;
+        PlayerInputHandler.Instance.onBrake -= OnBrake;
+        PlayerInputHandler.Instance.onSteer -= OnSteer;
+
+        _isControlling = false;
     }
 
     [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Owner)]

@@ -82,33 +82,17 @@ public class VehicleHealth : NetworkBehaviour
 
         ClientCarDeathRpc(transform.position);
         
-        DisableControlScripts();
+        DisableControlRpc();
+
+        _car.StopCar();
     }
-
-    private void DisableControlScripts()
+    [Rpc(SendTo.ClientsAndHost)]
+    public void DisableControlRpc()
     {
-        MonoBehaviour[] scripts = GetComponents<MonoBehaviour>();
-        foreach (var script in scripts)
-        {
-            if (script != this && script.enabled)
-            {
-                // Не отключаем скрипты эффектов и ragdoll — они нужны после смерти
-                if (script is VehicleHealth ||
-                    script is DriverRagdoll ||
-                    script is CarDestruction ||
-                    script is WheelDustEffect ||
-                    script is CarAudio ||
-                    script is WheelDustEffect)
-                {
-                    continue;
-                }
-                script.enabled = false;
-            }
-        }
+        if (!IsClient || !IsOwner || !TryGetComponent(out CarController controller))
+            return;
 
-        // Отключаем коллайдеры машины (но не колёс)
-        Collider col = GetComponent<Collider>();
-        if (col != null) col.enabled = false;
+        controller.DisableControlls();
     }
 
     public void Repair(float amount)
