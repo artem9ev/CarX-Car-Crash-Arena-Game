@@ -80,7 +80,9 @@ public class CarRespawnHandler : NetworkBehaviour
 
         if (_destroyWreckOnRespawn && NetworkObject != null && NetworkObject.IsSpawned)
         {
+            GetComponent<DriverRagdoll>().DespawnRagDoll();
             NetworkObject.Despawn(true);
+
         }
     }
 }
