@@ -19,10 +19,12 @@ public class CarRespawnHandler : NetworkBehaviour
     [SerializeField] private bool _destroyWreckOnRespawn = false;
 
     private VehicleHealth _health;
+    private SmartBotAI _botAI; // null для машины игрока
 
     private void Awake()
     {
         _health = GetComponent<VehicleHealth>();
+        _botAI = GetComponent<SmartBotAI>();
     }
 
     public override void OnNetworkSpawn()
@@ -43,6 +45,16 @@ public class CarRespawnHandler : NetworkBehaviour
     {
         if (!IsServer) return;
 
+        if (_botAI != null)
+        {
+            // это бот — НЕ трогаем PlayerData/лидерборд по ClientId,
+            // и НЕ вызываем SpawnCarForClient (он для игроков)
+            ScoreManager.Instance?.RegisterBotKill(attackerClientId);
+            StartCoroutine(RespawnBotRoutine());
+            return;
+        }
+
+
         // Запоминаем владельца (жертву) ДО того, как заберём владение.
         ulong victimClientId = OwnerClientId;
 
@@ -53,6 +65,14 @@ public class CarRespawnHandler : NetworkBehaviour
         }
 
         StartCoroutine(RespawnRoutine(victimClientId));
+    }
+
+    private IEnumerator RespawnBotRoutine()
+    {
+        yield return new WaitForSeconds(_respawnDelay);
+        SpawnManager.Instance?.SpawnBot(); // новый метод, см. ниже
+
+        DespawnCar();
     }
 
     private IEnumerator RespawnRoutine(ulong ownerClientId)
@@ -78,11 +98,16 @@ public class CarRespawnHandler : NetworkBehaviour
             }
         }
 
+        DespawnCar();
+    }
+
+    private void DespawnCar()
+    {
         if (_destroyWreckOnRespawn && NetworkObject != null && NetworkObject.IsSpawned)
         {
-            GetComponent<DriverRagdoll>().DespawnRagDoll();
+            if (TryGetComponent(out DriverRagdoll ragdoll))
+                ragdoll.DespawnRagDoll();
             NetworkObject.Despawn(true);
-
         }
     }
 }

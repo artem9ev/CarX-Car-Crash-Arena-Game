@@ -89,6 +89,24 @@ public class ScoreManager : NetworkBehaviour
         OnKillFeed?.Invoke(attackerName.ToString(), victimName.ToString(), isSuicide);
     }
 
+    public void RegisterBotKill(ulong attackerClientId)
+    {
+        if (!IsServer) return;
+
+        string attackerName = "Environment";
+        bool isEnvironmentKill = attackerClientId == ulong.MaxValue;
+
+        if (!isEnvironmentKill && PlayerData.ByClientId.TryGetValue(attackerClientId, out var attackerData))
+        {
+            attackerData.Kills.Value++;
+            attackerName = attackerData.PlayerName.Value.ToString();
+            UpsertEntry(attackerClientId, attackerName, attackerData.Kills.Value, attackerData.Deaths.Value);
+        }
+
+        OnKillRegisteredServer?.Invoke(attackerClientId, ulong.MaxValue);
+        BroadcastKillFeedRpc(new FixedString64Bytes(attackerName), new FixedString64Bytes("Bot"), false);
+    }
+
     /// <summary>
     /// Добавляет или обновляет запись игрока в таблице лидеров. Вызывать ТОЛЬКО на сервере.
     /// Вызывается автоматически из RegisterKill, а также из PlayerData при спавне/смене ника.

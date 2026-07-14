@@ -22,6 +22,7 @@ public class BootstrapLoader : MonoBehaviour
             {
                 SceneManager.LoadScene("Bootstrap", LoadSceneMode.Additive);
             }
+
             _shouldFastConnect = true;
         }
         else if (currentScene.name == "UI" || currentScene.name == "MainMenu")

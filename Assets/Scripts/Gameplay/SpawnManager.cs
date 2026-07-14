@@ -56,22 +56,24 @@ public class SpawnManager : MonoBehaviour
         }
     }
 
+    private SpawnPoint GetFreeSpawnPoint()
+    {
+        foreach (var point in _spawnPoints)
+        {
+            if (point.IsClear)
+            {
+                return point;
+            }
+        }
+        return null;
+    }
+
     private void OnClientConnected(ulong сlientID)
     {
         if (!NetworkManager.Singleton.IsServer) return;
 
         SpawnCarForClient(сlientID);
-
-        SpawnPoint spawnPoint = GetFreeSpawnPoint();
-        if (spawnPoint == null)
-        {
-            return;
-        }
-        spawnPoint.TryGetPoint(out Vector3 pos, out Quaternion rot);
-
-        var bot = Instantiate(defaultBotPrefab);
-        bot.GetComponent<NetworkObject>().Spawn();
-        bot.SetSpawnPosition(pos, rot);
+        SpawnBot();
     }
 
     /// <summary>
@@ -98,16 +100,17 @@ public class SpawnManager : MonoBehaviour
         return true;
     }
 
-    private SpawnPoint GetFreeSpawnPoint()
+    public bool SpawnBot()
     {
-        foreach (var point in _spawnPoints)
-        {
-            if (point.IsClear)
-            {
-                return point;
-            }
-        }
-        return null;
-    }
+        if (!NetworkManager.Singleton.IsServer) return false;
 
+        SpawnPoint spawnPoint = GetFreeSpawnPoint();
+        if (spawnPoint == null) return false;
+
+        spawnPoint.TryGetPoint(out Vector3 pos, out Quaternion rot);
+        var bot = Instantiate(defaultBotPrefab);
+        bot.GetComponent<NetworkObject>().Spawn();
+        bot.SetSpawnPosition(pos, rot);
+        return true;
+    }
 }

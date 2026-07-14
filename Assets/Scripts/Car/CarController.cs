@@ -18,6 +18,7 @@ public class CarController : NetworkBehaviour
 
     private MovingCar _car;
     private CarEngine _engine;
+    private SmartBotAI _botBrain;
 
     private Coroutine m_gearBoxRoutine;
 
@@ -36,7 +37,8 @@ public class CarController : NetworkBehaviour
     {
         _car = GetComponent<MovingCar>();
         _engine = GetComponent<CarEngine>();
-        
+        _botBrain = GetComponent<SmartBotAI>();
+
         m_lastRPM = _engine.idleRPM;
 
         if (IsServer)
@@ -212,7 +214,9 @@ public class CarController : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
-        if (!IsOwner)
+        Debug.Log($"CAR Spawn! { _botBrain != null}", gameObject);
+
+        if (!IsOwner || _botBrain != null)
             return;
 
         ClientEventBus.Instance.InvokeCarOwn(_car);
@@ -222,7 +226,7 @@ public class CarController : NetworkBehaviour
 
     public override void OnNetworkDespawn()
     {
-        if (!IsOwner)
+        if (!IsOwner || _botBrain != null)
             return;
 
         DisableControlls();
@@ -242,9 +246,6 @@ public class CarController : NetworkBehaviour
         PlayerInputHandler.Instance.onGas += OnGas;
         PlayerInputHandler.Instance.onBrake += OnBrake;
         PlayerInputHandler.Instance.onSteer += OnSteer;
-        // Подключи к своим инпут-евентам для передач, если они есть:
-        // PlayerInputHandler.Instance.onShiftUp += OnShiftUp;
-        // PlayerInputHandler.Instance.onShiftDown += OnShiftDown;
 
         _isControlling = true;
     }
@@ -257,8 +258,6 @@ public class CarController : NetworkBehaviour
         PlayerInputHandler.Instance.onGas -= OnGas;
         PlayerInputHandler.Instance.onBrake -= OnBrake;
         PlayerInputHandler.Instance.onSteer -= OnSteer;
-        // PlayerInputHandler.Instance.onShiftUp -= OnShiftUp;
-        // PlayerInputHandler.Instance.onShiftDown -= OnShiftDown;
 
         _isControlling = false;
     }
@@ -268,15 +267,12 @@ public class CarController : NetworkBehaviour
     {
         m_forwardInput = value;
         _engine.UnPressClutch();
-        //_engine.OnGas(value); 
     }
 
     [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Owner)]
     public void OnBrakeRpc(float value)
     {
         m_backwardInput = value;
-
-        //_engine.OnBrake(value);
     }
 
     [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Owner)]
