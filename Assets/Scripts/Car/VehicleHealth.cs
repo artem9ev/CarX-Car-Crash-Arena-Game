@@ -42,16 +42,11 @@ public class VehicleHealth : NetworkBehaviour
         OnHealthChanged?.Invoke(newValue);
         if (newValue <= 0)
         {        
-            Debug.Log($"[client: {OwnerClientId}] --- CAR IS DESTROYED ", gameObject);
-
             OnDeath?.Invoke();
-            // Дополнительно можно вызвать клиентские эффекты через отдельный RPC,
-            // но можно и через событие
-            //ClientCarDeathEffectsRpc(transform.position);
         }
     }
 
-    public void TakeDamage(float impulse)
+    public void TakeDamage(float impulse, bool isCritical = false)
     {
         if (IsDead || !IsServer) 
             return;
@@ -64,7 +59,11 @@ public class VehicleHealth : NetworkBehaviour
         if (damage < _minDamage)
             damage = _minDamage;
 
-        //Debug.Log($"Health change: {CurrentHealth - damage} ({CurrentHealth} - {damage})");
+        if (isCritical)
+        {
+            damage *= 3f;
+        }
+
         _currentHealth.Value -= damage;
         _currentHealth.Value = Mathf.Max(0, CurrentHealth);
 

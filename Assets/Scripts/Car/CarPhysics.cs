@@ -1,17 +1,30 @@
+using System.Collections;
 using Unity.Netcode;
 using UnityEngine;
 
 [RequireComponent(typeof(VehicleHealth))]
 public class CarPhysics : NetworkBehaviour
 {
+    [SerializeField] private float _damageIgnoreZoneOffset = 1.5f;
+    [SerializeField] private float _criticalDamageZoneOffset = -1.5f;
     [Header("Hits")]
     [SerializeField, Min(0f)] private float m_softHitImpulse = 500f;
     [SerializeField, Min(0f)] private float m_hardHitImpulse = 4000f;
 
     private VehicleHealth _health;
+    private Transform _transform;
+
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.yellow;
+
+        Gizmos.DrawRay(transform.position + transform.forward * _damageIgnoreZoneOffset - transform.right * 3, transform.right * 6f);
+        Gizmos.DrawRay(transform.position + transform.forward * _criticalDamageZoneOffset - transform.right * 3, transform.right * 6f);
+    }
 
     private void Awake()
     {
+        _transform = transform;
         _health = GetComponent<VehicleHealth>();
     }
 
@@ -23,7 +36,13 @@ public class CarPhysics : NetworkBehaviour
 
         if (impulse < m_softHitImpulse) return;
 
-        _health.TakeDamage(impulse);
+        float pointOffsetZ = _transform.InverseTransformPoint(collision.contacts[0].point).z;
+
+        Debug.Log($"collision offset: {pointOffsetZ}");
+        if (pointOffsetZ < _damageIgnoreZoneOffset) 
+        {
+            _health.TakeDamage(impulse, pointOffsetZ < _criticalDamageZoneOffset);
+        }
 
         CarCollisionEventData eventData = new CarCollisionEventData()
         {
@@ -34,6 +53,20 @@ public class CarPhysics : NetworkBehaviour
         };
 
         ClientCarCollisionRpc(eventData);
+
+        StartCoroutine(CollisionDebugRoitine(eventData));
+    }
+
+    private IEnumerator CollisionDebugRoitine(CarCollisionEventData eventData)
+    {
+        float t = 0;
+        while (t < 5f)
+        {
+            Debug.DrawRay(eventData.point, eventData.normal * 2f, Color.blue);
+            Debug.DrawRay(eventData.point, Vector3.up * 0.5f, Color.green);
+            yield return null;
+            t += Time.deltaTime;
+        }
     }
 
     [Rpc(SendTo.ClientsAndHost)]
