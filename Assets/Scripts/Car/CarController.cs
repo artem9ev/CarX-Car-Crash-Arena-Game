@@ -212,9 +212,12 @@ public class CarController : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
+        Debug.Log($"CAR SPAWN!");
+
         if (!IsOwner)
             return;
 
+        Debug.Log($"CAR OWN!! {OwnerClientId}");
         ClientEventBus.Instance.InvokeCarOwn(_car);
 
         EnableControlls();

@@ -38,7 +38,6 @@ public class CarPhysics : NetworkBehaviour
 
         float pointOffsetZ = _transform.InverseTransformPoint(collision.contacts[0].point).z;
 
-        Debug.Log($"collision offset: {pointOffsetZ}");
         if (pointOffsetZ < _damageIgnoreZoneOffset) 
         {
             ulong attackerClientId = GetAttackerClientId(collision);
