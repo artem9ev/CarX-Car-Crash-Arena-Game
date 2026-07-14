@@ -63,7 +63,7 @@ public class VehicleHealth : NetworkBehaviour
     /// Передавайте ulong.MaxValue, если источник урона не связан с конкретным игроком
     /// (окружение, самоподрыв и т.п.) — в этом случае предыдущий известный атакующий не перезатирается.
     /// </param>
-    public void TakeDamage(float impulse, ulong attackerClientId = ulong.MaxValue, bool isCritical = false)
+    public void TakeDamage(float impulse, ulong attackerClientId = ulong.MaxValue, bool isCritical = false) {
         if (IsDead || !IsServer)
             return;
 

@@ -34714,7 +34714,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::VehicleHealth
   ShowTopMostFoldoutHeaderGroup: 1
-  _maxHealth: 5000
+  _maxHealth: 1000
   _damageMultiplier: 0.1
   _minDamage: 50
 --- !u!114 &7834508491955151903
@@ -34850,7 +34850,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CarPhysics
   ShowTopMostFoldoutHeaderGroup: 1
   _damageIgnoreZoneOffset: 1.5
-  _criticalDamageZoneOffset: -1.05
+  _criticalDamageZoneOffset: -1.5
   m_softHitImpulse: 1000
   m_hardHitImpulse: 5000
 --- !u!114 &686277926517070426

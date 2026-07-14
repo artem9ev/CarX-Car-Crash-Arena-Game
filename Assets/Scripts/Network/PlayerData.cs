@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using Unity.Netcode;
 using Unity.Collections;
@@ -17,6 +18,7 @@ public class PlayerData : NetworkBehaviour
     public static readonly Dictionary<ulong, PlayerData> ByClientId = new Dictionary<ulong, PlayerData>();
 
     private string localPlayerName;
+    private Coroutine _registerRoutine;
 
     public override void OnNetworkSpawn()
     {
@@ -31,6 +33,14 @@ public class PlayerData : NetworkBehaviour
         {
             ByClientId[OwnerClientId] = this;
 
+            PlayerName.OnValueChanged += OnPlayerNameChanged;
+
+            // ScoreManager — тоже in-scene NetworkObject, и порядок спавна между ним
+            // и игроком не гарантирован: если PlayerData заспавнится раньше ScoreManager,
+            // Instance тут ещё будет null. Поэтому ждём его появления отдельной корутиной,
+            // вместо однократного ScoreManager.Instance?.UpsertEntry(...).
+            _registerRoutine = StartCoroutine(RegisterInLeaderboardWhenReady());
+
             //NetworkObject car = Instantiate(_defaultCar).GetComponent<NetworkObject>();
 
             //car.SpawnWithOwnership(OwnerClientId);
@@ -41,8 +51,34 @@ public class PlayerData : NetworkBehaviour
     {
         if (IsServer)
         {
+            if (_registerRoutine != null)
+            {
+                StopCoroutine(_registerRoutine);
+                _registerRoutine = null;
+            }
+
             ByClientId.Remove(OwnerClientId);
+            ScoreManager.Instance?.RemoveEntry(OwnerClientId);
+            PlayerName.OnValueChanged -= OnPlayerNameChanged;
         }
+    }
+
+    private IEnumerator RegisterInLeaderboardWhenReady()
+    {
+        while (ScoreManager.Instance == null)
+        {
+            yield return null;
+        }
+
+        ScoreManager.Instance.UpsertEntry(OwnerClientId, PlayerName.Value.ToString(), Kills.Value, Deaths.Value);
+        _registerRoutine = null;
+    }
+
+    private void OnPlayerNameChanged(FixedString64Bytes oldValue, FixedString64Bytes newValue)
+    {
+        if (!IsServer) return;
+
+        ScoreManager.Instance?.UpsertEntry(OwnerClientId, newValue.ToString(), Kills.Value, Deaths.Value);
     }
 
     [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Owner)] // Только владелец может вызвать
