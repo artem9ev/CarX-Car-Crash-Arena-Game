@@ -70,6 +70,7 @@ public class CameraFollower : MonoBehaviour
         if (m_target == null || m_targetRigidbody == null) return;
         //m_targetVelLerp = Vector3.Lerp(m_targetVelLerp, m_target.linearVelocity, Time.deltaTime * m_angleCoef);
         m_targetVelocity = Vector3.Lerp(m_aTargetVel, m_bTargetVel, (Time.time - m_lastFixedUpdateTime) / Time.fixedDeltaTime);
+        m_targetVelocity = m_targetRigidbody.linearVelocity;
     }
 
     private void LateUpdate()
