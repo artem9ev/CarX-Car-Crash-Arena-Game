@@ -1,7 +1,7 @@
 using Unity.Netcode;
 using UnityEngine;
 
-public class CarWheel : NetworkBehaviour
+public class CarWheel : MonoBehaviour
 {
     [Header("Колёса")]
     [SerializeField] private WheelCollider _wheelCollider;

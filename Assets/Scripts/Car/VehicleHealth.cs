@@ -64,6 +64,7 @@ public class VehicleHealth : NetworkBehaviour
     /// (окружение, самоподрыв и т.п.) — в этом случае предыдущий известный атакующий не перезатирается.
     /// </param>
     public void TakeDamage(float impulse, ulong attackerClientId = ulong.MaxValue, bool isCritical = false)
+    {
         if (IsDead || !IsServer)
             return;
 
