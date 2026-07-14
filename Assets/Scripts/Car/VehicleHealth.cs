@@ -18,6 +18,17 @@ public class VehicleHealth : NetworkBehaviour
     public event UnityAction<float> OnHealthChanged;
     public event UnityAction OnDeath;
 
+    /// <summary>
+    /// Вызывается ТОЛЬКО на сервере в момент смерти машины.
+    /// Аргумент — ClientId игрока, нанёсшего последний удар (killer).
+    /// Если машина погибла не от игрока (например SetHealth от админки/скрипта),
+    /// передаётся ulong.MaxValue.
+    /// </summary>
+    public event UnityAction<ulong> OnServerDeath;
+
+    /// <summary>ClientId игрока, который нанёс последний урон этой машине.</summary>
+    private ulong _lastAttackerClientId = ulong.MaxValue;
+
     public float MaxHealth => _maxHealth;
     public float CurrentHealth => _currentHealth.Value;
     public bool IsDead => _currentHealth.Value <= 0f;
@@ -46,9 +57,14 @@ public class VehicleHealth : NetworkBehaviour
         }
     }
 
-    public void TakeDamage(float impulse, bool isCritical = false)
-    {
-        if (IsDead || !IsServer) 
+    /// <param name="impulse">Сила удара — используется для расчёта урона.</param>
+    /// <param name="attackerClientId">
+    /// ClientId игрока, который нанёс урон (например, владелец машины-тарана).
+    /// Передавайте ulong.MaxValue, если источник урона не связан с конкретным игроком
+    /// (окружение, самоподрыв и т.п.) — в этом случае предыдущий известный атакующий не перезатирается.
+    /// </param>
+    public void TakeDamage(float impulse, ulong attackerClientId = ulong.MaxValue, bool isCritical = false)
+        if (IsDead || !IsServer)
             return;
 
         float damage = impulse * _damageMultiplier;
@@ -64,6 +80,9 @@ public class VehicleHealth : NetworkBehaviour
             damage *= 3f;
         }
 
+        if (attackerClientId != ulong.MaxValue)
+            _lastAttackerClientId = attackerClientId;
+
         _currentHealth.Value -= damage;
         _currentHealth.Value = Mathf.Max(0, CurrentHealth);
 
@@ -74,16 +93,21 @@ public class VehicleHealth : NetworkBehaviour
             Die();
         }
     }
-    
+
     private void Die()
     {
         if (!IsServer) return;
 
         ClientCarDeathRpc(transform.position);
-        
+
         DisableControlRpc();
 
         _car.StopCar();
+
+        ulong attackerClientId = _lastAttackerClientId;
+        _lastAttackerClientId = ulong.MaxValue; // сброс, чтобы следующая жизнь машины начиналась "с чистого листа"
+
+        OnServerDeath?.Invoke(attackerClientId);
     }
     [Rpc(SendTo.ClientsAndHost)]
     public void DisableControlRpc()
@@ -96,7 +120,7 @@ public class VehicleHealth : NetworkBehaviour
 
     public void Repair(float amount)
     {
-        if (IsDead || !IsServer) 
+        if (IsDead || !IsServer)
             return;
         _currentHealth.Value += amount;
         _currentHealth.Value = Mathf.Min(CurrentHealth, _maxHealth);
@@ -106,7 +130,7 @@ public class VehicleHealth : NetworkBehaviour
 
     public void SetHealth(float health)
     {
-        if (IsDead || !IsServer) 
+        if (IsDead || !IsServer)
             return;
         _currentHealth.Value = Mathf.Clamp(health, 0, _maxHealth);
         OnHealthChanged?.Invoke(CurrentHealth);

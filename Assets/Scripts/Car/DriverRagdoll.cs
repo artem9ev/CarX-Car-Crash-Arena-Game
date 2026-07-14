@@ -27,7 +27,7 @@ public class DriverRagdoll : NetworkBehaviour
     [SerializeField, Min(0f)] private float _ejectUpwardForce = 4f;
     [SerializeField, Min(0f)] private float _ejectTorque = 5f;
     [SerializeField] private bool _inheritCarVelocity = true;
-
+    private NetworkObject ragdollInstance;
     // Синхронизируем видимость модели водителя на всех клиентах.
     // Пишет только сервер, читают все — это стандартный паттерн для "флагов состояния".
     private readonly NetworkVariable<bool> _isEjected =
@@ -90,7 +90,7 @@ public class DriverRagdoll : NetworkBehaviour
             return;
         }
 
-        NetworkObject ragdollInstance = Instantiate(_ragdollPrefab, _ejectPoint.position, _ejectPoint.rotation);
+        ragdollInstance = Instantiate(_ragdollPrefab, _ejectPoint.position, _ejectPoint.rotation);
 
         // true = деспавнить вместе с уничтожением объекта, сервер — владелец спавна.
         ragdollInstance.Spawn(true);
@@ -122,5 +122,12 @@ public class DriverRagdoll : NetworkBehaviour
         if (_driverModel != null)
             _driverModel.SetActive(!newValue);
         Debug.Log(_driverModel!=null);
+    }
+    public void DespawnRagDoll()
+    {
+        if(ragdollInstance != null && IsServer)
+        {
+            ragdollInstance.Despawn(true);
+        }
     }
 }
