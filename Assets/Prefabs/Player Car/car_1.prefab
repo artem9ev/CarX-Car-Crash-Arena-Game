@@ -34646,9 +34646,9 @@ MonoBehaviour:
   SyncRotAngleX: 1
   SyncRotAngleY: 1
   SyncRotAngleZ: 1
-  SyncScaleX: 1
-  SyncScaleY: 1
-  SyncScaleZ: 1
+  SyncScaleX: 0
+  SyncScaleY: 0
+  SyncScaleZ: 0
   PositionThreshold: 0.001
   RotAngleThreshold: 0.01
   ScaleThreshold: 0.01
@@ -34779,30 +34779,30 @@ MonoBehaviour:
       inWeight: 0.33333334
       outWeight: 0.33333334
     - serializedVersion: 3
-      time: 0.68566436
-      value: 0.95118904
-      inSlope: -0.01633859
-      outSlope: -0.01633859
+      time: 0.7439987
+      value: 0.9826145
+      inSlope: -0.050316446
+      outSlope: -0.050316446
       tangentMode: 0
       weightedMode: 0
       inWeight: 0.33333334
-      outWeight: 0.53271294
+      outWeight: 1
     - serializedVersion: 3
       time: 1
-      value: 0.7
-      inSlope: -0.79911095
-      outSlope: -0.79911095
-      tangentMode: 34
+      value: 0.8
+      inSlope: -1.1657132
+      outSlope: -1.1657132
+      tangentMode: 0
       weightedMode: 0
-      inWeight: 0.33333334
+      inWeight: 0.16275968
       outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  m_idleRPM: 800
-  m_peakRPM: 6500
-  m_maxEngineTorque: 1500
-  m_engineInertia: 1.2
+  m_idleRPM: 1300
+  m_peakRPM: 6000
+  m_maxEngineTorque: 2000
+  m_engineInertia: 1.4
   m_engineFrictionCoeff: 0.3
   m_mainRatio: 4
   m_gears:
@@ -34851,8 +34851,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CarPhysics
   ShowTopMostFoldoutHeaderGroup: 1
-  _damageIgnoreZoneOffset: 1.5
-  _criticalDamageZoneOffset: -1.05
+  _damageIgnoreZoneOffset: 2.19
+  _criticalDamageZoneOffset: -1.68
   m_softHitImpulse: 1000
   m_hardHitImpulse: 5000
 --- !u!114 &686277926517070426
@@ -66735,6 +66735,30 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4068132083365343877, guid: 2cdb4550393cd06478752aef82984e17, type: 3}
+      propertyPath: m_Radius
+      value: 0.55
+      objectReference: {fileID: 0}
+    - target: {fileID: 4068132083365343877, guid: 2cdb4550393cd06478752aef82984e17, type: 3}
+      propertyPath: m_SuspensionDistance
+      value: 0.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 4068132083365343877, guid: 2cdb4550393cd06478752aef82984e17, type: 3}
+      propertyPath: m_SuspensionSpring.spring
+      value: 120000
+      objectReference: {fileID: 0}
+    - target: {fileID: 4068132083365343877, guid: 2cdb4550393cd06478752aef82984e17, type: 3}
+      propertyPath: m_ForwardFriction.m_AsymptoteSlip
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4068132083365343877, guid: 2cdb4550393cd06478752aef82984e17, type: 3}
+      propertyPath: m_ForwardFriction.m_ExtremumValue
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 4068132083365343877, guid: 2cdb4550393cd06478752aef82984e17, type: 3}
+      propertyPath: m_SidewaysFriction.m_AsymptoteSlip
+      value: 1.5
+      objectReference: {fileID: 0}
     - target: {fileID: 7081138066906402107, guid: 2cdb4550393cd06478752aef82984e17, type: 3}
       propertyPath: m_Name
       value: Car Wheel BR
@@ -66889,6 +66913,30 @@ PrefabInstance:
     - target: {fileID: 3827139642943042587, guid: 2cdb4550393cd06478752aef82984e17, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4068132083365343877, guid: 2cdb4550393cd06478752aef82984e17, type: 3}
+      propertyPath: m_Radius
+      value: 0.55
+      objectReference: {fileID: 0}
+    - target: {fileID: 4068132083365343877, guid: 2cdb4550393cd06478752aef82984e17, type: 3}
+      propertyPath: m_SuspensionDistance
+      value: 0.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 4068132083365343877, guid: 2cdb4550393cd06478752aef82984e17, type: 3}
+      propertyPath: m_SuspensionSpring.spring
+      value: 120000
+      objectReference: {fileID: 0}
+    - target: {fileID: 4068132083365343877, guid: 2cdb4550393cd06478752aef82984e17, type: 3}
+      propertyPath: m_ForwardFriction.m_AsymptoteSlip
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4068132083365343877, guid: 2cdb4550393cd06478752aef82984e17, type: 3}
+      propertyPath: m_ForwardFriction.m_ExtremumValue
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 4068132083365343877, guid: 2cdb4550393cd06478752aef82984e17, type: 3}
+      propertyPath: m_SidewaysFriction.m_AsymptoteSlip
+      value: 1.5
       objectReference: {fileID: 0}
     - target: {fileID: 7081138066906402107, guid: 2cdb4550393cd06478752aef82984e17, type: 3}
       propertyPath: m_Name
@@ -67179,6 +67227,30 @@ PrefabInstance:
     - target: {fileID: 3827139642943042587, guid: 2cdb4550393cd06478752aef82984e17, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4068132083365343877, guid: 2cdb4550393cd06478752aef82984e17, type: 3}
+      propertyPath: m_Radius
+      value: 0.55
+      objectReference: {fileID: 0}
+    - target: {fileID: 4068132083365343877, guid: 2cdb4550393cd06478752aef82984e17, type: 3}
+      propertyPath: m_SuspensionDistance
+      value: 0.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 4068132083365343877, guid: 2cdb4550393cd06478752aef82984e17, type: 3}
+      propertyPath: m_SuspensionSpring.spring
+      value: 120000
+      objectReference: {fileID: 0}
+    - target: {fileID: 4068132083365343877, guid: 2cdb4550393cd06478752aef82984e17, type: 3}
+      propertyPath: m_ForwardFriction.m_AsymptoteSlip
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4068132083365343877, guid: 2cdb4550393cd06478752aef82984e17, type: 3}
+      propertyPath: m_ForwardFriction.m_ExtremumValue
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 4068132083365343877, guid: 2cdb4550393cd06478752aef82984e17, type: 3}
+      propertyPath: m_SidewaysFriction.m_AsymptoteSlip
+      value: 1.5
       objectReference: {fileID: 0}
     - target: {fileID: 7081138066906402107, guid: 2cdb4550393cd06478752aef82984e17, type: 3}
       propertyPath: m_Name
