@@ -35,8 +35,6 @@ public class MovingCar : NetworkBehaviour
     public CarWheel WheelBR => _wheelBR;
     public CarWheel WheelBL => _wheelBL;
 
-
-
     private Transform _transform;
     private Rigidbody _rb;
     private NetworkTransform _networkTransform;
@@ -113,6 +111,11 @@ public class MovingCar : NetworkBehaviour
                 flAngularVelocity = _wheelFL.angularVelocity,
                 brAngularVelocity = _wheelBR.angularVelocity,
                 blAngularVelocity = _wheelBL.angularVelocity,
+
+                frGround = _wheelFR.GetSurfaceType(),
+                flGround = _wheelFL.GetSurfaceType(),
+                brGround = _wheelBR.GetSurfaceType(),
+                blGround = _wheelBL.GetSurfaceType(),
 
                 steerAngle = _wheelFR.CurrentSteerAngle,
                 forwardSpeed = Vector3.Dot(transform.forward, _rb.linearVelocity)
@@ -247,7 +250,7 @@ public struct WheelVisualState : INetworkSerializable
 public enum WheelGroundSurfaceType
 {
     None,
-    Terrain,
+    Ground,
     Road,
     Metal
 }

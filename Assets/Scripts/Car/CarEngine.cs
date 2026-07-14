@@ -184,9 +184,11 @@ public class CarEngine : NetworkBehaviour
     // Если привод другой — поменяй список колёс здесь.
     private void ApplyWheelTorque()
     {
-        float perWheelTorque = m_wheelTorque / 2f;
+        float perWheelTorque = m_wheelTorque / 4f;
         _car.WheelFR.SetTorque(perWheelTorque);
         _car.WheelFL.SetTorque(perWheelTorque);
+        _car.WheelBR.SetTorque(perWheelTorque);
+        _car.WheelBL.SetTorque(perWheelTorque);
     }
 
     private float GetWheelAngularVelocity()

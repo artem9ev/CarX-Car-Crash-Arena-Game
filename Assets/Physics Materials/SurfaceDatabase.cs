@@ -23,4 +23,14 @@ public class SurfaceDatabase : MonoBehaviour
             return def;
         return null; // fallback-поверхность по умолчанию
     }
+
+    public SurfaceDefinition GetByType(PhysicsMaterial physicsMaterial)
+    {
+        if (_map.TryGetValue(physicsMaterial, out SurfaceDefinition value))
+        {
+            return value;
+        }
+
+        return null;
+    }
 }

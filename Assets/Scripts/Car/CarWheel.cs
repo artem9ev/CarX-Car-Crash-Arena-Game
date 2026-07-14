@@ -9,6 +9,8 @@ public class CarWheel : MonoBehaviour
     [Header("Визуализация колёс")]
     [SerializeField] private Transform _wheelTransform;
 
+    [SerializeField] private ParticleSystem _dust;
+
     private float _spinAngle = 0f;
 
     public bool IsGrounded => _wheelCollider.isGrounded;
@@ -19,14 +21,6 @@ public class CarWheel : MonoBehaviour
     public float rpm => _wheelCollider.rpm;
     public float angularVelocity => _wheelCollider.rpm / 60f;
     public float radius => _wheelCollider.radius;
-
-    private void Update()
-    {
-        /*if (!IsServer) 
-            return;*/
-
-        //UpdateSingleWheelVisual(_wheelCollider, _wheelTransform);
-    }
 
     /// <summary>
     /// Вызывается ТОЛЬКО на сервере — читает реальную физику подвески.
@@ -40,6 +34,11 @@ public class CarWheel : MonoBehaviour
         return Vector3.Dot(_wheelCollider.transform.position - worldPos, _wheelCollider.transform.up);
     }
 
+    public WheelGroundSurfaceType GetSurfaceType()
+    {
+        return GetSurfaceType(out _);
+    }
+
     public WheelGroundSurfaceType GetSurfaceType(out SurfaceDefinition definition)
     {
         definition = null;
@@ -47,19 +46,19 @@ public class CarWheel : MonoBehaviour
             return WheelGroundSurfaceType.None;
 
         definition = SurfaceDatabase.Instance.Get(hit.collider.sharedMaterial);
-        return definition != null ? definition.surfaceType : WheelGroundSurfaceType.None;
+        return definition != null ? definition.surfaceType : WheelGroundSurfaceType.Ground;
     }
 
     private WheelGroundSurfaceType _lastAppliedSurface = WheelGroundSurfaceType.None;
 
-    /*public void ApplySurfaceEffects(WheelGroundSurfaceType surface, bool grounded, float speed)
+    /*public void ApplySurfaceEffects(WheelGroundSurfaceType surface, float speed)
     {
         if (surface == _lastAppliedSurface) return; // ничего не изменилось — не трогаем эффекты
         _lastAppliedSurface = surface;
 
         var def = SurfaceDatabase.Instance.GetByType(surface);
         // переключить цвет/текстуру пылевой ParticleSystem (не Instantiate/Destroy!)
-        var main = _dustParticles.main;
+        var main = _dust.main;
         main.startColor = def != null ? def.dustColor : Color.white;
 
         // сменить пул звуков качения (не Play() каждый кадр, а смена клипа у уже играющего looping AudioSource)
@@ -79,8 +78,6 @@ public class CarWheel : MonoBehaviour
         _wheelTransform.position = mountPos + suspensionOffset;
 
         _spinAngle = (_spinAngle + angularVelocity) % 360;
-        /*_spinAngle += (forwardSpeed / _wheelCollider.radius) * Mathf.Rad2Deg * Time.deltaTime;
-        _spinAngle %= 360f;*/
 
         Quaternion steerRotation = _wheelCollider.transform.rotation * Quaternion.Euler(0f, steerAngle, 0f);
         _wheelTransform.rotation = steerRotation * Quaternion.Euler(_spinAngle, 0f, 0f);
