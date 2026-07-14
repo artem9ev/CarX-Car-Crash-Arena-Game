@@ -17,6 +17,7 @@ public class CarWheel : MonoBehaviour
     // Нужно движку для расчёта угловой скорости трансмиссии.
     // Валидно только на сервере — на клиенте WheelCollider не симулируется физически.
     public float rpm => _wheelCollider.rpm;
+    public float angularVelocity => _wheelCollider.rpm / 60f;
     public float radius => _wheelCollider.radius;
 
     private void Update()
@@ -39,19 +40,47 @@ public class CarWheel : MonoBehaviour
         return Vector3.Dot(_wheelCollider.transform.position - worldPos, _wheelCollider.transform.up);
     }
 
+    public WheelGroundSurfaceType GetSurfaceType(out SurfaceDefinition definition)
+    {
+        definition = null;
+        if (!_wheelCollider.GetGroundHit(out WheelHit hit))
+            return WheelGroundSurfaceType.None;
+
+        definition = SurfaceDatabase.Instance.Get(hit.collider.sharedMaterial);
+        return definition != null ? definition.surfaceType : WheelGroundSurfaceType.None;
+    }
+
+    private WheelGroundSurfaceType _lastAppliedSurface = WheelGroundSurfaceType.None;
+
+    /*public void ApplySurfaceEffects(WheelGroundSurfaceType surface, bool grounded, float speed)
+    {
+        if (surface == _lastAppliedSurface) return; // ничего не изменилось — не трогаем эффекты
+        _lastAppliedSurface = surface;
+
+        var def = SurfaceDatabase.Instance.GetByType(surface);
+        // переключить цвет/текстуру пылевой ParticleSystem (не Instantiate/Destroy!)
+        var main = _dustParticles.main;
+        main.startColor = def != null ? def.dustColor : Color.white;
+
+        // сменить пул звуков качения (не Play() каждый кадр, а смена клипа у уже играющего looping AudioSource)
+        if (def != null && def.rollingClips.Length > 0)
+            _rollAudioSource.clip = def.rollingClips[Random.Range(0, def.rollingClips.Length)];
+    }*/
+
     /// <summary>
     /// Вызывается ВСЕМИ (сервер и клиенты) каждый Update.
     /// Строит визуальную позу колеса вручную, не полагаясь на GetWorldPose()
     /// (на клиенте эта функция не отражает актуальное состояние подвески/спина).
     /// </summary>
-    public void ApplyVisual(float suspensionCompression, float steerAngle, float forwardSpeed)
+    public void ApplyVisual(float suspensionCompression, float steerAngle, float angularVelocity)
     {
         Vector3 mountPos = _wheelCollider.transform.position;
         Vector3 suspensionOffset = -_wheelCollider.transform.up * suspensionCompression;
         _wheelTransform.position = mountPos + suspensionOffset;
 
-        _spinAngle += (forwardSpeed / _wheelCollider.radius) * Mathf.Rad2Deg * Time.deltaTime;
-        _spinAngle %= 360f;
+        _spinAngle = (_spinAngle + angularVelocity) % 360;
+        /*_spinAngle += (forwardSpeed / _wheelCollider.radius) * Mathf.Rad2Deg * Time.deltaTime;
+        _spinAngle %= 360f;*/
 
         Quaternion steerRotation = _wheelCollider.transform.rotation * Quaternion.Euler(0f, steerAngle, 0f);
         _wheelTransform.rotation = steerRotation * Quaternion.Euler(_spinAngle, 0f, 0f);

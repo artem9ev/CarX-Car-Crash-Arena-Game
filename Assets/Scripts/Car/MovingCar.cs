@@ -26,14 +26,16 @@ public class MovingCar : NetworkBehaviour
     [SerializeField] private CarWheel _wheelBR;
     [SerializeField] private CarWheel _wheelBL;
 
+    [Header("Torque (для StopCar / аварийной остановки)")]
+    [SerializeField] private float brakeTorque = 3000f;
+
     // Нужны CarEngine для доступа к колёсам
     public CarWheel WheelFR => _wheelFR;
     public CarWheel WheelFL => _wheelFL;
     public CarWheel WheelBR => _wheelBR;
     public CarWheel WheelBL => _wheelBL;
 
-    [Header("Torque (для StopCar / аварийной остановки)")]
-    [SerializeField] private float brakeTorque = 3000f;
+
 
     private Transform _transform;
     private Rigidbody _rb;
@@ -106,15 +108,21 @@ public class MovingCar : NetworkBehaviour
                 flCompression = _wheelFL.GetSuspensionCompression(),
                 brCompression = _wheelBR.GetSuspensionCompression(),
                 blCompression = _wheelBL.GetSuspensionCompression(),
+
+                frAngularVelocity = _wheelFR.angularVelocity,
+                flAngularVelocity = _wheelFL.angularVelocity,
+                brAngularVelocity = _wheelBR.angularVelocity,
+                blAngularVelocity = _wheelBL.angularVelocity,
+
                 steerAngle = _wheelFR.CurrentSteerAngle,
                 forwardSpeed = Vector3.Dot(transform.forward, _rb.linearVelocity)
             }
             : m_netWheelState.Value;
 
-        _wheelFR.ApplyVisual(state.frCompression, state.steerAngle, state.forwardSpeed);
-        _wheelFL.ApplyVisual(state.flCompression, state.steerAngle, state.forwardSpeed);
-        _wheelBR.ApplyVisual(state.brCompression, 0f, state.forwardSpeed);
-        _wheelBL.ApplyVisual(state.blCompression, 0f, state.forwardSpeed);
+        _wheelFR.ApplyVisual(state.frCompression, state.steerAngle, state.frAngularVelocity);
+        _wheelFL.ApplyVisual(state.flCompression, state.steerAngle, state.flAngularVelocity);
+        _wheelBR.ApplyVisual(state.brCompression, 0f, state.brAngularVelocity);
+        _wheelBL.ApplyVisual(state.blCompression, 0f, state.blAngularVelocity);
 
         if (IsServer)
         {
@@ -200,6 +208,17 @@ public struct WheelVisualState : INetworkSerializable
     public float flCompression;
     public float brCompression;
     public float blCompression;
+
+    public float frAngularVelocity;
+    public float flAngularVelocity;
+    public float brAngularVelocity;
+    public float blAngularVelocity;
+
+    public WheelGroundSurfaceType frGround;
+    public WheelGroundSurfaceType flGround;
+    public WheelGroundSurfaceType brGround;
+    public WheelGroundSurfaceType blGround;
+
     public float steerAngle;
     public float forwardSpeed;
 
@@ -209,7 +228,26 @@ public struct WheelVisualState : INetworkSerializable
         serializer.SerializeValue(ref flCompression);
         serializer.SerializeValue(ref brCompression);
         serializer.SerializeValue(ref blCompression);
+
+        serializer.SerializeValue(ref frAngularVelocity);
+        serializer.SerializeValue(ref flAngularVelocity);
+        serializer.SerializeValue(ref brAngularVelocity);
+        serializer.SerializeValue(ref blAngularVelocity);
+
+        serializer.SerializeValue(ref frGround);
+        serializer.SerializeValue(ref flGround);
+        serializer.SerializeValue(ref brGround);
+        serializer.SerializeValue(ref blGround);
+
         serializer.SerializeValue(ref steerAngle);
         serializer.SerializeValue(ref forwardSpeed);
     }
+}
+
+public enum WheelGroundSurfaceType
+{
+    None,
+    Terrain,
+    Road,
+    Metal
 }
