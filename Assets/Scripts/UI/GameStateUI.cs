@@ -8,8 +8,6 @@ public class GameStateUI : MonoBehaviour
     private static GameStateUI _instance;
     public static GameStateUI Instance => _instance;
 
-
-
     private void Awake()
     {
         if (_instance != null)
@@ -18,6 +16,8 @@ public class GameStateUI : MonoBehaviour
             return;
         }
         _instance = this;
+
+        DontDestroyOnLoad(gameObject);
     }
 
     private void Start()
@@ -37,7 +37,6 @@ public class GameStateUI : MonoBehaviour
 
     public void OnGameStateChange(GameState state)
     {
-        Debug.Log($"GameState Change!!! new state: {state.ToString()}");
         switch (state)
         {
             case GameState.MainMenu:

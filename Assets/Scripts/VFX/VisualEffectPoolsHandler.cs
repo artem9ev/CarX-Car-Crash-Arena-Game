@@ -5,6 +5,10 @@ public class VisualEffectPoolsHandler : MonoBehaviour
     [SerializeField] private BurstParticlesPool _carHitPool;
     [SerializeField] private BurstParticlesPool _carExplosionPool;
 
+    private void Awake()
+    {
+        DontDestroyOnLoad(this);
+    }
     private void Start()
     {
         ClientEventBus.Instance.onCarCollision += OnCarHit;

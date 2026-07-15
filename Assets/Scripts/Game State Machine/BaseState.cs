@@ -9,7 +9,7 @@ public abstract class BaseState
 
     public virtual void Start()
     {
-        Debug.Log($"[{GetType().ToString()}] - START");
+        //Debug.Log($"[{GetType().ToString()}] - START");
         onStart?.Invoke();
     }
     public virtual void Update()
@@ -19,7 +19,7 @@ public abstract class BaseState
     }
     public virtual void End()
     {
-        Debug.Log($"[{GetType().ToString()}] - END");
+        //Debug.Log($"[{GetType().ToString()}] - END");
         onEnd?.Invoke();
     }
 }

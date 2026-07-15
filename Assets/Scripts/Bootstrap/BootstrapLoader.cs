@@ -1,5 +1,4 @@
 
-using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -25,7 +24,7 @@ public class BootstrapLoader : MonoBehaviour
 
             _shouldFastConnect = true;
         }
-        else if (currentScene.name == "UI" || currentScene.name == "MainMenu")
+        else if (currentScene.name == "MainMenu")
         {
             if (!SceneManager.GetSceneByName("Bootstrap").isLoaded)
             {

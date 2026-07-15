@@ -8,7 +8,6 @@ public class CameraFollower : MonoBehaviour
     [SerializeField] private Vector3 m_acceleration = new Vector3(7, 15, 30);
     [SerializeField] private float m_angle = 15f;
     [SerializeField] private float m_range = 3f;
-    [SerializeField] private float m_angleCoef = 1f;
     [Space]
     [SerializeField] private Vector3 m_targetOffset = new Vector3(0, 1, -1);
     [Space]
@@ -130,6 +129,8 @@ public class CameraFollower : MonoBehaviour
 
     public void ResetPosition()
     {
+        m_pivot = m_target.position;
+
         m_transform.forward = Quaternion.Euler(-m_angle, 0, 0) * m_target.transform.forward;
         m_transform.position = m_pivot + m_targetOffset * m_target.transform.up.y - m_transform.forward * m_range;
     }

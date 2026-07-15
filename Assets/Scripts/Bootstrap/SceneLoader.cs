@@ -6,13 +6,11 @@ using UnityEngine.SceneManagement;
 public class SceneLoader : MonoBehaviour
 {
     [Header("Scene Names")]
-    [SerializeField] private string _uiName;
     [SerializeField] private string _mainName;
     [SerializeField] private string _lobbyName;
     [SerializeField] private string _levelName;
 
     private Scene _loadedScene;
-    private bool _isNetworkSetUped = false;
 
     private static SceneLoader _instance;
 
@@ -22,16 +20,15 @@ public class SceneLoader : MonoBehaviour
     {
         if (_instance != null)
         {
-            Destroy(gameObject);
+            Destroy(this);
             return;
         }
         _instance = this;
-        DontDestroyOnLoad(gameObject);
+        DontDestroyOnLoad(this);
     }
 
     private void Start()
     {
-        LoadUI();
         LoadMainMenu();
     }
 
@@ -39,20 +36,19 @@ public class SceneLoader : MonoBehaviour
     {
         Debug.Log($"Validation for {sceneName}, mode {loadSceneMode}, index {sceneIndex}");
 
-        if (sceneName == _uiName || sceneName == _mainName || sceneName == "Bootstrap")
+        if (sceneName == _mainName || sceneName == "Bootstrap")
             return false;
 
-        if (loadSceneMode == LoadSceneMode.Single)
-            return false;
+        if (sceneName.StartsWith("Level_") && loadSceneMode == LoadSceneMode.Single)
+            return true;
 
-        Debug.Log($"LOADINGGGGGGGGG {sceneName}");
         return true;
     }
 
     private bool NetworkSceneUnloadValidation(Scene scene)
     {
         // Запрещаем выгрузку Bootstrap и UI
-        if (scene.name == "Bootstrap" || scene.name == _uiName)
+        if (scene.name == "Bootstrap")
         {
             return false;
         }
@@ -112,7 +108,7 @@ public class SceneLoader : MonoBehaviour
         }
 
         // Теперь загружаем аддитивно
-        var status = NetworkManager.Singleton.SceneManager.LoadScene(_levelName, LoadSceneMode.Additive);
+        var status = NetworkManager.Singleton.SceneManager.LoadScene(_levelName, LoadSceneMode.Single);
         CheckStatus(status);
     }
 
@@ -124,7 +120,7 @@ public class SceneLoader : MonoBehaviour
             Debug.LogWarning($"Failed to {sceneEventAction} {_levelName} with a {nameof(SceneEventProgressStatus)}: {status}");
         }
     }
-    
+
     private void SceneManager_OnSceneEvent(SceneEvent sceneEvent)
     {
         var clientOrServer = sceneEvent.ClientId == NetworkManager.ServerClientId ? "server" : "client";
@@ -146,8 +142,8 @@ public class SceneLoader : MonoBehaviour
                     // *** IMPORTANT ***
                     // Keep track of the loaded scene, you need this to unload it
                     _loadedScene = sceneEvent.Scene;
+                    //SceneManager.SetActiveScene(_loadedScene);
                 }
-                //SceneManager.SetActiveScene(sceneEvent.Scene);
 
                 Debug.Log($"Loaded the {sceneEvent.SceneName} scene on {clientOrServer}-({sceneEvent.ClientId}).");
                 break;
@@ -157,7 +153,10 @@ public class SceneLoader : MonoBehaviour
                 break;
 
             case SceneEventType.LoadEventCompleted:
-
+                /*Debug.Log($"COMPLEEEEEETE {sceneEvent.ClientId}");
+                if (sceneEvent.ClientId == NetworkManager.ServerClientId && sceneEvent.SceneName == _levelName)
+                    SceneManager.SetActiveScene(_loadedScene);*/
+                break;
             case SceneEventType.UnloadEventCompleted:
                 var loadUnload = sceneEvent.SceneEventType == SceneEventType.LoadEventCompleted ? "Load" : "Unload";
                 Debug.Log($"{loadUnload} event completed for the following client identifiers:({sceneEvent.ClientsThatCompleted})");
@@ -165,14 +164,6 @@ public class SceneLoader : MonoBehaviour
                         Debug.LogWarning($"{loadUnload} event timed out for the following client identifiers:({sceneEvent.ClientsThatTimedOut})");
                 break;
         }
-    }
-
-    private void LoadUI()
-    {
-        if (SceneManager.GetSceneByName(_uiName).isLoaded)
-            return;
-
-        SceneManager.LoadScene(_uiName, LoadSceneMode.Additive);
     }
 
     public void LoadMainMenu()

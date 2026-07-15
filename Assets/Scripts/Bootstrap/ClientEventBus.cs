@@ -24,7 +24,7 @@ public class ClientEventBus : MonoBehaviour
         }
         _instance = this;
 
-        DontDestroyOnLoad(gameObject);
+        DontDestroyOnLoad(this);
 
         onAwake?.Invoke();
     }

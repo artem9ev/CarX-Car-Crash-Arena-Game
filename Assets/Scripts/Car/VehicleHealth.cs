@@ -84,11 +84,6 @@ public class VehicleHealth : NetworkBehaviour
         if (attackerClientId != ulong.MaxValue)
         {
             _lastAttackerClientId = attackerClientId;
-            Debug.Log($"[VehicleHealth:{OwnerClientId}] Урон {damage:F0} (crit={isCritical}) от attackerClientId={attackerClientId} → запомнили как последнего атакующего.");
-        }
-        else
-        {
-            Debug.Log($"[VehicleHealth:{OwnerClientId}] Урон {damage:F0} (crit={isCritical}) без атакующего (окружение) → сохранили предыдущего: {_lastAttackerClientId}.");
         }
 
         _currentHealth.Value -= damage;

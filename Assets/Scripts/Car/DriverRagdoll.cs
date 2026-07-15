@@ -121,7 +121,6 @@ public class DriverRagdoll : NetworkBehaviour
     {
         if (_driverModel != null)
             _driverModel.SetActive(!newValue);
-        Debug.Log(_driverModel!=null);
     }
     public void DespawnRagDoll()
     {

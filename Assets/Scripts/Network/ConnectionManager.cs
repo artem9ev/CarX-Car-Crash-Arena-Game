@@ -34,12 +34,12 @@ public class ConnectionManager : MonoBehaviour
     {
         if (_instance != null)
         {
-            Destroy(gameObject);
+            Destroy(this);
             return;
         }
         _instance = this;
 
-        DontDestroyOnLoad(gameObject);
+        DontDestroyOnLoad(this);
     }
 
     private void Start()

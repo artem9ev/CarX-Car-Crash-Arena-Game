@@ -3,7 +3,13 @@ using UnityEngine;
 public class LocalCameraManager : MonoBehaviour
 {
     [SerializeField] private CameraFollower cameraFollowerPrefab;
+
     private CameraFollower _cameraFollower;
+
+    private void Awake()
+    {
+        DontDestroyOnLoad(this);
+    }
 
     private void Start()
     {

@@ -11,8 +11,6 @@ public class FirstScreenView : BaseViewUI, IFirstScreenView
     [SerializeField] private Button _buttonCreateLobby;
     [SerializeField] private Button _buttonConnectLobby;
     [SerializeField] private TextMeshProUGUI _textNicknameWarning;
-    [Header("Nickname Warnings")]
-    [SerializeField] private string _warningNicknameSize = "Nick name lenghth should be > 3 and < 21";
 
     public UnityAction<string> onNicknameChange;
     public UnityAction<string> onIPChange;

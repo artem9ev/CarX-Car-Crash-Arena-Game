@@ -75,8 +75,6 @@ public class CarDestruction : MonoBehaviour
                 index++;
             }
         }
-
-        Debug.Log($"✅ Найдено {carParts.Length} частей машины");
     }
 
     // ===== ОТКЛЮЧЕНИЕ ФИЗИКИ ЧАСТЕЙ ПРИ СТАРТЕ =====
@@ -109,8 +107,6 @@ public class CarDestruction : MonoBehaviour
     {
         if (isDestroyed) return;
         isDestroyed = true;
-
-        Debug.Log("💥 Машина разрушается!");
 
         // Включаем физику всех частей
         EnablePartsPhysics();

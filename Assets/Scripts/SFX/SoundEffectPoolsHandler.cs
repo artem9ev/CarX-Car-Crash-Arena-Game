@@ -5,6 +5,11 @@ public class SoundEffectPoolsHandler : MonoBehaviour
     [SerializeField] private SoundEffectPool _carHitPool;
     [SerializeField] private SoundEffectPool _carExplosionPool;
 
+    private void Awake()
+    {
+        DontDestroyOnLoad(this);
+    }
+
     private void Start()
     {
         ClientEventBus.Instance.onCarCollision += OnCarHit;

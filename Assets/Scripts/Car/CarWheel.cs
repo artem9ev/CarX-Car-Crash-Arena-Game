@@ -10,7 +10,6 @@ public class CarWheel : MonoBehaviour
     [SerializeField] private Transform _wheelTransform;
 
     [SerializeField] private ParticleSystem _dust;
-    [SerializeField] private int maxRate = 20;
 
     private float _spinAngle = 0f;
 

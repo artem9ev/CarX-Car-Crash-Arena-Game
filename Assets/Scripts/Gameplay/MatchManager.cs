@@ -6,7 +6,7 @@ using UnityEngine.Events;
 /// ‘азы матча. PostCombat Ч экран результатов после истечени€ таймера бо€.
 /// ѕереход обратно в лобби намеренно не реализован Ч подключить отдельно позже.
 /// </summary>
-public enum MatchPhase : byte
+public enum MatchPhase
 {
     Combat = 0,
     PostCombat = 1
@@ -26,9 +26,6 @@ public class MatchManager : NetworkBehaviour
 
     [Header("Ќастройки матча")]
     [SerializeField, Min(1f)] private float _matchDuration = 300f;
-
-    [Tooltip("—колько секунд держим экран результатов, прежде чем можно будет перейти в лобби (переход пока не реализован)")]
-    [SerializeField, Min(0f)] private float _postCombatDuration = 15f;
 
     private readonly NetworkVariable<float> _timeRemaining = new NetworkVariable<float>();
     private readonly NetworkVariable<MatchPhase> _phase = new NetworkVariable<MatchPhase>(MatchPhase.Combat);

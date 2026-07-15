@@ -20,12 +20,12 @@ public class PlayerInputHandler : MonoBehaviour
     {
         if (_instance != null)
         {
-            Destroy(gameObject);
+            Destroy(this);
             return;
         }
         _instance = this;
 
-        DontDestroyOnLoad(gameObject);
+        DontDestroyOnLoad(this);
     }
 
     private void OnEnable()
@@ -35,7 +35,6 @@ public class PlayerInputHandler : MonoBehaviour
             _input = new PlayerInputActions();
         }
         _input.Enable();
-        Debug.Log($"PLAYER INPUT HANDLER");
         _input.Player.Gas.performed += OnGasInput;
         _input.Player.Brake.performed += OnBrakeInput;
         _input.Player.Steer.performed += OnSteerInput;
