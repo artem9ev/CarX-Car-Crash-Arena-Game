@@ -7,6 +7,7 @@ public class FirstScreenView : BaseViewUI, IFirstScreenView
 {
     [Header("UI Elements")]
     [SerializeField] private TMP_InputField _nicknameField;
+    [SerializeField] private TMP_InputField _ipField;
     [SerializeField] private Button _buttonCreateLobby;
     [SerializeField] private Button _buttonConnectLobby;
     [SerializeField] private TextMeshProUGUI _textNicknameWarning;
@@ -14,11 +15,13 @@ public class FirstScreenView : BaseViewUI, IFirstScreenView
     [SerializeField] private string _warningNicknameSize = "Nick name lenghth should be > 3 and < 21";
 
     public UnityAction<string> onNicknameChange;
+    public UnityAction<string> onIPChange;
     public UnityAction onConnectLobby;
     public UnityAction onCreateLobby;
     public UnityAction onSaveNickname;
 
     public string NickName => _nicknameField.text;
+    public string IP => _ipField.text;
 
     private void OnEnable()
     {
@@ -26,6 +29,7 @@ public class FirstScreenView : BaseViewUI, IFirstScreenView
         _buttonConnectLobby.onClick.AddListener(ConnectToLobby);
 
         _nicknameField.onValueChanged.AddListener(OnNicknameChange);
+        _nicknameField.onValueChanged.AddListener(OnIPChange);
     }
 
     private void OnDisable()
@@ -52,6 +56,24 @@ public class FirstScreenView : BaseViewUI, IFirstScreenView
         }
     }
 
+    private void OnIPChange(string value)
+    {
+        if (value.Length > 20)
+        {
+            _nicknameField.text = value.Substring(0, 20);
+        }
+
+        if (value.Length < 8)
+        {
+            //SetNetworkButtonsInteractable(false);
+        }
+        else
+        {
+            //onIPChange?.Invoke(_ipField.text);
+            //SetNetworkButtonsInteractable(true);
+        }
+    }
+
     private void SetNetworkButtonsInteractable(bool value)
     {
         _buttonCreateLobby.interactable = value;
@@ -73,6 +95,7 @@ public class FirstScreenView : BaseViewUI, IFirstScreenView
 
     public void CreateLobby()
     {
+        onIPChange?.Invoke(_ipField.text);
         SaveNickName();
         ActivateConnectionButtons(false);
         onCreateLobby?.Invoke();
@@ -80,6 +103,7 @@ public class FirstScreenView : BaseViewUI, IFirstScreenView
 
     public void ConnectToLobby()
     {
+        onIPChange?.Invoke(_ipField.text);
         SaveNickName();
         ActivateConnectionButtons(false);
         onConnectLobby?.Invoke();

@@ -34,6 +34,8 @@ public class MainMenuPresenter : PresenterUI
         _firstScreenView.onCreateLobby += ButtonCreateLobbyClick;
         _firstScreenView.onConnectLobby += ButtonConnectLobbyClick;
 
+        _firstScreenView.onIPChange += OnIPChage;
+
         ActivateView(_firstScreenView);
     }
 
@@ -42,6 +44,8 @@ public class MainMenuPresenter : PresenterUI
         _firstScreenView.onSaveNickname -= SaveNickName;
         _firstScreenView.onCreateLobby -= ButtonCreateLobbyClick;
         _firstScreenView.onConnectLobby -= ButtonConnectLobbyClick;
+
+        _firstScreenView.onIPChange -= OnIPChage;
     }
 
     private void OnClientConnectionNotification(ulong clientID, ConnectionManager.ConnectionState connectionState)
@@ -61,6 +65,11 @@ public class MainMenuPresenter : PresenterUI
 
         StartCoroutine(UpdatePlayersList());
     }    
+
+    private void OnIPChage(string ip)
+    {
+        ConnectionManager.Instance.ChangeIP(ip);
+    }
     
     private IEnumerator UpdatePlayersList()
     {

@@ -11,6 +11,9 @@ using UnityEngine;
 [RequireComponent(typeof(NetworkManager))]
 public class ConnectionManager : MonoBehaviour
 {
+    [SerializeField] private string hostIP = "127.0.0.1";
+    [SerializeField] private ushort port = 7778;
+
     private NetworkManager _networkManager;
 
     public event Action<ulong, ConnectionState> OnClientConnectionNotification;
@@ -50,7 +53,7 @@ public class ConnectionManager : MonoBehaviour
         _networkManager.OnClientDisconnectCallback += OnClientDisconnectCallback;
 
         var utp = _networkManager.GetComponent<UnityTransport>();
-        utp.SetConnectionData("127.0.0.1", 7778 );
+        utp.SetConnectionData(hostIP, port);
 
         if (BootstrapLoader.ShouldFastConnect)
         {
@@ -78,6 +81,14 @@ public class ConnectionManager : MonoBehaviour
     private void OnClientDisconnectCallback(ulong clientId)
     {
         OnClientConnectionNotification?.Invoke(clientId, ConnectionState.Disconnected);
+    }
+
+    public void ChangeIP(string ip)
+    {
+        Debug.Log("$IP CHANGE!!! {ip}");
+        hostIP = ip;
+        var utp = _networkManager.GetComponent<UnityTransport>();
+        utp.SetConnectionData(hostIP, port);
     }
 
     public void CreateLobby()

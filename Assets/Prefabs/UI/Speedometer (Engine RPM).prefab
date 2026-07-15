@@ -176,7 +176,7 @@ GameObject:
   - component: {fileID: 9159408912006679028}
   - component: {fileID: 4121583330420727008}
   m_Layer: 5
-  m_Name: Spedometer (Engine RPM)
+  m_Name: Speedometer (Engine RPM)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -191,8 +191,8 @@ RectTransform:
   m_GameObject: {fileID: 3043728965733149052}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 0.7, y: 0.7, z: 0.7}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 6604252609197314633}
   - {fileID: 345540778633352836}
@@ -228,8 +228,8 @@ MonoBehaviour:
   m_rightShade: {fileID: 8023916367647247886}
   m_leftShade: {fileID: 1928987215704962465}
   m_angle: 200
-  m_size: 100
-  m_step: 100
+  m_size: 220
+  m_step: 1000
 --- !u!1 &4151467840539082405
 GameObject:
   m_ObjectHideFlags: 0

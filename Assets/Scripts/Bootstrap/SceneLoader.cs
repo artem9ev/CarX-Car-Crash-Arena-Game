@@ -1,3 +1,4 @@
+using System.Collections;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -36,12 +37,15 @@ public class SceneLoader : MonoBehaviour
 
     private bool NetworkSceneLoadValidation(int sceneIndex, string sceneName, LoadSceneMode loadSceneMode)
     {
+        Debug.Log($"Validation for {sceneName}, mode {loadSceneMode}, index {sceneIndex}");
+
         if (sceneName == _uiName || sceneName == _mainName || sceneName == "Bootstrap")
             return false;
 
         if (loadSceneMode == LoadSceneMode.Single)
             return false;
 
+        Debug.Log($"LOADINGGGGGGGGG {sceneName}");
         return true;
     }
 
@@ -74,7 +78,7 @@ public class SceneLoader : MonoBehaviour
         }
     }
 
-    public void StartGame()
+    /*public void StartGame()
     {
         SetupNetcodeSceneManager();
 
@@ -82,6 +86,32 @@ public class SceneLoader : MonoBehaviour
         {
             return;
         }
+        var status = NetworkManager.Singleton.SceneManager.LoadScene(_levelName, LoadSceneMode.Additive);
+        CheckStatus(status);
+    }*/
+    public void StartGame()
+    {
+        SetupNetcodeSceneManager();
+
+        if (!NetworkManager.Singleton.IsServer)
+            return;
+
+        StartCoroutine(LoadLevelAdditiveCoroutine());
+    }
+
+
+    private IEnumerator LoadLevelAdditiveCoroutine()
+    {
+        // Если сцена уровня уже загружена – выгружаем её
+        var levelScene = SceneManager.GetSceneByName(_levelName);
+        if (levelScene.isLoaded)
+        {
+            Debug.Log($"Unloading existing level scene '{_levelName}' before loading as Additive.");
+            var unloadOp = SceneManager.UnloadSceneAsync(levelScene);
+            yield return unloadOp; // ждём завершения выгрузки
+        }
+
+        // Теперь загружаем аддитивно
         var status = NetworkManager.Singleton.SceneManager.LoadScene(_levelName, LoadSceneMode.Additive);
         CheckStatus(status);
     }
@@ -117,7 +147,7 @@ public class SceneLoader : MonoBehaviour
                     // Keep track of the loaded scene, you need this to unload it
                     _loadedScene = sceneEvent.Scene;
                 }
-                SceneManager.SetActiveScene(sceneEvent.Scene);
+                //SceneManager.SetActiveScene(sceneEvent.Scene);
 
                 Debug.Log($"Loaded the {sceneEvent.SceneName} scene on {clientOrServer}-({sceneEvent.ClientId}).");
                 break;
