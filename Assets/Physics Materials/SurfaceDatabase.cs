@@ -24,13 +24,24 @@ public class SurfaceDatabase : MonoBehaviour
         return null; // fallback-поверхность по умолчанию
     }
 
-    public SurfaceDefinition GetByType(PhysicsMaterial physicsMaterial)
+    public SurfaceDefinition GetByType(SurfaceType type)
     {
-        if (_map.TryGetValue(physicsMaterial, out SurfaceDefinition value))
+        foreach (var def in _definitions)
         {
-            return value;
+            if (def.surfaceType == type)
+            {
+                return def;
+            }
         }
 
         return null;
     }
+}
+
+public enum SurfaceType
+{
+    None,
+    Ground,
+    Road,
+    Metal
 }

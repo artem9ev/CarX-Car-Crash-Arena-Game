@@ -115,6 +115,8 @@ public class SceneLoader : MonoBehaviour
                     // Keep track of the loaded scene, you need this to unload it
                     _loadedScene = sceneEvent.Scene;
                 }
+                SceneManager.SetActiveScene(sceneEvent.Scene);
+
                 Debug.Log($"Loaded the {sceneEvent.SceneName} scene on {clientOrServer}-({sceneEvent.ClientId}).");
                 break;
 

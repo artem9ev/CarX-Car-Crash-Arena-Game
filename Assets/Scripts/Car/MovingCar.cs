@@ -127,6 +127,11 @@ public class MovingCar : NetworkBehaviour
         _wheelBR.ApplyVisual(state.brCompression, 0f, state.brAngularVelocity);
         _wheelBL.ApplyVisual(state.blCompression, 0f, state.blAngularVelocity);
 
+        _wheelFR.ApplySurfaceEffects(state.frGround);
+        _wheelFL.ApplySurfaceEffects(state.flGround);
+        _wheelBR.ApplySurfaceEffects(state.brGround);
+        _wheelBL.ApplySurfaceEffects(state.blGround);
+
         if (IsServer)
         {
             m_netWheelState.Value = state;
@@ -217,10 +222,10 @@ public struct WheelVisualState : INetworkSerializable
     public float brAngularVelocity;
     public float blAngularVelocity;
 
-    public WheelGroundSurfaceType frGround;
-    public WheelGroundSurfaceType flGround;
-    public WheelGroundSurfaceType brGround;
-    public WheelGroundSurfaceType blGround;
+    public SurfaceType frGround;
+    public SurfaceType flGround;
+    public SurfaceType brGround;
+    public SurfaceType blGround;
 
     public float steerAngle;
     public float forwardSpeed;
@@ -245,12 +250,4 @@ public struct WheelVisualState : INetworkSerializable
         serializer.SerializeValue(ref steerAngle);
         serializer.SerializeValue(ref forwardSpeed);
     }
-}
-
-public enum WheelGroundSurfaceType
-{
-    None,
-    Ground,
-    Road,
-    Metal
 }

@@ -10,6 +10,7 @@ public class CarWheel : MonoBehaviour
     [SerializeField] private Transform _wheelTransform;
 
     [SerializeField] private ParticleSystem _dust;
+    [SerializeField] private int maxRate = 20;
 
     private float _spinAngle = 0f;
 
@@ -34,37 +35,45 @@ public class CarWheel : MonoBehaviour
         return Vector3.Dot(_wheelCollider.transform.position - worldPos, _wheelCollider.transform.up);
     }
 
-    public WheelGroundSurfaceType GetSurfaceType()
+    public SurfaceType GetSurfaceType()
     {
         return GetSurfaceType(out _);
     }
 
-    public WheelGroundSurfaceType GetSurfaceType(out SurfaceDefinition definition)
+    public SurfaceType GetSurfaceType(out SurfaceDefinition definition)
     {
         definition = null;
         if (!_wheelCollider.GetGroundHit(out WheelHit hit))
-            return WheelGroundSurfaceType.None;
+            return SurfaceType.None;
 
         definition = SurfaceDatabase.Instance.Get(hit.collider.sharedMaterial);
-        return definition != null ? definition.surfaceType : WheelGroundSurfaceType.Ground;
+        return definition != null ? definition.surfaceType : SurfaceType.Ground;
     }
 
-    private WheelGroundSurfaceType _lastAppliedSurface = WheelGroundSurfaceType.None;
+    private SurfaceType _lastAppliedSurface = SurfaceType.None;
 
-    /*public void ApplySurfaceEffects(WheelGroundSurfaceType surface, float speed)
+    public void ApplySurfaceEffects(SurfaceType surface)
     {
         if (surface == _lastAppliedSurface) return; // ничего не изменилось — не трогаем эффекты
         _lastAppliedSurface = surface;
 
         var def = SurfaceDatabase.Instance.GetByType(surface);
+        if (def != null && def.surfaceType == SurfaceType.Ground)
+        {
+            _dust.Play();
+        }
+        else 
+        {
+            _dust.Stop();
+        }
         // переключить цвет/текстуру пылевой ParticleSystem (не Instantiate/Destroy!)
-        var main = _dust.main;
+        /*var main = _dust.main;
         main.startColor = def != null ? def.dustColor : Color.white;
 
         // сменить пул звуков качения (не Play() каждый кадр, а смена клипа у уже играющего looping AudioSource)
         if (def != null && def.rollingClips.Length > 0)
-            _rollAudioSource.clip = def.rollingClips[Random.Range(0, def.rollingClips.Length)];
-    }*/
+            _rollAudioSource.clip = def.rollingClips[Random.Range(0, def.rollingClips.Length)];*/
+    }
 
     /// <summary>
     /// Вызывается ВСЕМИ (сервер и клиенты) каждый Update.
