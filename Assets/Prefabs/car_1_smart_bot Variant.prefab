@@ -125,19 +125,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::WheelDustEffect
   ShowTopMostFoldoutHeaderGroup: 1
-  detectionRange: 200
-  stopDistance: 4
+  detectionRange: 484.3
+  stopDistance: 5.7
   reactionTime: 1
   updateTargetInterval: 1
-  turnSpeed: 50
+  maxSteerAngle: 90
   obstacleLayer:
-    serializedVersion: 2
-    m_Bits: 1
-  PlayerLayer:
     serializedVersion: 2
     m_Bits: 8
   rayLength: 5
-  avoidanceForce: 2
+  rayCount: 9
+  raySpread: 90
+  avoidanceForce: 8
+  frontalSectorAngle: 45
+  frontalBrakeThreshold: 1
 --- !u!114 &4061799463227160711
 MonoBehaviour:
   m_ObjectHideFlags: 0
