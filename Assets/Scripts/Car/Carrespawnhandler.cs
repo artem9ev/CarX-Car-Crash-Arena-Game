@@ -4,10 +4,13 @@ using Unity.Netcode;
 using UnityEngine;
 
 /// <summary>
-/// Вешается на тот же GameObject, что и VehicleHealth / MovingCar.
+/// Вешается на тот же GameObject, что и VehicleHealth / MovingCar
+/// (и на машину игрока, и на бота — SmartBotAI + BotIdentity стоят только у бота).
 /// При уничтожении машины (VehicleHealth.OnServerDeath):
 ///  1) сервер забирает владение уничтоженной машиной у игрока (ChangeOwnership -> Server),
-///  2) через _respawnDelay секунд для того же клиента спавнится новая машина через SpawnManager.
+///  2) регистрирует килл/смерть в ScoreManager (для бота — через его PseudoClientId),
+///  3) через _respawnDelay секунд выдаёт новую машину — игроку через SpawnCarForClient,
+///     боту — через SpawnBot.
 /// Сама уничтоженная машина (обломки) при этом не уничтожается — ей просто меняется владелец.
 /// Если нужно, чтобы обломки исчезали, включите _destroyWreckOnRespawn.
 /// </summary>
@@ -20,11 +23,13 @@ public class CarRespawnHandler : NetworkBehaviour
 
     private VehicleHealth _health;
     private SmartBotAI _botAI; // null для машины игрока
+    private BotIdentity _botIdentity; // null для машины игрока
 
     private void Awake()
     {
         _health = GetComponent<VehicleHealth>();
         _botAI = GetComponent<SmartBotAI>();
+        _botIdentity = GetComponent<BotIdentity>();
     }
 
     public override void OnNetworkSpawn()
@@ -47,13 +52,21 @@ public class CarRespawnHandler : NetworkBehaviour
 
         if (_botAI != null)
         {
-            // это бот — НЕ трогаем PlayerData/лидерборд по ClientId,
-            // и НЕ вызываем SpawnCarForClient (он для игроков)
-            ScoreManager.Instance?.RegisterBotKill(attackerClientId);
-            StartCoroutine(RespawnBotRoutine());
+            // Это бот — используем не PlayerData/ClientId, а его псевдо-ID (BotIdentity),
+            // и вместо SpawnCarForClient спавним нового бота (SpawnBot) с ТЕМ ЖЕ SlotId,
+            // чтобы статистика (Kills/Deaths) продолжила копиться, а не обнулилась.
+            ulong botId = _botIdentity != null ? _botIdentity.PseudoClientId : ulong.MaxValue;
+            int slotId = _botIdentity != null ? _botIdentity.SlotId : -1;
+
+            if (_botIdentity == null)
+            {
+                Debug.LogWarning("[CarRespawnHandler] На боте не найден BotIdentity — статистика бота не будет учтена.", gameObject);
+            }
+
+            ScoreManager.Instance?.RegisterKill(attackerClientId, botId);
+            StartCoroutine(RespawnBotRoutine(slotId));
             return;
         }
-
 
         // Запоминаем владельца (жертву) ДО того, как заберём владение.
         ulong victimClientId = OwnerClientId;
@@ -69,10 +82,10 @@ public class CarRespawnHandler : NetworkBehaviour
         StartCoroutine(RespawnRoutine(victimClientId));
     }
 
-    private IEnumerator RespawnBotRoutine()
+    private IEnumerator RespawnBotRoutine(int slotId)
     {
         yield return new WaitForSeconds(_respawnDelay);
-        SpawnManager.Instance?.SpawnBot(); // новый метод, см. ниже
+        SpawnManager.Instance?.SpawnBot(slotId); // тот же слот — статистика продолжится
 
         DespawnCar();
     }

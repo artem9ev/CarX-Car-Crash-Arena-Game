@@ -38,7 +38,7 @@ public class CarPhysics : NetworkBehaviour
 
         float pointOffsetZ = _transform.InverseTransformPoint(collision.contacts[0].point).z;
 
-        if (pointOffsetZ < _damageIgnoreZoneOffset) 
+        if (pointOffsetZ < _damageIgnoreZoneOffset)
         {
             ulong attackerClientId = GetAttackerClientId(collision);
 
@@ -72,8 +72,9 @@ public class CarPhysics : NetworkBehaviour
 
     /// <summary>
     /// Пытается определить, чья машина ударила текущую.
-    /// Возвращает ClientId владельца другой машины, если это машина игрока (есть VehicleHealth),
-    /// иначе ulong.MaxValue (столкновение со стеной/окружением/ботом без владельца и т.п.).
+    /// Возвращает ClientId владельца другой машины (или PseudoClientId, если это бот —
+    /// у ботов свой BotIdentity, т.к. их OwnerClientId у всех совпадает с ServerClientId).
+    /// Возвращает ulong.MaxValue, если это не машина игрока/бота (стена, окружение и т.п.).
     /// </summary>
     private ulong GetAttackerClientId(Collision collision)
     {
@@ -81,16 +82,36 @@ public class CarPhysics : NetworkBehaviour
         // поэтому ищем NetworkObject и VehicleHealth в родителях.
         var otherNetworkObject = collision.collider.GetComponentInParent<NetworkObject>();
         if (otherNetworkObject == null)
+        {
+            Debug.Log($"[CarPhysics] Атакующий не определён: у объекта '{collision.collider.name}' нет NetworkObject в родителях (скорее всего это стена/статичное окружение).");
             return ulong.MaxValue;
+        }
 
         // Не считаем машину атакующей саму себя (например, столкновение частей одной машины).
         if (otherNetworkObject == NetworkObject)
+        {
+            Debug.Log($"[CarPhysics] Атакующий не определён: столкновение с самим собой ('{collision.collider.name}').");
             return ulong.MaxValue;
+        }
 
         var otherHealth = otherNetworkObject.GetComponent<VehicleHealth>();
         if (otherHealth == null)
+        {
+            Debug.Log($"[CarPhysics] Атакующий не определён: на объекте '{otherNetworkObject.name}' нет VehicleHealth.");
             return ulong.MaxValue;
+        }
 
+        // Если другая машина — бот, используем его псевдо-ID вместо OwnerClientId
+        // (у всех ботов OwnerClientId одинаковый — ServerClientId — и его нельзя
+        // использовать для различения ботов друг от друга и от хоста).
+        var otherBotIdentity = otherNetworkObject.GetComponent<BotIdentity>();
+        if (otherBotIdentity != null)
+        {
+            Debug.Log($"[CarPhysics] Атакующий определён как БОТ '{otherBotIdentity.DisplayName}' (PseudoClientId={otherBotIdentity.PseudoClientId}).");
+            return otherBotIdentity.PseudoClientId;
+        }
+
+        Debug.Log($"[CarPhysics] Атакующий определён как игрок с OwnerClientId={otherNetworkObject.OwnerClientId}.");
         return otherNetworkObject.OwnerClientId;
     }
 

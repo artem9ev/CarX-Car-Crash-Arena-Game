@@ -9,7 +9,9 @@ using UnityEngine.Events;
 ///
 /// Логика подсчёта (Kills/Deaths) выполняется ТОЛЬКО на сервере — вызывайте
 /// RegisterKill(attackerClientId, victimClientId) из серверного кода
-/// (например, из CarRespawnHandler.HandleServerDeath).
+/// (например, из CarRespawnHandler.HandleServerDeath). Работает как для игроков
+/// (через PlayerData.ByClientId), так и для ботов (через BotRegistry.ById) —
+/// метод сам определяет, кто есть кто, по переданному id.
 ///
 /// Рассылка kill-feed идёт через Rpc всем клиентам, чтобы показать сообщение
 /// в UI ("Игрок A уничтожил Игрока B").
@@ -45,12 +47,14 @@ public class ScoreManager : NetworkBehaviour
 
     /// <summary>
     /// Регистрирует убийство. Вызывать ТОЛЬКО на сервере.
+    /// Работает как для игроков, так и для ботов — для ботов передавайте
+    /// BotIdentity.PseudoClientId вместо OwnerClientId (см. CarRespawnHandler).
     /// </summary>
     /// <param name="attackerClientId">
-    /// ClientId убийцы. Передайте ulong.MaxValue, если машина погибла не от другого игрока
-    /// (например, от окружения) — засчитается только смерть, без килла.
+    /// ClientId/PseudoClientId убийцы. Передайте ulong.MaxValue, если машина погибла
+    /// не от другого игрока/бота (например, от окружения) — засчитается только смерть, без килла.
     /// </param>
-    /// <param name="victimClientId">ClientId жертвы.</param>
+    /// <param name="victimClientId">ClientId/PseudoClientId жертвы.</param>
     public void RegisterKill(ulong attackerClientId, ulong victimClientId)
     {
         if (!IsServer)
@@ -69,13 +73,33 @@ public class ScoreManager : NetworkBehaviour
             victimName = victimData.PlayerName.Value.ToString();
             UpsertEntry(victimClientId, victimName, victimData.Kills.Value, victimData.Deaths.Value);
         }
+        else if (BotRegistry.ById.TryGetValue(victimClientId, out var victimBot))
+        {
+            victimBot.OnRegisteredAsVictim();
+            victimName = victimBot.DisplayName;
+            UpsertEntry(victimClientId, victimName, victimBot.Kills, victimBot.Deaths);
+        }
 
         string attackerName = isEnvironmentKill ? "Environment" : victimName;
-        if (!isEnvironmentKill && !isSuicide && PlayerData.ByClientId.TryGetValue(attackerClientId, out var attackerData))
+        if (!isEnvironmentKill && !isSuicide)
         {
-            attackerData.Kills.Value++;
-            attackerName = attackerData.PlayerName.Value.ToString();
-            UpsertEntry(attackerClientId, attackerName, attackerData.Kills.Value, attackerData.Deaths.Value);
+            if (PlayerData.ByClientId.TryGetValue(attackerClientId, out var attackerData))
+            {
+                attackerData.Kills.Value++;
+                attackerName = attackerData.PlayerName.Value.ToString();
+                UpsertEntry(attackerClientId, attackerName, attackerData.Kills.Value, attackerData.Deaths.Value);
+            }
+            else if (BotRegistry.ById.TryGetValue(attackerClientId, out var attackerBot))
+            {
+                attackerBot.OnRegisteredAsKiller();
+                attackerName = attackerBot.DisplayName;
+                UpsertEntry(attackerClientId, attackerName, attackerBot.Kills, attackerBot.Deaths);
+                Debug.Log($"[ScoreManager] Килл засчитан боту {attackerBot.DisplayName} (slot {attackerBot.SlotId}), теперь Kills={attackerBot.Kills}");
+            }
+            else
+            {
+                Debug.LogWarning($"[ScoreManager] attackerClientId={attackerClientId} не найден ни в PlayerData.ByClientId, ни в BotRegistry.ById — килл никому не засчитан. Проверь, есть ли BotIdentity на префабе бота.");
+            }
         }
 
         OnKillRegisteredServer?.Invoke(attackerClientId, victimClientId);
@@ -89,27 +113,9 @@ public class ScoreManager : NetworkBehaviour
         OnKillFeed?.Invoke(attackerName.ToString(), victimName.ToString(), isSuicide);
     }
 
-    public void RegisterBotKill(ulong attackerClientId)
-    {
-        if (!IsServer) return;
-
-        string attackerName = "Environment";
-        bool isEnvironmentKill = attackerClientId == ulong.MaxValue;
-
-        if (!isEnvironmentKill && PlayerData.ByClientId.TryGetValue(attackerClientId, out var attackerData))
-        {
-            attackerData.Kills.Value++;
-            attackerName = attackerData.PlayerName.Value.ToString();
-            UpsertEntry(attackerClientId, attackerName, attackerData.Kills.Value, attackerData.Deaths.Value);
-        }
-
-        OnKillRegisteredServer?.Invoke(attackerClientId, ulong.MaxValue);
-        BroadcastKillFeedRpc(new FixedString64Bytes(attackerName), new FixedString64Bytes("Bot"), false);
-    }
-
     /// <summary>
-    /// Добавляет или обновляет запись игрока в таблице лидеров. Вызывать ТОЛЬКО на сервере.
-    /// Вызывается автоматически из RegisterKill, а также из PlayerData при спавне/смене ника.
+    /// Добавляет или обновляет запись игрока/бота в таблице лидеров. Вызывать ТОЛЬКО на сервере.
+    /// Вызывается автоматически из RegisterKill, а также из PlayerData/BotIdentity при спавне/смене ника.
     /// </summary>
     public void UpsertEntry(ulong clientId, string playerName, int kills, int deaths)
     {
@@ -135,7 +141,7 @@ public class ScoreManager : NetworkBehaviour
         Leaderboard.Add(entry);
     }
 
-    /// <summary>Убирает игрока из таблицы лидеров (например, при отключении). Вызывать ТОЛЬКО на сервере.</summary>
+    /// <summary>Убирает игрока/бота из таблицы лидеров (например, при отключении/деспавне). Вызывать ТОЛЬКО на сервере.</summary>
     public void RemoveEntry(ulong clientId)
     {
         if (!IsServer) return;
