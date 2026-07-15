@@ -29,14 +29,9 @@ public class MovingCar : NetworkBehaviour
     [Header("Torque (для StopCar / аварийной остановки)")]
     [SerializeField] private float brakeTorque = 3000f;
 
-    // Нужны CarEngine для доступа к колёсам
-    public CarWheel WheelFR => _wheelFR;
-    public CarWheel WheelFL => _wheelFL;
-    public CarWheel WheelBR => _wheelBR;
-    public CarWheel WheelBL => _wheelBL;
-
     private Transform _transform;
     private Rigidbody _rb;
+    private CarEngine _engine;
     private NetworkTransform _networkTransform;
     private NetworkRigidbody _networkRb;
 
@@ -59,6 +54,14 @@ public class MovingCar : NetworkBehaviour
     public Vector3 linearVelocity => _rb.linearVelocity;
     public Vector3 projectedVelocityZ => Vector3.Project(_rb.linearVelocity, _transform.forward);
 
+    public CarEngine engine => _engine;
+
+    // Нужны CarEngine для доступа к колёсам
+    public CarWheel WheelFR => _wheelFR;
+    public CarWheel WheelFL => _wheelFL;
+    public CarWheel WheelBR => _wheelBR;
+    public CarWheel WheelBL => _wheelBL;
+
     private void OnDrawGizmosSelected()
     {
         var tempRb = GetComponent<Rigidbody>();
@@ -73,6 +76,7 @@ public class MovingCar : NetworkBehaviour
     {
         _transform = transform;
         _rb = GetComponent<Rigidbody>();
+        _engine = GetComponent<CarEngine>();
 
         _networkTransform = GetComponent<NetworkTransform>();
         _networkRb = GetComponent<NetworkRigidbody>();

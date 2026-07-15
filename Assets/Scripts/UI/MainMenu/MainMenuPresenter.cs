@@ -3,10 +3,16 @@ using System.Collections;
 using Unity.Netcode;
 using UnityEngine;
 
-public class MainMenuPresenter : MonoBehaviour
+public class MainMenuPresenter : PresenterUI
 {
     [SerializeField] private FirstScreenView _firstScreenView;
     [SerializeField] private LobbyView _lobbyView;
+
+    private void Awake()
+    {
+        AddView(_firstScreenView);
+        AddView(_lobbyView);
+    }
 
     private void Start()
     {
@@ -15,23 +21,6 @@ public class MainMenuPresenter : MonoBehaviour
         SetNickname(nickname);
 
         ConnectionManager.Instance.OnClientConnectionNotification += OnClientConnectionNotification;
-
-        ActivateFirstScreen();
-    }
-
-
-    private void OnEnable()
-    {
-        _firstScreenView.onSaveNickname += SaveNickName;
-        _firstScreenView.onCreateLobby += ButtonCreateLobbyClick;
-        _firstScreenView.onConnectLobby += ButtonConnectLobbyClick;
-    }
-
-    private void OnDisable()
-    {
-        _firstScreenView.onSaveNickname -= SaveNickName;
-        _firstScreenView.onCreateLobby -= ButtonCreateLobbyClick;
-        _firstScreenView.onConnectLobby -= ButtonConnectLobbyClick;
     }
 
     private void OnDestroy()
@@ -39,16 +28,20 @@ public class MainMenuPresenter : MonoBehaviour
         ConnectionManager.Instance.OnClientConnectionNotification -= OnClientConnectionNotification;
     }
 
-    private void ActivateFirstScreen()
+    public override void Subscribe()
     {
-        _firstScreenView.Activate();
-        _lobbyView.Deactivate();
+        _firstScreenView.onSaveNickname += SaveNickName;
+        _firstScreenView.onCreateLobby += ButtonCreateLobbyClick;
+        _firstScreenView.onConnectLobby += ButtonConnectLobbyClick;
+
+        ActivateView(_firstScreenView);
     }
 
-    private void ActivateLobbyScreen()
+    public override void Unsubscribe()
     {
-        _firstScreenView.Deactivate();
-        _lobbyView.Activate();
+        _firstScreenView.onSaveNickname -= SaveNickName;
+        _firstScreenView.onCreateLobby -= ButtonCreateLobbyClick;
+        _firstScreenView.onConnectLobby -= ButtonConnectLobbyClick;
     }
 
     private void OnClientConnectionNotification(ulong clientID, ConnectionManager.ConnectionState connectionState)
@@ -62,7 +55,7 @@ public class MainMenuPresenter : MonoBehaviour
                 
                 break;
             case ConnectionManager.ConnectionState.Connected:
-                ActivateLobbyScreen();
+                ActivateView(_lobbyView);
                 break;
         }
 
@@ -107,6 +100,4 @@ public class MainMenuPresenter : MonoBehaviour
     {
         _firstScreenView.SetNickName(value);
     }
-
-
 }

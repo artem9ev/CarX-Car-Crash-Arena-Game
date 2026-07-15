@@ -101,8 +101,10 @@ public class SceneLoader : MonoBehaviour
         switch (sceneEvent.SceneEventType)
         {
             case SceneEventType.Load:
-                // Когда уровень загружен у клиента (по команде сервера) — вот тут можно выгрузить меню
-                //
+                if (sceneEvent.SceneName.StartsWith("Level_"))
+                {
+                    GameStateMachine.Instance.ChangeState(GameState.Level);
+                }
                 break;
             case SceneEventType.LoadComplete:
                 if (sceneEvent.SceneName == _levelName)

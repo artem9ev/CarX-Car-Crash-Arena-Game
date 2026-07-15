@@ -13,6 +13,8 @@ public class ClientEventBus : MonoBehaviour
 
     public event UnityAction<Vector3> onCarExplosion;
 
+    public static event UnityAction onAwake;
+
     private void Awake()
     {
         if (_instance != null)
@@ -23,6 +25,8 @@ public class ClientEventBus : MonoBehaviour
         _instance = this;
 
         DontDestroyOnLoad(gameObject);
+
+        onAwake?.Invoke();
     }
 
     public void InvokeCarOwn(MovingCar car)

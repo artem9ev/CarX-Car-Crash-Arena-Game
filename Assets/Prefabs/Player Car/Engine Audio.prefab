@@ -54,22 +54,22 @@ MonoBehaviour:
   m_audioSamples:
   - m_soundOn: {fileID: 1926366313721150287}
     m_soundOff: {fileID: 8867690915554706121}
-    m_volume: 0.3
+    m_volume: 0.1
     m_baseRpm: 1000
     m_basePitch: 1
   - m_soundOn: {fileID: 6417915612600966014}
     m_soundOff: {fileID: 1904402634403462947}
-    m_volume: 0.3
+    m_volume: 0.1
     m_baseRpm: 3000
     m_basePitch: 1
   - m_soundOn: {fileID: 7844687017246842291}
     m_soundOff: {fileID: 8050838529138902262}
-    m_volume: 0.3
+    m_volume: 0.1
     m_baseRpm: 5000
     m_basePitch: 1
   m_limiterSource: {fileID: 3761023567836615090}
   m_limiterStepRPM: 300
-  m_limiterVolume: 0.3
+  m_limiterVolume: 0.1
 --- !u!1 &1196398364498142248
 GameObject:
   m_ObjectHideFlags: 0

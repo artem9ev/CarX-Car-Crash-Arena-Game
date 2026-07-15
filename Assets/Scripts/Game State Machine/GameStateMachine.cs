@@ -4,20 +4,14 @@ using UnityEngine.Events;
 
 public class GameStateMachine : MonoBehaviour
 {
-    public enum State
-    {
-        MainMenu,
-        Lobby,
-        Level
-    }
-
-    private Dictionary<State, BaseState> _states = new Dictionary<State, BaseState>();
-    private State? _currentState;
+    private Dictionary<GameState, BaseState> _states = new Dictionary<GameState, BaseState>();
+    private GameState? _currentState;
 
     public static GameStateMachine Instance { get; private set; }
 
     public BaseState CurrentState => _states[_currentState.Value];
-    public UnityAction<State> onStateChange;
+    public GameState? CurrentStateType => _currentState;
+    public UnityAction<GameState> onStateChange;
 
     private void Awake()
     {
@@ -30,11 +24,13 @@ public class GameStateMachine : MonoBehaviour
 
         DontDestroyOnLoad(gameObject);
 
-        _states[State.MainMenu] = new MainMenuState();
-        _states[State.Level] = new LevelState();
+        _states[GameState.MainMenu] = new MainMenuState();
+        _states[GameState.Level] = new LevelState();
+
+        ChangeState(GameState.MainMenu);
     }
 
-    public void ChangeState(State state)
+    public void ChangeState(GameState state)
     {
         if (_currentState == state)
             return;
@@ -49,4 +45,20 @@ public class GameStateMachine : MonoBehaviour
 
         CurrentState.Start();
     }
+
+    public void Update()
+    {
+        if (_currentState != null) 
+        {
+            CurrentState.Update();
+        }
+    }
+}
+
+public enum GameState
+{
+    MainMenu,
+    Lobby,
+    Level,
+    PostCombat
 }

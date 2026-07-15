@@ -117,8 +117,8 @@ ParticleSystem:
     startLifetime:
       serializedVersion: 2
       minMaxState: 3
-      scalar: 5
-      minScalar: 5
+      scalar: 2
+      minScalar: 1
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -461,7 +461,7 @@ ParticleSystem:
         m_RotationOrder: 0
     randomizeRotationDirection: 0
     gravitySource: 0
-    maxNumParticles: 500
+    maxNumParticles: 1000
     customEmitterVelocity: {x: 0, y: 0, z: 0}
     size3D: 0
     rotation3D: 0
@@ -780,7 +780,7 @@ ParticleSystem:
     rateOverDistance:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 20
+      scalar: 10
       minScalar: 0
       maxCurve:
         serializedVersion: 2
@@ -4627,10 +4627,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a2c522a851782224687ddd490ba41c40, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::WheelDustEffect
-  dustParticles: []
-  minSpeedForDust: 2
-  dustIntensity: 1
-  impactEffectPrefab: {fileID: 0}
-  minImpactForce: 5
-  impactIntensityMultiplier: 0.5
-  rotateByNormal: 1
+  _dustParticles: {fileID: 0}

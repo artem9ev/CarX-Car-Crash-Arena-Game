@@ -2,15 +2,60 @@ using UnityEngine;
 
 public class GameStateUI : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    [SerializeField] private MainMenuPresenter _mainPresenter;
+    [SerializeField] private LevelPresenter _levelPresenter;
+
+    private static GameStateUI _instance;
+    public static GameStateUI Instance => _instance;
+
+
+
+    private void Awake()
     {
-        
+        if (_instance != null)
+        {
+            Destroy(this);
+            return;
+        }
+        _instance = this;
     }
 
-    // Update is called once per frame
-    void Update()
+    private void Start()
     {
-        
+        GameStateMachine.Instance.onStateChange += OnGameStateChange;
+
+        if (GameStateMachine.Instance.CurrentState != null)
+        {
+            OnGameStateChange(GameStateMachine.Instance.CurrentStateType.Value);
+        }
+    }
+
+    private void OnDestroy()
+    {
+        GameStateMachine.Instance.onStateChange -= OnGameStateChange;
+    }
+
+    public void OnGameStateChange(GameState state)
+    {
+        Debug.Log($"GameState Change!!! new state: {state.ToString()}");
+        switch (state)
+        {
+            case GameState.MainMenu:
+                _mainPresenter.Subscribe();
+                _levelPresenter.Unsubscribe();
+                break;
+            case GameState.Lobby:
+
+                break;
+            case GameState.Level:
+                _mainPresenter.Unsubscribe();
+                _levelPresenter.Subscribe();
+                break;
+            case GameState.PostCombat:
+                
+                break;
+            default:
+                break;
+        }
     }
 }
