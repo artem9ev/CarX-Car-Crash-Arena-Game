@@ -21,7 +21,6 @@ public class CarController : NetworkBehaviour
 
     private MovingCar _car;
     private CarEngine _engine;
-    private SmartBotAI _botBrain;
 
     // Единственная блокировка на переключение — гарантирует, что в моменте
     // выполняется не больше одного изменения передачи.
@@ -46,7 +45,6 @@ public class CarController : NetworkBehaviour
     {
         _car = GetComponent<MovingCar>();
         _engine = GetComponent<CarEngine>();
-        _botBrain = GetComponent<SmartBotAI>();
 
         m_lastRPM = _engine.idleRPM;
 
@@ -54,10 +52,23 @@ public class CarController : NetworkBehaviour
             _engine.OnBrake(1f);
     }
 
+    private bool _matchEnded;
+
     private void Update()
     {
         if (!IsServer && !_isControlling)
             return;
+
+        if (_matchEnded)
+        {
+            return;
+        }
+
+        float dot = 0;
+        if (_car.linearVelocity.magnitude > 0.001f)
+        {
+            dot = Vector3.Dot(transform.forward, _car.linearVelocity.normalized);
+        }
 
         // На реверсе педали физически инвертированы.
         if (_engine.currentGear == -2)
@@ -82,6 +93,12 @@ public class CarController : NetworkBehaviour
             TickNeutral();
         else
             TickDrive(gear);
+
+        if (_matchEnded)
+        {
+            return;
+        }
+        AutomaticGearBox();
     }
 
     // ---------------- Reverse (-2) ----------------
@@ -248,19 +265,98 @@ public class CarController : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
-        if (!IsOwner || _botBrain != null)
+        if (IsServer)
+        {
+            StartCoroutine(SubscribeServerToMatchEndWhenReady());
+        }
+
+        if (!IsOwner)
             return;
 
         ClientEventBus.Instance.InvokeCarOwn(_car);
         EnableControlls();
+
+        // Как только матч заканчивается (MatchManager переходит в PostCombat),
+        // управление машиной должно отключиться — так же, как при смерти.
+        StartCoroutine(SubscribeToMatchEndWhenReady());
     }
 
     public override void OnNetworkDespawn()
     {
-        if (!IsOwner || _botBrain != null)
+        if (MatchManager.Instance != null)
+        {
+            MatchManager.Instance.OnPhaseChanged -= HandleMatchPhaseChangedServer;
+        }
+
+        if (!IsOwner)
             return;
 
         DisableControlls();
+
+        if (MatchManager.Instance != null)
+        {
+            MatchManager.Instance.OnPhaseChanged -= HandleMatchPhaseChanged;
+        }
+    }
+
+    private IEnumerator SubscribeServerToMatchEndWhenReady()
+    {
+        while (MatchManager.Instance == null)
+        {
+            yield return null;
+        }
+
+        MatchManager.Instance.OnPhaseChanged += HandleMatchPhaseChangedServer;
+
+        // На случай, если машина заспавнилась уже после конца матча (маловероятно, но на всякий случай).
+        HandleMatchPhaseChangedServer(MatchManager.Instance.Phase);
+    }
+
+    /// <summary>
+    /// Серверная блокировка: гасит текущий инпут и обнуляет флаги газа/тормоза,
+    /// чтобы машина реально остановилась, а не продолжала ехать по инерции
+    /// последнего полученного от клиента значения газа.
+    /// </summary>
+    private void HandleMatchPhaseChangedServer(MatchPhase newPhase)
+    {
+        if (!IsServer) return;
+
+        _matchEnded = newPhase == MatchPhase.PostCombat;
+
+        if (_matchEnded)
+        {
+            m_forwardInput = 0f;
+            m_backwardInput = 0f;
+            _car.StopCar();
+        }
+    }
+
+    private IEnumerator SubscribeToMatchEndWhenReady()
+    {
+        while (MatchManager.Instance == null)
+        {
+            yield return null;
+        }
+
+        MatchManager.Instance.OnPhaseChanged += HandleMatchPhaseChanged;
+
+        // На случай, если игрок заспавнился, когда матч уже в PostCombat (late join) —
+        // сразу применяем текущую фазу, а не ждём следующего OnPhaseChanged.
+        HandleMatchPhaseChanged(MatchManager.Instance.Phase);
+    }
+
+    private void HandleMatchPhaseChanged(MatchPhase newPhase)
+    {
+        if (!IsOwner) return;
+
+        if (newPhase == MatchPhase.PostCombat)
+        {
+            DisableControlls();
+        }
+        else
+        {
+            EnableControlls();
+        }
     }
 
     public void OnGas(float value) => OnGasRpc(value);
@@ -294,19 +390,41 @@ public class CarController : NetworkBehaviour
     [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Owner)]
     public void OnGasRpc(float value)
     {
+        if (_matchEnded) return;
+
         m_forwardInput = value;
         _engine.UnPressClutch();
     }
 
     [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Owner)]
-    public void OnBrakeRpc(float value) => m_backwardInput = value;
+    public void OnBrakeRpc(float value)
+    {
+        if (_matchEnded) return;
+
+        m_backwardInput = value;
+    }
 
     [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Owner)]
-    public void OnSteerRpc(float value) => _car.OnSteer(value);
+    public void OnSteerRpc(float value)
+    {
+        if (_matchEnded) return;
+
+        _car.OnSteer(value);
+    }
 
     [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Owner)]
-    public void ShiftUpRpc() => _engine.NextGear();
+    public void ShiftUpRpc()
+    {
+        if (_matchEnded) return;
+
+        _engine.NextGear();
+    }
 
     [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Owner)]
-    public void ShiftDownRpc() => _engine.PrevGear();
+    public void ShiftDownRpc()
+    {
+        if (_matchEnded) return;
+
+        _engine.PrevGear();
+    }
 }
