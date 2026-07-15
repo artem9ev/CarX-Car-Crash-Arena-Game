@@ -28,9 +28,13 @@ public class BotIdentity : NetworkBehaviour
     /// <summary>
     /// Псевдо-ClientId для статистики/лидерборда — строится от SlotId (не от NetworkObjectId!),
     /// поэтому остаётся одинаковым для "того же" бота между респавнами.
-    /// Строится "с конца" диапазона ulong, чтобы не пересекаться с реальными ClientId игроков.
+    /// Строится "с конца минус 1" диапазона ulong: именно "минус 1", а не просто
+    /// ulong.MaxValue - SlotId, потому что при SlotId == 0 (первый бот) результат
+    /// был бы РОВНО ulong.MaxValue — а это значение везде в коде (VehicleHealth,
+    /// ScoreManager) зарезервировано как сентинел "атакующего нет / окружение".
+    /// Без этого сдвига killы от первого заспавненного бота никогда не засчитывались бы.
     /// </summary>
-    public ulong PseudoClientId => ulong.MaxValue - (ulong)SlotId;
+    public ulong PseudoClientId => ulong.MaxValue - 1 - (ulong)SlotId;
 
     public string DisplayName => $"{_displayNamePrefix} #{SlotId}";
 

@@ -44,6 +44,15 @@ public class LeaderboardUI : MonoBehaviour
 
     private readonly List<GameObject> _spawnedRows = new List<GameObject>();
 
+    /// <summary>
+    /// Показывает/скрывает всю таблицу лидеров. Вызывается, например, из MatchResultsUi
+    /// при переходе в фазу PostCombat, чтобы таблица не перекрывала панель результатов.
+    /// </summary>
+    public void SetVisible(bool visible)
+    {
+        gameObject.SetActive(visible);
+    }
+
     private void OnEnable()
     {
         StartCoroutine(SubscribeWhenReady());

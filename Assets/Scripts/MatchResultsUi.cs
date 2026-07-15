@@ -6,19 +6,21 @@ using Unity.Netcode;
 using UnityEngine;
 
 /// <summary>
-/// Экран результатов после боя. Во время фазы Combat (опционально) показывает
-/// обратный отсчёт таймера матча; при переходе в PostCombat показывает панель
-/// с итоговой таблицей — теми же данными, что и обычный LeaderboardUI
-/// (ScoreManager.Instance.Leaderboard), но отсортированную окончательно
+/// Панель результатов конца матча. Во время фазы Combat (сражение) показывает
+/// оставшееся время таймера матча; при переходе в PostCombat показывает панель
+/// с итоговыми результатами — берёт те же данные, что и обычная LeaderboardUI
+/// (ScoreManager.Instance.Leaderboard), но отсортированные по кол-ву убийств
 /// и с подсветкой топ-3 мест.
 ///
-/// НАСТРОЙКА В UNITY (аналогично LeaderboardUI):
-/// 1. _resultsPanel — корневой GameObject панели результатов, должен быть
-///    выключен по умолчанию в сцене (включаем сами при PostCombat).
+/// НАСТРОЙКА В UNITY (независимо от LeaderboardUI):
+/// 1. _resultsPanel — отдельная панель результатов, должна быть выключена
+///    по умолчанию в сцене (включается на фазе PostCombat).
 /// 2. _rowsContainer — контейнер с Vertical Layout Group внутри панели.
-/// 3. _rowPrefab — префаб строки. Дочерние объекты (какие есть — не обязательны все):
-///    "Rank", "Name", "Kills", "Deaths", "Score" с TextMeshProUGUI.
-/// 4. _timerText — необязательно, текст для обратного отсчёта во время боя.
+/// 3. _rowPrefab — префаб строки. Дочерние объекты (такие же по названиям как
+///    в LeaderboardUI): "Rank", "Name", "Kills", "Deaths", "Score" с TextMeshProUGUI.
+/// 4. _timerText — необязательный текст таймера обратного отсчёта матча.
+/// 5. _leaderboardUI — ссылка на обычную LeaderboardUI, чтобы скрывать её
+///    на время показа панели результатов (см. HandlePhaseChanged).
 /// </summary>
 public class MatchResultsUi : MonoBehaviour
 {
@@ -33,15 +35,18 @@ public class MatchResultsUi : MonoBehaviour
         public TextMeshProUGUI scoreText;
     }
 
-    [Header("Результаты")]
+    [Header("Компоненты")]
     [SerializeField] private GameObject _resultsPanel;
     [SerializeField] private Transform _rowsContainer;
     [SerializeField] private GameObject _rowPrefab;
 
-    [Header("Таймер боя (опционально)")]
+    [Header("Таблица лидеров (скрывается на время показа результатов)")]
+    [SerializeField] private LeaderboardUI _leaderboardUI;
+
+    [Header("Таймер матча (опционально)")]
     [SerializeField] private TextMeshProUGUI _timerText;
 
-    [Header("Оформление")]
+    [Header("Цвета мест")]
     [SerializeField] private Color _defaultColor = Color.white;
     [SerializeField] private Color _localPlayerColor = new Color(1f, 0.85f, 0.2f);
     [SerializeField] private Color _firstPlaceColor = new Color(1f, 0.84f, 0f);
@@ -90,6 +95,11 @@ public class MatchResultsUi : MonoBehaviour
 
         if (_resultsPanel != null)
             _resultsPanel.SetActive(showResults);
+
+        // Прячем обычный лидерборд на время показа панели результатов
+        // (и возвращаем обратно, если матч почему-то вернулся в Combat).
+        if (_leaderboardUI != null)
+            _leaderboardUI.SetVisible(!showResults);
 
         if (showResults)
             RebuildResults();
@@ -153,8 +163,8 @@ public class MatchResultsUi : MonoBehaviour
                 _ => _defaultColor
             };
 
-            // Локального игрока подсвечиваем поверх медального цвета, чтобы его
-            // всегда было легко найти в списке, даже если он не в топ-3.
+            // Подсветка локального игрока должна побеждать подсветку места, чтобы
+            // всегда было видно себя в списке, даже если ты не в топ-3.
             if (entry.ClientId == localClientId)
                 color = _localPlayerColor;
 
