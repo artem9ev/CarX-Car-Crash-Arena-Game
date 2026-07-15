@@ -80,6 +80,10 @@ PrefabInstance:
       propertyPath: m_audioSamples.Array.data[2].m_volume
       value: 0.3
       objectReference: {fileID: 0}
+    - target: {fileID: 2627250427482226344, guid: a0b293e7b1bc706418627629921142f0, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     - target: {fileID: 8395875272797007045, guid: a0b293e7b1bc706418627629921142f0, type: 3}
       propertyPath: SyncScaleX
       value: 0
@@ -99,6 +103,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: a0b293e7b1bc706418627629921142f0, type: 3}
       insertIndex: -1
       addedObject: {fileID: -43365489115899164}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: a0b293e7b1bc706418627629921142f0, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4061799463227160711}
   m_SourcePrefab: {fileID: 100100000, guid: a0b293e7b1bc706418627629921142f0, type: 3}
 --- !u!1 &3326554334390317306 stripped
 GameObject:
@@ -131,3 +138,17 @@ MonoBehaviour:
     m_Bits: 8
   rayLength: 5
   avoidanceForce: 2
+--- !u!114 &4061799463227160711
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3326554334390317306}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0313572e028661f43877ae27129f1d4f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BotIdentity
+  ShowTopMostFoldoutHeaderGroup: 1
+  _displayNamePrefix: Bot

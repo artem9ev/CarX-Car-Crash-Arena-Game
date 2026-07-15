@@ -100,7 +100,19 @@ public class SpawnManager : MonoBehaviour
         return true;
     }
 
-    public bool SpawnBot()
+    private int _nextBotSlotId = 0;
+
+    public bool SpawnBot() => SpawnBot(-1);
+
+    /// <summary>
+    /// Спавнит бота (без владельца — принадлежит серверу) на свободной точке спавна.
+    /// </summary>
+    /// <param name="slotId">
+    /// Стабильный "слот" бота (см. BotIdentity). Передайте -1, чтобы выдать новый слот
+    /// (первый спавн). При респавне после смерти передавайте slotId погибшего бота —
+    /// тогда его статистика (Kills/Deaths) продолжит копиться, а не обнулится.
+    /// </param>
+    public bool SpawnBot(int slotId)
     {
         if (!NetworkManager.Singleton.IsServer) return false;
 
@@ -108,7 +120,19 @@ public class SpawnManager : MonoBehaviour
         if (spawnPoint == null) return false;
 
         spawnPoint.TryGetPoint(out Vector3 pos, out Quaternion rot);
+
+        int assignedSlot = slotId >= 0 ? slotId : _nextBotSlotId++;
+
         var bot = Instantiate(defaultBotPrefab);
+        if (bot.TryGetComponent(out BotIdentity botIdentity))
+        {
+            botIdentity.AssignSlot(assignedSlot);
+        }
+        else
+        {
+            Debug.LogWarning("[SpawnManager] На defaultBotPrefab не найден BotIdentity — статистика бота работать не будет.");
+        }
+
         bot.GetComponent<NetworkObject>().Spawn();
         bot.SetSpawnPosition(pos, rot);
         return true;

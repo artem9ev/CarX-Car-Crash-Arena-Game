@@ -52,7 +52,7 @@ public class VehicleHealth : NetworkBehaviour
         // Вызываем локальное событие на клиентах
         OnHealthChanged?.Invoke(newValue);
         if (newValue <= 0)
-        {        
+        {
             OnDeath?.Invoke();
         }
     }
@@ -82,7 +82,14 @@ public class VehicleHealth : NetworkBehaviour
         }
 
         if (attackerClientId != ulong.MaxValue)
+        {
             _lastAttackerClientId = attackerClientId;
+            Debug.Log($"[VehicleHealth:{OwnerClientId}] Урон {damage:F0} (crit={isCritical}) от attackerClientId={attackerClientId} → запомнили как последнего атакующего.");
+        }
+        else
+        {
+            Debug.Log($"[VehicleHealth:{OwnerClientId}] Урон {damage:F0} (crit={isCritical}) без атакующего (окружение) → сохранили предыдущего: {_lastAttackerClientId}.");
+        }
 
         _currentHealth.Value -= damage;
         _currentHealth.Value = Mathf.Max(0, CurrentHealth);
