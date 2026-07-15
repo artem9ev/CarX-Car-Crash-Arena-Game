@@ -3,93 +3,48 @@ using UnityEngine;
 public class CarEffector : MonoBehaviour
 {
     [Header("Визуальные эффекты")]
-    [SerializeField] private ParticleSystem smokeEffect;        // Дым при повреждении
-    [SerializeField] private ParticleSystem explosionEffect;    // Взрыв при смерти
-    [SerializeField] private float smokeThreshold = 0.5f;       // Порог HP для дыма (50%)
-    [SerializeField] private float smokeIntensity = 1f;         // Интенсивность дыма
+    [SerializeField] private ParticleSystem _engineSmoke;
+    [SerializeField] private ParticleSystem _carExhaust;
+    [Header("Настройки привязки")]
+    public float minEmission = 5f;  // частиц в секунду на холостых
+    public float maxEmission = 150f; // частиц в секунду на максимальных оборотах
 
-    [Header("Частицы из-под колёс")]
-    [SerializeField] private ParticleSystem[] wheelDustEffects; // Массив частиц для каждого колеса (4 шт)
-    [SerializeField] private float minSpeedForDust = 2f;        // Мин. скорость для появления пыли (м/с)
-    [SerializeField] private float dustIntensityMultiplier = 0.5f; // Множитель интенсивности пыли
+    private CarEngine _engine;
+    
+    private ParticleSystem.EmissionModule emissionModule;
 
-    private bool isSmoking = false; // Флаг: идёт ли дым
-
-
-    // ===== УПРАВЛЕНИЕ ДЫМОМ =====
-    /*private void UpdateSmokeEffect()
+    void Start()
     {
-        if (isDead || smokeEffect == null) return;
-
-        float healthPercent = currentHealth / maxHealth;
-
-        if (healthPercent <= smokeThreshold && !isSmoking)
+        if (_carExhaust != null)
         {
-            smokeEffect.Play();
-            isSmoking = true;
-            Debug.Log($"💨 Машина начала дымить! HP: {healthPercent * 100:F0}%");
+            emissionModule = _carExhaust.emission;
+            _carExhaust.Play();
         }
-
-        if (isSmoking)
-        {
-            var main = smokeEffect.main;
-            float intensity = (1f - healthPercent) * smokeIntensity;
-            main.startSpeed = intensity * 5f;
-            main.startSize = intensity * 2f;
-        }
-
-        if (healthPercent > smokeThreshold && isSmoking)
-        {
-            smokeEffect.Stop();
-            isSmoking = false;
-        }
-    }*/
-
-    // ===== ЧАСТИЦЫ ИЗ-ПОД КАЖДОГО КОЛЕСА =====
-    /*private void UpdateWheelDust()
-    {
-        if (isDead || wheelDustEffects == null) return;
-
-        float speed = _rb.linearVelocity.magnitude;
-
-        // Проверяем каждое колесо отдельно
-        UpdateWheelDustForWheel(wheelDustEffects.Length > 0 ? wheelDustEffects[0] : null, frontLeftWheel, speed);
-        UpdateWheelDustForWheel(wheelDustEffects.Length > 1 ? wheelDustEffects[1] : null, frontRightWheel, speed);
-        UpdateWheelDustForWheel(wheelDustEffects.Length > 2 ? wheelDustEffects[2] : null, rearLeftWheel, speed);
-        UpdateWheelDustForWheel(wheelDustEffects.Length > 3 ? wheelDustEffects[3] : null, rearRightWheel, speed);
     }
-*/
-    private void UpdateWheelDustForWheel(ParticleSystem dustEffect, WheelCollider wheel, float speed)
+
+    // Этот метод вызывается каждый кадр из скрипта управления машиной
+    public void SetEngineRPM(float currentRPM)
     {
-        if (dustEffect == null) return;
+        // Нормируем обороты от 0 до 1
+        float t = Mathf.InverseLerp(_engine.idleRPM, _engine.peakRPM, currentRPM);
 
-        // Проверяем, касается ли колесо земли
-        bool isGrounded = wheel.isGrounded;
+        // Рассчитываем желаемую эмиссию
+        float targetEmission = Mathf.Lerp(minEmission, maxEmission, t);
 
-        if (speed > minSpeedForDust && isGrounded)
+        // Применяем
+        emissionModule.rateOverTime = targetEmission;
+    }
+
+    private void Awake()
+    {
+        _engine = GetComponent<CarEngine>();
+    }
+
+    private void FixedUpdate()
+    {
+        if (_carExhaust != null && _engine != null)
         {
-            // Включаем пыль, если она ещё не играет
-            if (!dustEffect.isPlaying)
-            {
-                dustEffect.Play();
-            }
-
-            // Меняем интенсивность в зависимости от скорости
-            var main = dustEffect.main;
-            float intensity = (speed - minSpeedForDust) * dustIntensityMultiplier;
-            intensity = Mathf.Clamp(intensity, 0.1f, 3f); // Ограничиваем макс. интенсивность
-
-            main.startSpeed = intensity * 3f;
-            main.startSize = intensity * 0.5f;
-            main.startLifetime = 0.5f + intensity * 0.3f;
-        }
-        else
-        {
-            // Выключаем пыль, если колесо в воздухе или машина стоит
-            if (dustEffect.isPlaying)
-            {
-                dustEffect.Stop();
-            }
+            SetEngineRPM(_engine.rpm);
         }
     }
 }
