@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Unity.Netcode;
 using Unity.Netcode.Components;
 using UnityEngine;
@@ -9,6 +10,11 @@ using UnityEngine.Events;
 [RequireComponent(typeof(CarEngine))]
 public class MovingCar : NetworkBehaviour
 {
+    // Общий реестр всех заспавненных машин на сервере — не зависит от физических слоёв.
+    // Пополняется/очищается в OnNetworkSpawn/OnNetworkDespawn.
+    private static readonly List<MovingCar> s_activeCars = new();
+    public static IReadOnlyList<MovingCar> ActiveCars => s_activeCars;
+
     [SerializeField, Min(0f)] private float _downForceCoef = 3f;
     [Header("Steering Settings")]
     [SerializeField, Min(0f)] private float _steeringMaxAngle = 40f;
@@ -88,10 +94,20 @@ public class MovingCar : NetworkBehaviour
     {
         if (IsServer)
         {
+            s_activeCars.Add(this);
+
             if (_networkTransform != null)
             {
                 // Принудительно синхронизируем позицию с текущим трансформом
             }
+        }
+    }
+
+    public override void OnNetworkDespawn()
+    {
+        if (IsServer)
+        {
+            s_activeCars.Remove(this);
         }
     }
 
