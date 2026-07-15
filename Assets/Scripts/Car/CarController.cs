@@ -214,11 +214,10 @@ public class CarController : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
-        Debug.Log($"CAR Spawn! { _botBrain != null}", gameObject);
-
         if (!IsOwner || _botBrain != null)
             return;
 
+        Debug.Log($"CAR OWN!! {OwnerClientId}");
         ClientEventBus.Instance.InvokeCarOwn(_car);
 
         EnableControlls();
