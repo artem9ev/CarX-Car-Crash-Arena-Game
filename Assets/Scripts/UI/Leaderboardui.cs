@@ -118,7 +118,7 @@ public class LeaderboardUI : MonoBehaviour
 
             var row = FindRowView(rowObj);
 
-            int score = entry.Kills - entry.Deaths; // при необходимости поменяй формулу подсчёта очков
+            int score = entry.Score; // при необходимости поменяй формулу подсчёта очков
 
             if (row.nameText != null) row.nameText.text = entry.PlayerName.ToString();
             if (row.killsText != null) row.killsText.text = entry.Kills.ToString();

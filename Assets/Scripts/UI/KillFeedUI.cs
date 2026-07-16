@@ -71,6 +71,8 @@ public class KillFeedUI : MonoBehaviour
 
     private void HandleKillFeed(string attackerName, string victimName, bool isSuicideOrEnvironment)
     {
+        Debug.Log("AAAAAAAAAAAAAAA");
+
         string message = isSuicideOrEnvironment
             ? string.Format(_suicideFormat, victimName)
             : string.Format(_killFormat, attackerName, victimName);

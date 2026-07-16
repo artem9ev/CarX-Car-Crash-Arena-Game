@@ -477,13 +477,13 @@ SkinnedMeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2149970444367014891, guid: c30262437c2e2654689c5b1e4a6cd720, type: 3}
-  - {fileID: 6079882582051564039, guid: c30262437c2e2654689c5b1e4a6cd720, type: 3}
-  - {fileID: 7508865092441509334, guid: c30262437c2e2654689c5b1e4a6cd720, type: 3}
-  - {fileID: -8990559023317090823, guid: c30262437c2e2654689c5b1e4a6cd720, type: 3}
-  - {fileID: 7699590738066451366, guid: c30262437c2e2654689c5b1e4a6cd720, type: 3}
-  - {fileID: -3620653469155255748, guid: c30262437c2e2654689c5b1e4a6cd720, type: 3}
-  - {fileID: -688710617885795010, guid: c30262437c2e2654689c5b1e4a6cd720, type: 3}
+  - {fileID: 2100000, guid: 04e5db9bf05d8d74f8a4cb4fc3a4a118, type: 2}
+  - {fileID: 2100000, guid: 04e5db9bf05d8d74f8a4cb4fc3a4a118, type: 2}
+  - {fileID: 2100000, guid: 04e5db9bf05d8d74f8a4cb4fc3a4a118, type: 2}
+  - {fileID: 2100000, guid: 04e5db9bf05d8d74f8a4cb4fc3a4a118, type: 2}
+  - {fileID: 2100000, guid: 04e5db9bf05d8d74f8a4cb4fc3a4a118, type: 2}
+  - {fileID: 2100000, guid: f1bf0b34cc82fec4a86baacce1944cb0, type: 2}
+  - {fileID: 2100000, guid: f1bf0b34cc82fec4a86baacce1944cb0, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -3886,7 +3886,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 4211680824
+  GlobalObjectIdHash: 1811553027
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1

@@ -40,6 +40,7 @@ public class BotIdentity : NetworkBehaviour
 
     public int Kills => BotStatsRegistry.GetStats(SlotId).kills;
     public int Deaths => BotStatsRegistry.GetStats(SlotId).deaths;
+    public int Score => BotStatsRegistry.GetStats(SlotId).score;
 
     /// <summary>
     /// Назначает боту стабильный слот. Вызывать сразу после Instantiate, ДО Spawn() —
@@ -78,7 +79,7 @@ public class BotIdentity : NetworkBehaviour
         }
 
         var stats = BotStatsRegistry.GetStats(SlotId);
-        ScoreManager.Instance.UpsertEntry(PseudoClientId, DisplayName, stats.kills, stats.deaths);
+        ScoreManager.Instance.UpsertEntry(PseudoClientId, DisplayName, stats.kills, stats.deaths, stats.score);
     }
 
     /// <summary>Вызывается ScoreManager'ом, когда этот бот кого-то убил.</summary>
@@ -100,23 +101,23 @@ public static class BotRegistry
 /// </summary>
 public static class BotStatsRegistry
 {
-    private static readonly Dictionary<int, (int kills, int deaths)> _stats = new Dictionary<int, (int kills, int deaths)>();
+    private static readonly Dictionary<int, (int kills, int deaths, int score)> _stats = new Dictionary<int, (int kills, int deaths, int score)>();
 
-    public static (int kills, int deaths) GetStats(int slotId)
+    public static (int kills, int deaths, int score) GetStats(int slotId)
     {
-        return _stats.TryGetValue(slotId, out var stats) ? stats : (0, 0);
+        return _stats.TryGetValue(slotId, out var stats) ? stats : (0, 0, 0);
     }
 
     public static void AddKill(int slotId)
     {
         var stats = GetStats(slotId);
-        _stats[slotId] = (stats.kills + 1, stats.deaths);
+        _stats[slotId] = (stats.kills + 1, stats.deaths, stats.score);
     }
 
     public static void AddDeath(int slotId)
     {
         var stats = GetStats(slotId);
-        _stats[slotId] = (stats.kills, stats.deaths + 1);
+        _stats[slotId] = (stats.kills, stats.deaths + 1, stats.score);
     }
 
     /// <summary>Сбросить статистику всех ботов (например, при старте нового раунда/матча).</summary>

@@ -14,12 +14,12 @@ public class PlayerLocalSavesHandler : MonoBehaviour
     {
         if (Instance != null) 
         {
-            Destroy(gameObject);
+            Destroy(this);
             return;
         }
         _instance = this;
 
-        DontDestroyOnLoad(gameObject);
+        DontDestroyOnLoad(this);
     }
 
     private void Start()

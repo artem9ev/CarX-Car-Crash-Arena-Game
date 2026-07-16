@@ -10306,8 +10306,6 @@ MonoBehaviour:
   _downForceCoef: 15
   _steeringMaxAngle: 40
   _turnSpeed: 300
-  _outerWheelCoef: 0.8
-  _safeSteerCoef: 1
   m_projectedLinearDamping: {x: 7, y: 14, z: 0}
   m_maxAirAngularVelocity: 300
   _wheelFR: {fileID: 4828653124658279161}
@@ -10424,8 +10422,7 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   _damageIgnoreZoneOffset: 2.19
   _criticalDamageZoneOffset: -1.68
-  m_softHitImpulse: 1000
-  m_hardHitImpulse: 5000
+  m_minHitImpulse: 500
 --- !u!114 &686277926517070426
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12641,13 +12638,13 @@ SkinnedMeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2149970444367014891, guid: c30262437c2e2654689c5b1e4a6cd720, type: 3}
-  - {fileID: 6079882582051564039, guid: c30262437c2e2654689c5b1e4a6cd720, type: 3}
-  - {fileID: 7508865092441509334, guid: c30262437c2e2654689c5b1e4a6cd720, type: 3}
-  - {fileID: -8990559023317090823, guid: c30262437c2e2654689c5b1e4a6cd720, type: 3}
-  - {fileID: 7699590738066451366, guid: c30262437c2e2654689c5b1e4a6cd720, type: 3}
-  - {fileID: -3620653469155255748, guid: c30262437c2e2654689c5b1e4a6cd720, type: 3}
-  - {fileID: -688710617885795010, guid: c30262437c2e2654689c5b1e4a6cd720, type: 3}
+  - {fileID: 2100000, guid: 04e5db9bf05d8d74f8a4cb4fc3a4a118, type: 2}
+  - {fileID: 2100000, guid: 04e5db9bf05d8d74f8a4cb4fc3a4a118, type: 2}
+  - {fileID: 2100000, guid: 04e5db9bf05d8d74f8a4cb4fc3a4a118, type: 2}
+  - {fileID: 2100000, guid: 04e5db9bf05d8d74f8a4cb4fc3a4a118, type: 2}
+  - {fileID: 2100000, guid: 04e5db9bf05d8d74f8a4cb4fc3a4a118, type: 2}
+  - {fileID: 2100000, guid: f1bf0b34cc82fec4a86baacce1944cb0, type: 2}
+  - {fileID: 2100000, guid: f1bf0b34cc82fec4a86baacce1944cb0, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

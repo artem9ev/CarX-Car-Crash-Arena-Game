@@ -71,8 +71,6 @@ public class CarRespawnHandler : NetworkBehaviour
         // Запоминаем владельца (жертву) ДО того, как заберём владение.
         ulong victimClientId = OwnerClientId;
 
-        Debug.Log($"Kill! {attackerClientId} killed {OwnerClientId}");
-
         // Сразу фиксируем убийство/смерть в статистике — не дожидаясь респавна.
         if (ScoreManager.Instance != null)
         {

@@ -46,6 +46,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 849ab33ca90779643885af494e6ca504, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameNetwork
+  hostIP: 127.0.0.1
+  port: 7777
 --- !u!114 &7537446903062536133
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -65,7 +67,7 @@ MonoBehaviour:
     PlayerPrefab: {fileID: 2448284594057840743, guid: 26fb538ba8d092047bc1651c3e0df6af, type: 3}
     Prefabs:
       NetworkPrefabsLists:
-      - {fileID: 11400000, guid: 80d88c2b17e75ac4d90fdcf37743fb79, type: 2}
+      - {fileID: 11400000, guid: e2ea0bc39b7e33f43aeafc951a3090b7, type: 2}
     TickRate: 30
     ClientConnectionBufferTimeout: 10
     ConnectionApproval: 0

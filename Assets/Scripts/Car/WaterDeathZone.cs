@@ -60,14 +60,14 @@ public class WaterDeathZone : NetworkBehaviour
             // Только что вошли в воду
             _isInWater = true;
             _waterEnterTime = Time.time;
-            Debug.Log($"[WaterDeathZone] Машина {OwnerClientId} вошла в воду в точке {_checkWorldPosition}");
+            //Debug.Log($"[WaterDeathZone] Машина {OwnerClientId} вошла в воду в точке {_checkWorldPosition}");
         }
         else if (!isCurrentlyInWater && _isInWater)
         {
             // Вышли из воды - сбрасываем таймер
             _isInWater = false;
             _waterEnterTime = 0f;
-            Debug.Log($"[WaterDeathZone] Машина {OwnerClientId} вышла из воды");
+            //Debug.Log($"[WaterDeathZone] Машина {OwnerClientId} вышла из воды");
         }
 
         // Если в воде и прошло достаточно времени - убиваем
@@ -103,8 +103,6 @@ public class WaterDeathZone : NetworkBehaviour
 
         // Наносим фатальный урон
         _health.TakeDamage(99999f, ulong.MaxValue, false);
-
-        Debug.Log($"[WaterDeathZone] Машина {OwnerClientId} утонула! (была в воде {Time.time - _waterEnterTime:F1} сек)");
 
         // Сбрасываем состояние
         _isInWater = false;

@@ -79,7 +79,7 @@ public class HealthBar : MonoBehaviour
         {
             mainCamera = Camera.main;
         }
-
+        
         transform.LookAt(transform.position + Camera.main.transform.forward);
     }
 

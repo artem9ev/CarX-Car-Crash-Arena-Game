@@ -19,8 +19,6 @@ public class MovingCar : NetworkBehaviour
     [Header("Steering Settings")]
     [SerializeField, Min(0f)] private float _steeringMaxAngle = 40f;
     [SerializeField, Min(0f)] private float _turnSpeed = 300f;
-    [SerializeField, Range(0f, 2f)] private float _outerWheelCoef = 0.8f;
-    [SerializeField, Range(0f, 10f)] private float _safeSteerCoef = 1f;
     [Header("Air")]
     [SerializeField] private Vector3 m_projectedLinearDamping = Vector3.zero;
     [Header("Air controls")]
@@ -51,9 +49,6 @@ public class MovingCar : NetworkBehaviour
     private Vector3 m_projectedAirForceZ;
 
     private Vector3 m_projectedVelocityZ;
-
-    public event UnityAction<float> OnHealthChanged;
-    public event UnityAction OnDeath;
 
     public bool isGrounded => _wheelFR.IsGrounded || _wheelFL.IsGrounded || _wheelBR.IsGrounded || _wheelBL.IsGrounded;
     public Vector3 position => _rb.position;

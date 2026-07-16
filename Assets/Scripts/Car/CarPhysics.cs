@@ -8,8 +8,7 @@ public class CarPhysics : NetworkBehaviour
     [SerializeField] private float _damageIgnoreZoneOffset = 1.5f;
     [SerializeField] private float _criticalDamageZoneOffset = -1.5f;
     [Header("Hits")]
-    [SerializeField, Min(0f)] private float m_softHitImpulse = 500f;
-    [SerializeField, Min(0f)] private float m_hardHitImpulse = 4000f;
+    [SerializeField, Min(0f)] private float m_minHitImpulse = 500f;
 
     private VehicleHealth _health;
     private Transform _transform;
@@ -34,14 +33,13 @@ public class CarPhysics : NetworkBehaviour
 
         float impulse = collision.impulse.magnitude;
 
-        if (impulse < m_softHitImpulse) return;
+        if (impulse < m_minHitImpulse) return;
 
         float pointOffsetZ = _transform.InverseTransformPoint(collision.contacts[0].point).z;
 
         if (pointOffsetZ < _damageIgnoreZoneOffset)
         {
             ulong attackerClientId = GetAttackerClientId(collision);
-
             _health.TakeDamage(impulse, attackerClientId, pointOffsetZ < _criticalDamageZoneOffset);
         }
 
@@ -83,21 +81,18 @@ public class CarPhysics : NetworkBehaviour
         var otherNetworkObject = collision.collider.GetComponentInParent<NetworkObject>();
         if (otherNetworkObject == null)
         {
-            Debug.Log($"[CarPhysics] Атакующий не определён: у объекта '{collision.collider.name}' нет NetworkObject в родителях (скорее всего это стена/статичное окружение).");
             return ulong.MaxValue;
         }
 
         // Не считаем машину атакующей саму себя (например, столкновение частей одной машины).
         if (otherNetworkObject == NetworkObject)
         {
-            Debug.Log($"[CarPhysics] Атакующий не определён: столкновение с самим собой ('{collision.collider.name}').");
             return ulong.MaxValue;
         }
 
         var otherHealth = otherNetworkObject.GetComponent<VehicleHealth>();
         if (otherHealth == null)
         {
-            Debug.Log($"[CarPhysics] Атакующий не определён: на объекте '{otherNetworkObject.name}' нет VehicleHealth.");
             return ulong.MaxValue;
         }
 
@@ -107,11 +102,9 @@ public class CarPhysics : NetworkBehaviour
         var otherBotIdentity = otherNetworkObject.GetComponent<BotIdentity>();
         if (otherBotIdentity != null)
         {
-            Debug.Log($"[CarPhysics] Атакующий определён как БОТ '{otherBotIdentity.DisplayName}' (PseudoClientId={otherBotIdentity.PseudoClientId}).");
             return otherBotIdentity.PseudoClientId;
         }
 
-        Debug.Log($"[CarPhysics] Атакующий определён как игрок с OwnerClientId={otherNetworkObject.OwnerClientId}.");
         return otherNetworkObject.OwnerClientId;
     }
 

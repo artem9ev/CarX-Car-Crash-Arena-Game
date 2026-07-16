@@ -15,6 +15,8 @@ public class SurfaceDatabase : MonoBehaviour
         foreach (var def in _definitions)
             if (def.physicMaterial != null)
                 _map[def.physicMaterial] = def;
+
+        DontDestroyOnLoad(gameObject);
     }
 
     public SurfaceDefinition Get(PhysicsMaterial mat)

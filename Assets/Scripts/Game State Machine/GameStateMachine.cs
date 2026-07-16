@@ -22,7 +22,7 @@ public class GameStateMachine : MonoBehaviour
         }
         Instance = this;
 
-        DontDestroyOnLoad(gameObject);
+        DontDestroyOnLoad(this);
 
         _states[GameState.MainMenu] = new MainMenuState();
         _states[GameState.Level] = new LevelState();
