@@ -48,6 +48,7 @@ public class LevelPresenter : PresenterUI
 
         GameStateMachine.Instance.CurrentState.onUpdate -= UpdateUI;
         GameStateMachine.Instance.CurrentState.onEnd -= EndUI;
+        DeactivateView(m_hudView);
     }
 
     private void OnCarOwn(MovingCar car)

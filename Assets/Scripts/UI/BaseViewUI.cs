@@ -2,11 +2,11 @@ using UnityEngine;
 
 public abstract class BaseViewUI : MonoBehaviour
 {
-    public void Activate()
+    public virtual void Activate()
     {
         gameObject.SetActive(true);
     }
-    public void Deactivate()
+    public virtual void Deactivate()
     {
         gameObject.SetActive(false);
     }

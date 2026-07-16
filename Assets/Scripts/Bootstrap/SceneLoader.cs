@@ -20,11 +20,19 @@ public class SceneLoader : MonoBehaviour
     {
         if (_instance != null)
         {
-            Destroy(this);
+            Destroy(gameObject); // уничтожаем весь дубликат целиком, а не только этот компонент
             return;
         }
         _instance = this;
-        DontDestroyOnLoad(this);
+        DontDestroyOnLoad(gameObject);
+    }
+
+    private void OnDestroy()
+    {
+        if (_instance == this)
+        {
+            _instance = null;
+        }
     }
 
     private void Start()
@@ -161,17 +169,19 @@ public class SceneLoader : MonoBehaviour
                 var loadUnload = sceneEvent.SceneEventType == SceneEventType.LoadEventCompleted ? "Load" : "Unload";
                 Debug.Log($"{loadUnload} event completed for the following client identifiers:({sceneEvent.ClientsThatCompleted})");
                 if (sceneEvent.ClientsThatTimedOut.Count > 0)
-                        Debug.LogWarning($"{loadUnload} event timed out for the following client identifiers:({sceneEvent.ClientsThatTimedOut})");
+                    Debug.LogWarning($"{loadUnload} event timed out for the following client identifiers:({sceneEvent.ClientsThatTimedOut})");
                 break;
         }
     }
 
     public void LoadMainMenu()
     {
-        if (SceneManager.GetSceneByName(_mainName).isLoaded)
-            return;
-
-        SceneManager.LoadScene(_mainName, LoadSceneMode.Additive);
+        // LoadSceneMode.Single сам выгружает ВСЕ остальные загруженные сцены
+        // (включая сцену уровня) — отдельно вызывать UnloadSceneAsync не нужно.
+        // Выживают только объекты с DontDestroyOnLoad (ConnectionManager/NetworkManager
+        // это делают в своём Awake).
+        Debug.Log($"[SceneLoader] LoadMainMenu(): загружаем '{_mainName}' в режиме Single.");
+        SceneManager.LoadScene(_mainName, LoadSceneMode.Single);
     }
 
     public void UnloadMainMenu()

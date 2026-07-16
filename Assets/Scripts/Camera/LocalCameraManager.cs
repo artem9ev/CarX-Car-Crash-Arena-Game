@@ -25,7 +25,8 @@ public class LocalCameraManager : MonoBehaviour
     {
         if (_cameraFollower == null)
             _cameraFollower = Instantiate(cameraFollowerPrefab, transform);
-
+        if (car == null)
+            Destroy(_cameraFollower.gameObject);
         _cameraFollower.SetTarget(car);
     }
 }
