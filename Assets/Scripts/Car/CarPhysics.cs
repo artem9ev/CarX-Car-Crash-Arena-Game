@@ -40,7 +40,6 @@ public class CarPhysics : NetworkBehaviour
         if (pointOffsetZ < _damageIgnoreZoneOffset)
         {
             ulong attackerClientId = GetAttackerClientId(collision);
-
             _health.TakeDamage(impulse, attackerClientId, pointOffsetZ < _criticalDamageZoneOffset);
         }
 

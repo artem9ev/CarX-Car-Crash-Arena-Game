@@ -18,6 +18,9 @@ using UnityEngine.Events;
 /// </summary>
 public class ScoreManager : NetworkBehaviour
 {
+    [SerializeField] private int _scroreForKill = 1000;
+    [SerializeField] private int _suicidePenalty = 400;
+
     public static ScoreManager Instance { get; private set; }
 
     /// <summary>
@@ -64,20 +67,28 @@ public class ScoreManager : NetworkBehaviour
         }
 
         bool isEnvironmentKill = attackerClientId == ulong.MaxValue;
-        bool isSuicide = !isEnvironmentKill && attackerClientId == victimClientId;
+        bool isSuicide = isEnvironmentKill || attackerClientId == victimClientId;
 
         string victimName = "Unknown";
         if (PlayerData.ByClientId.TryGetValue(victimClientId, out var victimData))
         {
             victimData.Deaths.Value++;
+            if (isSuicide)
+            {
+                victimData.Score.Value -= _suicidePenalty;
+            }
             victimName = victimData.PlayerName.Value.ToString();
-            UpsertEntry(victimClientId, victimName, victimData.Kills.Value, victimData.Deaths.Value);
+            UpsertEntry(victimClientId, victimName, victimData.Kills.Value, victimData.Deaths.Value, victimData.Score.Value);
         }
         else if (BotRegistry.ById.TryGetValue(victimClientId, out var victimBot))
         {
+            if (isSuicide)
+            {
+                victimData.Score.Value -= _suicidePenalty;
+            }
             victimBot.OnRegisteredAsVictim();
             victimName = victimBot.DisplayName;
-            UpsertEntry(victimClientId, victimName, victimBot.Kills, victimBot.Deaths);
+            UpsertEntry(victimClientId, victimName, victimBot.Kills, victimBot.Deaths, victimBot.Score);
         }
 
         string attackerName = isEnvironmentKill ? "Environment" : victimName;
@@ -86,14 +97,16 @@ public class ScoreManager : NetworkBehaviour
             if (PlayerData.ByClientId.TryGetValue(attackerClientId, out var attackerData))
             {
                 attackerData.Kills.Value++;
+                attackerData.Score.Value += _scroreForKill;
                 attackerName = attackerData.PlayerName.Value.ToString();
-                UpsertEntry(attackerClientId, attackerName, attackerData.Kills.Value, attackerData.Deaths.Value);
+                UpsertEntry(attackerClientId, attackerName, attackerData.Kills.Value, attackerData.Deaths.Value, attackerData.Score.Value);
             }
             else if (BotRegistry.ById.TryGetValue(attackerClientId, out var attackerBot))
             {
                 attackerBot.OnRegisteredAsKiller();
+                attackerData.Score.Value += _scroreForKill;
                 attackerName = attackerBot.DisplayName;
-                UpsertEntry(attackerClientId, attackerName, attackerBot.Kills, attackerBot.Deaths);
+                UpsertEntry(attackerClientId, attackerName, attackerBot.Kills, attackerBot.Deaths, attackerBot.Score);
                 Debug.Log($"[ScoreManager] Килл засчитан боту {attackerBot.DisplayName} (slot {attackerBot.SlotId}), теперь Kills={attackerBot.Kills}");
             }
             else
@@ -117,7 +130,7 @@ public class ScoreManager : NetworkBehaviour
     /// Добавляет или обновляет запись игрока/бота в таблице лидеров. Вызывать ТОЛЬКО на сервере.
     /// Вызывается автоматически из RegisterKill, а также из PlayerData/BotIdentity при спавне/смене ника.
     /// </summary>
-    public void UpsertEntry(ulong clientId, string playerName, int kills, int deaths)
+    public void UpsertEntry(ulong clientId, string playerName, int kills, int deaths, int score)
     {
         if (!IsServer) return;
 
@@ -126,7 +139,8 @@ public class ScoreManager : NetworkBehaviour
             ClientId = clientId,
             PlayerName = new FixedString64Bytes(playerName),
             Kills = kills,
-            Deaths = deaths
+            Deaths = deaths,
+            Score = score
         };
 
         for (int i = 0; i < Leaderboard.Count; i++)
@@ -164,6 +178,7 @@ public struct PlayerboardEntry : INetworkSerializable, System.IEquatable<Playerb
     public FixedString64Bytes PlayerName;
     public int Kills;
     public int Deaths;
+    public int Score;
 
     public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
     {
@@ -171,6 +186,7 @@ public struct PlayerboardEntry : INetworkSerializable, System.IEquatable<Playerb
         serializer.SerializeValue(ref PlayerName);
         serializer.SerializeValue(ref Kills);
         serializer.SerializeValue(ref Deaths);
+        serializer.SerializeValue(ref Score);
     }
 
     public bool Equals(PlayerboardEntry other)

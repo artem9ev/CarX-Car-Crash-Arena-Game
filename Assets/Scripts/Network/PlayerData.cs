@@ -13,6 +13,7 @@ public class PlayerData : NetworkBehaviour
     [Header("Дерби-статистика")]
     public NetworkVariable<int> Kills = new NetworkVariable<int>(0, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
     public NetworkVariable<int> Deaths = new NetworkVariable<int>(0, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+    public NetworkVariable<int> Score = new NetworkVariable<int>(0, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
 
     /// <summary>Реестр PlayerData по ClientId, актуален только на сервере.</summary>
     public static readonly Dictionary<ulong, PlayerData> ByClientId = new Dictionary<ulong, PlayerData>();
@@ -70,7 +71,7 @@ public class PlayerData : NetworkBehaviour
             yield return null;
         }
 
-        ScoreManager.Instance.UpsertEntry(OwnerClientId, PlayerName.Value.ToString(), Kills.Value, Deaths.Value);
+        ScoreManager.Instance.UpsertEntry(OwnerClientId, PlayerName.Value.ToString(), Kills.Value, Deaths.Value, Score.Value);
         _registerRoutine = null;
     }
 
@@ -78,7 +79,7 @@ public class PlayerData : NetworkBehaviour
     {
         if (!IsServer) return;
 
-        ScoreManager.Instance?.UpsertEntry(OwnerClientId, newValue.ToString(), Kills.Value, Deaths.Value);
+        ScoreManager.Instance?.UpsertEntry(OwnerClientId, newValue.ToString(), Kills.Value, Deaths.Value, Score.Value);
     }
 
     [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Owner)] // Только владелец может вызвать
