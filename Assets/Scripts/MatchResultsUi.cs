@@ -129,8 +129,8 @@ public class MatchResultsUi : MonoBehaviour
         }
 
         entries = entries
-            .OrderByDescending(e => e.Kills)
-            .ThenBy(e => e.Deaths)
+            .OrderByDescending(e => e.Score)
+            .ThenBy(e => e.Kills)
             .ToList();
 
         ulong localClientId = NetworkManager.Singleton != null ? NetworkManager.Singleton.LocalClientId : ulong.MaxValue;
@@ -147,7 +147,7 @@ public class MatchResultsUi : MonoBehaviour
             _spawnedRows.Add(rowObj);
 
             RowView row = FindRowView(rowObj);
-            int score = entry.Kills - entry.Deaths;
+            int score = entry.Score;
 
             if (row.rankText != null) row.rankText.text += rank.ToString();
             if (row.nameText != null) row.nameText.text += entry.PlayerName.ToString();

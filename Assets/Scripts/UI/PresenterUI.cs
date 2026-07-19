@@ -47,6 +47,21 @@ public abstract class PresenterUI : MonoBehaviour
         }
     }
 
+    protected void DeactivateView(BaseViewUI viewToDeactivate)
+    {
+        if (viewToDeactivate == null || !_views.Contains(viewToDeactivate))
+            return;
+
+        foreach (BaseViewUI view in _views)
+        {
+            if (view == viewToDeactivate)
+            {
+                _currentView = view;
+                view.Deactivate();
+            }
+        }
+    }
+
     public abstract void Subscribe();
 
     public abstract void Unsubscribe();

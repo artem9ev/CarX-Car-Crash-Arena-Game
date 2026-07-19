@@ -34,12 +34,12 @@ public class ConnectionManager : MonoBehaviour
     {
         if (_instance != null)
         {
-            Destroy(this);
+            Destroy(gameObject); // уничтожаем весь дубликат целиком, а не только этот компонент
             return;
         }
         _instance = this;
 
-        DontDestroyOnLoad(this);
+        DontDestroyOnLoad(gameObject);
     }
 
     private void Start()
@@ -107,9 +107,21 @@ public class ConnectionManager : MonoBehaviour
 
     public void Disconnect()
     {
+        Debug.Log($"[ConnectionManager] Disconnect() вызван. IsServer={_networkManager.IsServer}, IsClient={_networkManager.IsClient}, IsListening={_networkManager.IsListening}");
+
         _networkManager.Shutdown();
 
+        Debug.Log("[ConnectionManager] NetworkManager.Shutdown() выполнен, вызываем SceneLoader.LoadMainMenu()...");
+
+        if (SceneLoader.Instance == null)
+        {
+            Debug.LogError("[ConnectionManager] SceneLoader.Instance == null! Убедись, что объект с SceneLoader существует и не был уничтожен.");
+            return;
+        }
+
         SceneLoader.Instance.LoadMainMenu();
+        GameStateMachine.Instance.ChangeState(GameState.MainMenu);
+        ClientEventBus.Instance.InvokeCarOwn(null);
     }
 
     public void DisconnectPlayer(NetworkObject player)

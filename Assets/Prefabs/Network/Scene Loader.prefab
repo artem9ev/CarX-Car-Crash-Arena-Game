@@ -44,7 +44,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5c2abcff2d91a0a46a81db8698ff3e91, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SceneLoader
-  _uiName: UI
   _mainName: MainMenu
   _lobbyName: Lobby
-  _levelName: Level_1
+  _levelName: Level_Network_Test

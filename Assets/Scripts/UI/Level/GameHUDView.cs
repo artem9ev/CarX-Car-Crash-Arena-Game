@@ -12,8 +12,17 @@ public class GameHUDView : BaseViewUI, IRaceHUDView
     [SerializeField] private Speedometer m_rpmMeter;
     [SerializeField] private TextMeshProUGUI m_currentGear;
 
+    private MatchResultsUi m_matchResults;
+
+
+
     public event UnityAction onPauseButtonClick;
 
+
+    private void Awake()
+    {
+        m_matchResults = GetComponent<MatchResultsUi>();
+    }
     public void SetSpeed(float speed)
     {
         if (m_speed == null)
@@ -21,6 +30,13 @@ public class GameHUDView : BaseViewUI, IRaceHUDView
             return;
         }
         m_speed.text = Mathf.RoundToInt(speed * 3.6f).ToString();
+    }
+
+    public override void Deactivate()
+    {
+        base.Deactivate();
+
+        //m_matchResults.
     }
 
     public void Deinit()
